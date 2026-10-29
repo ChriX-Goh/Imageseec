@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "ウェブ画像を表示。画像の切り替え、ズーム、自由な移動、サムネイルに対応。"
+  },
+  "settingsTitle": {
+    "message": "Imageseec の設定"
+  },
+  "contextOpen": {
+    "message": "Imageseec で開く"
+  },
+  "fallbackNotice": {
+    "message": "このページではアクセスが制限されているため、選択した画像のみ表示します。"
+  },
+  "shortcuts": {
+    "message": "ショートカット"
+  },
+  "quickOpen": {
+    "message": "Ctrl＋クリックで開く"
+  },
+  "doubleClickExit": {
+    "message": "ダブルクリックで閉じる"
+  },
+  "zoom": {
+    "message": "ズーム"
+  },
+  "zoomStep": {
+    "message": "Alt＋ホイールの変化量"
+  },
+  "holdZoom": {
+    "message": "長押しの拡大率"
+  },
+  "preload": {
+    "message": "先読み"
+  },
+  "cacheBefore": {
+    "message": "前の画像"
+  },
+  "cacheAfter": {
+    "message": "次の画像"
+  },
+  "previews": {
+    "message": "サムネイル表示"
+  },
+  "previewBefore": {
+    "message": "左側の枚数"
+  },
+  "previewAfter": {
+    "message": "右側の枚数"
+  },
+  "saveFailed": {
+    "message": "保存できませんでした"
+  },
+  "reset": {
+    "message": "初期設定に戻す"
+  },
+  "reload": {
+    "message": "拡張機能を再読み込み"
+  },
+  "viewerTitle": {
+    "message": "Imageseec 画像ビューア"
+  },
+  "viewerRegion": {
+    "message": "画像ビューア"
+  },
+  "zoomCycle": {
+    "message": "現在の倍率 → ページに合わせる → 100%"
+  },
+  "zoomSlider": {
+    "message": "ズームスライダー"
+  },
+  "zoomTo": {
+    "message": "$arg1$% にズーム",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "倍率を固定"
+  },
+  "unlockZoom": {
+    "message": "倍率の固定を解除"
+  },
+  "enterFullscreen": {
+    "message": "ブラウザを全画面表示"
+  },
+  "exitFullscreen": {
+    "message": "ページ表示に戻る"
+  },
+  "closeViewer": {
+    "message": "画像ビューアを閉じる"
+  },
+  "previous": {
+    "message": "前の画像"
+  },
+  "next": {
+    "message": "次の画像"
+  },
+  "nearby": {
+    "message": "前後の画像"
+  },
+  "thumbnails": {
+    "message": "サムネイル"
+  },
+  "retry": {
+    "message": "再試行"
+  },
+  "loading": {
+    "message": "画像を読み込み中…"
+  },
+  "loadFailed": {
+    "message": "画像を読み込めませんでした。再試行するか、別の画像を選んでください。"
+  },
+  "imageN": {
+    "message": "画像 $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "$arg2$ 枚中 $arg1$ 枚目",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "画像 $arg1$ を表示",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "全画面表示が許可されていないため、ページ内で表示します。"
+  },
+  "sessionExpired": {
+    "message": "画像のセッションが期限切れです。ウェブページに戻り、画像をもう一度開いてください。"
+  },
+  "galleryGeneric": {
+    "message": "ウェブギャラリー"
+  }
+}

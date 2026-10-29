@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Просмотр изображений с навигацией, масштабированием, свободным перемещением и миниатюрами."
+  },
+  "settingsTitle": {
+    "message": "Настройки Imageseec"
+  },
+  "contextOpen": {
+    "message": "Открыть в Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "Страница ограничивает доступ. Доступно только выбранное изображение."
+  },
+  "shortcuts": {
+    "message": "Быстрые действия"
+  },
+  "quickOpen": {
+    "message": "Открывать по Ctrl + щелчку"
+  },
+  "doubleClickExit": {
+    "message": "Закрывать двойным щелчком"
+  },
+  "zoom": {
+    "message": "Масштаб"
+  },
+  "zoomStep": {
+    "message": "Шаг Alt + колесо"
+  },
+  "holdZoom": {
+    "message": "Увеличение при удержании"
+  },
+  "preload": {
+    "message": "Предзагрузка"
+  },
+  "cacheBefore": {
+    "message": "Предыдущие"
+  },
+  "cacheAfter": {
+    "message": "Следующие"
+  },
+  "previews": {
+    "message": "Лента миниатюр"
+  },
+  "previewBefore": {
+    "message": "Слева"
+  },
+  "previewAfter": {
+    "message": "Справа"
+  },
+  "saveFailed": {
+    "message": "Не удалось сохранить"
+  },
+  "reset": {
+    "message": "Сбросить настройки"
+  },
+  "reload": {
+    "message": "Перезагрузить расширение"
+  },
+  "viewerTitle": {
+    "message": "Просмотр изображений Imageseec"
+  },
+  "viewerRegion": {
+    "message": "Просмотр изображений"
+  },
+  "zoomCycle": {
+    "message": "Текущий масштаб → По размеру страницы → 100%"
+  },
+  "zoomSlider": {
+    "message": "Ползунок масштаба"
+  },
+  "zoomTo": {
+    "message": "Масштаб $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Зафиксировать масштаб"
+  },
+  "unlockZoom": {
+    "message": "Снять фиксацию масштаба"
+  },
+  "enterFullscreen": {
+    "message": "Полноэкранный режим браузера"
+  },
+  "exitFullscreen": {
+    "message": "Вернуться к просмотру на странице"
+  },
+  "closeViewer": {
+    "message": "Закрыть просмотр"
+  },
+  "previous": {
+    "message": "Предыдущее изображение"
+  },
+  "next": {
+    "message": "Следующее изображение"
+  },
+  "nearby": {
+    "message": "Соседние изображения"
+  },
+  "thumbnails": {
+    "message": "Миниатюры"
+  },
+  "retry": {
+    "message": "Повторить"
+  },
+  "loading": {
+    "message": "Загрузка изображения…"
+  },
+  "loadFailed": {
+    "message": "Не удалось загрузить изображение. Повторите попытку или выберите другое."
+  },
+  "imageN": {
+    "message": "Изображение $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Изображение $arg1$ из $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Показать изображение $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Полноэкранный режим недоступен. Остаёмся на странице."
+  },
+  "sessionExpired": {
+    "message": "Сеанс истёк. Вернитесь на страницу и снова откройте изображение."
+  },
+  "galleryGeneric": {
+    "message": "Веб-галерея"
+  }
+}

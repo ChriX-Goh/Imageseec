@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>镜览 · 首次进入快捷启动验收</title>
+<style>body{margin:40px;background:#17191f;color:#dce3f0;font:14px/1.7 system-ui}h1{font-size:24px}#gallery{display:flex;gap:20px}a img{width:240px;height:160px;object-fit:cover;border-radius:12px}button{padding:10px;border:0;border-radius:8px}</style>
+</head><body><h1>首次进入 · Ctrl + 左键</h1><p>仅加载快捷入口，第一次点击才加载查看器。真正全屏已禁用。</p>
+<p><button id="defaults">开启快捷入口</button> <button id="disable">关闭快捷入口</button> <button id="add">添加动态图片</button></p>
+<div id="gallery" data-gallery><a href="#ordinary"><img src="/image/1" alt="首次启动测试图 1"></a><a href="#ordinary"><img src="/image/2" alt="首次启动测试图 2"></a><a href="#ordinary"><img src="/image/3" alt="首次启动测试图 3"></a></div>
+<output id="status">普通链接点击 0 次</output>
+<script src="/tests/demo-setup.js"></script><script src="/quick-open.js"></script><script src="/tests/quick-demo.js"></script></body></html>

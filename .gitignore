@@ -1,0 +1,18 @@
+# Historical local material is intentionally not part of the public project.
+/tests/backups/
+/tests/local-only/
+/tests/*.png
+/dist/
+*.zip
+*.crx
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log

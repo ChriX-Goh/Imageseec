@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Imageseec structural gallery test</title>
+<style>body{margin:40px;background:#191e28;color:#edf0f7;font:14px system-ui}section{display:flex;gap:20px}figure{margin:0}img{width:240px;height:160px;object-fit:cover}button{padding:12px;margin:12px}dialog{background:#191e28;color:white}dialog img{width:500px;height:300px}</style></head><body>
+<h1>Generic image cards and dialog</h1><p>The gallery uses ordinary sibling figures, explicit full-image sources and ARIA positions.</p>
+<button id="show-modal">Open native modal</button><button id="close-modal">Close native modal</button>
+<section id="cards"><figure aria-posinset="3"><img src="/image/3" data-full="/full/3" alt="Portrait"></figure><figure aria-posinset="1"><img src="/image/1" data-full="/full/1" alt="Landscape"></figure><figure aria-posinset="2"><img src="/image/2" data-full="/full/2" alt="Small landscape"></figure></section>
+<dialog id="native"><img src="/full/2" alt="Modal image"><img src="/image/4" alt="Unrelated reference"></dialog>
+<script src="/tests/demo-setup.js"></script><script src="/i18n.js"></script><script src="/settings.js"></script><script src="/controls.js"></script><script src="/preferences.js"></script><script src="/gallery.js"></script><script src="/viewer.js"></script><script src="/quick-open.js"></script><script src="/tests/generic-gallery.js"></script></body></html>

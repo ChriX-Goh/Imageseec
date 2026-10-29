@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Webbilder mit Galerienavigation, Zoom, freiem Verschieben und Vorschaubildern ansehen."
+  },
+  "settingsTitle": {
+    "message": "Imageseec-Einstellungen"
+  },
+  "contextOpen": {
+    "message": "Mit Imageseec öffnen"
+  },
+  "fallbackNotice": {
+    "message": "Diese Seite beschränkt den Zugriff; nur das gewählte Bild ist verfügbar."
+  },
+  "shortcuts": {
+    "message": "Kurzbefehle"
+  },
+  "quickOpen": {
+    "message": "Mit Strg + Klick öffnen"
+  },
+  "doubleClickExit": {
+    "message": "Mit Doppelklick schließen"
+  },
+  "zoom": {
+    "message": "Zoom"
+  },
+  "zoomStep": {
+    "message": "Schritt bei Alt + Mausrad"
+  },
+  "holdZoom": {
+    "message": "Vergrößerung beim Halten"
+  },
+  "preload": {
+    "message": "Vorladen"
+  },
+  "cacheBefore": {
+    "message": "Vorherige Bilder"
+  },
+  "cacheAfter": {
+    "message": "Nächste Bilder"
+  },
+  "previews": {
+    "message": "Vorschaustreifen"
+  },
+  "previewBefore": {
+    "message": "Vorschau links"
+  },
+  "previewAfter": {
+    "message": "Vorschau rechts"
+  },
+  "saveFailed": {
+    "message": "Speichern fehlgeschlagen"
+  },
+  "reset": {
+    "message": "Zurücksetzen"
+  },
+  "reload": {
+    "message": "Erweiterung neu laden"
+  },
+  "viewerTitle": {
+    "message": "Imageseec-Bildbetrachter"
+  },
+  "viewerRegion": {
+    "message": "Bildbetrachter"
+  },
+  "zoomCycle": {
+    "message": "Aktueller Zoom → Seite einpassen → 100%"
+  },
+  "zoomSlider": {
+    "message": "Zoomregler"
+  },
+  "zoomTo": {
+    "message": "Auf $arg1$% zoomen",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Zoom sperren"
+  },
+  "unlockZoom": {
+    "message": "Zoom entsperren"
+  },
+  "enterFullscreen": {
+    "message": "Browser-Vollbild öffnen"
+  },
+  "exitFullscreen": {
+    "message": "Zur Seitenansicht zurück"
+  },
+  "closeViewer": {
+    "message": "Bildbetrachter schließen"
+  },
+  "previous": {
+    "message": "Vorheriges Bild"
+  },
+  "next": {
+    "message": "Nächstes Bild"
+  },
+  "nearby": {
+    "message": "Benachbarte Bilder"
+  },
+  "thumbnails": {
+    "message": "Miniaturansichten"
+  },
+  "retry": {
+    "message": "Erneut versuchen"
+  },
+  "loading": {
+    "message": "Bild wird geladen…"
+  },
+  "loadFailed": {
+    "message": "Das Bild konnte nicht geladen werden. Versuchen Sie es erneut oder wählen Sie ein anderes Bild."
+  },
+  "imageN": {
+    "message": "Bild $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Bild $arg1$ von $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Bild $arg1$ ansehen",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Vollbild wurde nicht erlaubt; die Seitenansicht bleibt aktiv."
+  },
+  "sessionExpired": {
+    "message": "Diese Bildsitzung ist abgelaufen. Öffnen Sie das Bild auf der Webseite erneut."
+  },
+  "galleryGeneric": {
+    "message": "Webgalerie"
+  }
+}

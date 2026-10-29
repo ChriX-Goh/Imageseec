@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Visionnez les images du Web avec navigation, zoom, déplacement libre et miniatures."
+  },
+  "settingsTitle": {
+    "message": "Paramètres Imageseec"
+  },
+  "contextOpen": {
+    "message": "Ouvrir avec Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "Cette page limite l’accès ; seule l’image sélectionnée est disponible."
+  },
+  "shortcuts": {
+    "message": "Raccourcis"
+  },
+  "quickOpen": {
+    "message": "Ouvrir avec Ctrl + clic"
+  },
+  "doubleClickExit": {
+    "message": "Fermer par double-clic"
+  },
+  "zoom": {
+    "message": "Zoom"
+  },
+  "zoomStep": {
+    "message": "Pas Alt + molette"
+  },
+  "holdZoom": {
+    "message": "Zoom en maintenant le clic"
+  },
+  "preload": {
+    "message": "Préchargement"
+  },
+  "cacheBefore": {
+    "message": "Images précédentes"
+  },
+  "cacheAfter": {
+    "message": "Images suivantes"
+  },
+  "previews": {
+    "message": "Bande de miniatures"
+  },
+  "previewBefore": {
+    "message": "Miniatures à gauche"
+  },
+  "previewAfter": {
+    "message": "Miniatures à droite"
+  },
+  "saveFailed": {
+    "message": "Échec de l’enregistrement"
+  },
+  "reset": {
+    "message": "Rétablir les valeurs"
+  },
+  "reload": {
+    "message": "Recharger l’extension"
+  },
+  "viewerTitle": {
+    "message": "Visionneuse Imageseec"
+  },
+  "viewerRegion": {
+    "message": "Visionneuse d’images"
+  },
+  "zoomCycle": {
+    "message": "Zoom actuel → Ajuster à la page → 100%"
+  },
+  "zoomSlider": {
+    "message": "Curseur de zoom"
+  },
+  "zoomTo": {
+    "message": "Zoom à $arg1$ %",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Verrouiller le zoom"
+  },
+  "unlockZoom": {
+    "message": "Déverrouiller le zoom"
+  },
+  "enterFullscreen": {
+    "message": "Passer en plein écran"
+  },
+  "exitFullscreen": {
+    "message": "Revenir à la vue page"
+  },
+  "closeViewer": {
+    "message": "Fermer la visionneuse"
+  },
+  "previous": {
+    "message": "Image précédente"
+  },
+  "next": {
+    "message": "Image suivante"
+  },
+  "nearby": {
+    "message": "Images voisines"
+  },
+  "thumbnails": {
+    "message": "Miniatures"
+  },
+  "retry": {
+    "message": "Réessayer"
+  },
+  "loading": {
+    "message": "Chargement de l’image…"
+  },
+  "loadFailed": {
+    "message": "Impossible de charger cette image. Réessayez ou choisissez une autre image."
+  },
+  "imageN": {
+    "message": "Image $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Image $arg1$ sur $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Voir l’image $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Le plein écran n’est pas autorisé ; la vue page reste active."
+  },
+  "sessionExpired": {
+    "message": "Cette session a expiré. Revenez à la page Web et ouvrez à nouveau l’image."
+  },
+  "galleryGeneric": {
+    "message": "Galerie Web"
+  }
+}

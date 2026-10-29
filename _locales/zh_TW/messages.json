@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "檢視網頁圖片，支援相鄰切圖、縮放、自由拖曳與縮圖預覽。"
+  },
+  "settingsTitle": {
+    "message": "Imageseec 設定"
+  },
+  "contextOpen": {
+    "message": "使用 Imageseec 檢視圖片"
+  },
+  "fallbackNotice": {
+    "message": "原網頁限制存取，目前僅顯示這張圖片。"
+  },
+  "shortcuts": {
+    "message": "快捷操作"
+  },
+  "quickOpen": {
+    "message": "Ctrl + 左鍵開啟"
+  },
+  "doubleClickExit": {
+    "message": "按兩下關閉"
+  },
+  "zoom": {
+    "message": "縮放"
+  },
+  "zoomStep": {
+    "message": "Alt + 滾輪幅度"
+  },
+  "holdZoom": {
+    "message": "按住左鍵放大"
+  },
+  "preload": {
+    "message": "預先載入"
+  },
+  "cacheBefore": {
+    "message": "前方快取"
+  },
+  "cacheAfter": {
+    "message": "後方快取"
+  },
+  "previews": {
+    "message": "底部預覽"
+  },
+  "previewBefore": {
+    "message": "左側預覽"
+  },
+  "previewAfter": {
+    "message": "右側預覽"
+  },
+  "saveFailed": {
+    "message": "儲存失敗"
+  },
+  "reset": {
+    "message": "還原預設值"
+  },
+  "reload": {
+    "message": "套用本機更新"
+  },
+  "viewerTitle": {
+    "message": "Imageseec 圖片檢視器"
+  },
+  "viewerRegion": {
+    "message": "圖片瀏覽器"
+  },
+  "zoomCycle": {
+    "message": "目前倍率 → 符合頁面 → 100%"
+  },
+  "zoomSlider": {
+    "message": "縮放滑桿"
+  },
+  "zoomTo": {
+    "message": "縮放至 $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "鎖定倍率"
+  },
+  "unlockZoom": {
+    "message": "解除倍率鎖定"
+  },
+  "enterFullscreen": {
+    "message": "切換至瀏覽器全螢幕"
+  },
+  "exitFullscreen": {
+    "message": "切換至頁面全螢幕"
+  },
+  "closeViewer": {
+    "message": "關閉圖片檢視器"
+  },
+  "previous": {
+    "message": "上一張"
+  },
+  "next": {
+    "message": "下一張"
+  },
+  "nearby": {
+    "message": "相鄰圖片"
+  },
+  "thumbnails": {
+    "message": "縮圖"
+  },
+  "retry": {
+    "message": "重試"
+  },
+  "loading": {
+    "message": "正在載入圖片…"
+  },
+  "loadFailed": {
+    "message": "暫時無法載入圖片。請重試或切換至相鄰圖片。"
+  },
+  "imageN": {
+    "message": "第 $arg1$ 張圖片",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "第 $arg1$ 張，共 $arg2$ 張",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "檢視第 $arg1$ 張",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "瀏覽器未允許全螢幕，目前使用頁面全螢幕"
+  },
+  "sessionExpired": {
+    "message": "圖片工作階段已過期，請返回網頁重新開啟。"
+  },
+  "galleryGeneric": {
+    "message": "一般相簿"
+  }
+}

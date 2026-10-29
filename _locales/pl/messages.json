@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Przeglądaj obrazy w internecie z nawigacją, powiększaniem, przesuwaniem i miniaturami."
+  },
+  "settingsTitle": {
+    "message": "Ustawienia Imageseec"
+  },
+  "contextOpen": {
+    "message": "Otwórz w Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "Strona ogranicza dostęp. Dostępny jest tylko wybrany obraz."
+  },
+  "shortcuts": {
+    "message": "Skróty"
+  },
+  "quickOpen": {
+    "message": "Otwieraj przez Ctrl + kliknięcie"
+  },
+  "doubleClickExit": {
+    "message": "Zamykaj dwukrotnym kliknięciem"
+  },
+  "zoom": {
+    "message": "Powiększenie"
+  },
+  "zoomStep": {
+    "message": "Krok Alt + kółko"
+  },
+  "holdZoom": {
+    "message": "Powiększenie przy przytrzymaniu"
+  },
+  "preload": {
+    "message": "Wstępne ładowanie"
+  },
+  "cacheBefore": {
+    "message": "Poprzednie obrazy"
+  },
+  "cacheAfter": {
+    "message": "Następne obrazy"
+  },
+  "previews": {
+    "message": "Pasek miniatur"
+  },
+  "previewBefore": {
+    "message": "Miniatury po lewej"
+  },
+  "previewAfter": {
+    "message": "Miniatury po prawej"
+  },
+  "saveFailed": {
+    "message": "Nie udało się zapisać"
+  },
+  "reset": {
+    "message": "Przywróć domyślne"
+  },
+  "reload": {
+    "message": "Przeładuj rozszerzenie"
+  },
+  "viewerTitle": {
+    "message": "Przeglądarka obrazów Imageseec"
+  },
+  "viewerRegion": {
+    "message": "Przeglądarka obrazów"
+  },
+  "zoomCycle": {
+    "message": "Bieżący zoom → Dopasuj do strony → 100%"
+  },
+  "zoomSlider": {
+    "message": "Suwak powiększenia"
+  },
+  "zoomTo": {
+    "message": "Powiększenie $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Zablokuj powiększenie"
+  },
+  "unlockZoom": {
+    "message": "Odblokuj powiększenie"
+  },
+  "enterFullscreen": {
+    "message": "Pełny ekran przeglądarki"
+  },
+  "exitFullscreen": {
+    "message": "Wróć do widoku strony"
+  },
+  "closeViewer": {
+    "message": "Zamknij przeglądarkę obrazów"
+  },
+  "previous": {
+    "message": "Poprzedni obraz"
+  },
+  "next": {
+    "message": "Następny obraz"
+  },
+  "nearby": {
+    "message": "Sąsiednie obrazy"
+  },
+  "thumbnails": {
+    "message": "Miniatury"
+  },
+  "retry": {
+    "message": "Spróbuj ponownie"
+  },
+  "loading": {
+    "message": "Ładowanie obrazu…"
+  },
+  "loadFailed": {
+    "message": "Nie udało się załadować obrazu. Spróbuj ponownie lub wybierz inny."
+  },
+  "imageN": {
+    "message": "Obraz $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Obraz $arg1$ z $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Pokaż obraz $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Pełny ekran jest niedostępny. Pozostaje widok strony."
+  },
+  "sessionExpired": {
+    "message": "Sesja obrazu wygasła. Wróć do strony i ponownie otwórz obraz."
+  },
+  "galleryGeneric": {
+    "message": "Galeria internetowa"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。"
+  },
+  "settingsTitle": {
+    "message": "Imageseec 设置"
+  },
+  "contextOpen": {
+    "message": "使用 Imageseec 查看图片"
+  },
+  "fallbackNotice": {
+    "message": "原页面限制访问，当前仅显示这张图片。"
+  },
+  "shortcuts": {
+    "message": "快捷操作"
+  },
+  "quickOpen": {
+    "message": "Ctrl + 左键打开"
+  },
+  "doubleClickExit": {
+    "message": "双击退出"
+  },
+  "zoom": {
+    "message": "缩放"
+  },
+  "zoomStep": {
+    "message": "Alt + 滚轮幅度"
+  },
+  "holdZoom": {
+    "message": "按住左键放大"
+  },
+  "preload": {
+    "message": "预缓存"
+  },
+  "cacheBefore": {
+    "message": "前方缓存"
+  },
+  "cacheAfter": {
+    "message": "后方缓存"
+  },
+  "previews": {
+    "message": "底部预览"
+  },
+  "previewBefore": {
+    "message": "左侧预览"
+  },
+  "previewAfter": {
+    "message": "右侧预览"
+  },
+  "saveFailed": {
+    "message": "保存失败"
+  },
+  "reset": {
+    "message": "恢复默认"
+  },
+  "reload": {
+    "message": "应用本地更新"
+  },
+  "viewerTitle": {
+    "message": "Imageseec 图片查看器"
+  },
+  "viewerRegion": {
+    "message": "图片浏览器"
+  },
+  "zoomCycle": {
+    "message": "当前倍率 → 适合页面 → 100%"
+  },
+  "zoomSlider": {
+    "message": "缩放滑杆"
+  },
+  "zoomTo": {
+    "message": "缩放到 $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "锁定倍率"
+  },
+  "unlockZoom": {
+    "message": "解锁倍率"
+  },
+  "enterFullscreen": {
+    "message": "切换到浏览器全屏"
+  },
+  "exitFullscreen": {
+    "message": "切换到页面全屏"
+  },
+  "closeViewer": {
+    "message": "关闭图片查看器"
+  },
+  "previous": {
+    "message": "上一张"
+  },
+  "next": {
+    "message": "下一张"
+  },
+  "nearby": {
+    "message": "相邻图片"
+  },
+  "thumbnails": {
+    "message": "缩略图"
+  },
+  "retry": {
+    "message": "重试"
+  },
+  "loading": {
+    "message": "正在载入图片…"
+  },
+  "loadFailed": {
+    "message": "图片暂时无法加载。可重试，或切换到相邻图片。"
+  },
+  "imageN": {
+    "message": "第 $arg1$ 张图片",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "第 $arg1$ 张，共 $arg2$ 张",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "查看第 $arg1$ 张",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "浏览器未允许全屏，当前使用页面全屏"
+  },
+  "sessionExpired": {
+    "message": "图片会话已过期，请返回网页重新右键打开。"
+  },
+  "galleryGeneric": {
+    "message": "通用相册"
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Ve imágenes web con navegación, zoom, desplazamiento libre y miniaturas."
+  },
+  "settingsTitle": {
+    "message": "Ajustes de Imageseec"
+  },
+  "contextOpen": {
+    "message": "Abrir con Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "Esta página restringe el acceso; solo está disponible la imagen seleccionada."
+  },
+  "shortcuts": {
+    "message": "Atajos"
+  },
+  "quickOpen": {
+    "message": "Abrir con Ctrl + clic"
+  },
+  "doubleClickExit": {
+    "message": "Cerrar con doble clic"
+  },
+  "zoom": {
+    "message": "Zoom"
+  },
+  "zoomStep": {
+    "message": "Paso de Alt + rueda"
+  },
+  "holdZoom": {
+    "message": "Zoom al mantener pulsado"
+  },
+  "preload": {
+    "message": "Precarga"
+  },
+  "cacheBefore": {
+    "message": "Imágenes anteriores"
+  },
+  "cacheAfter": {
+    "message": "Imágenes siguientes"
+  },
+  "previews": {
+    "message": "Tira de miniaturas"
+  },
+  "previewBefore": {
+    "message": "Miniaturas a la izquierda"
+  },
+  "previewAfter": {
+    "message": "Miniaturas a la derecha"
+  },
+  "saveFailed": {
+    "message": "No se pudo guardar"
+  },
+  "reset": {
+    "message": "Restablecer"
+  },
+  "reload": {
+    "message": "Recargar extensión"
+  },
+  "viewerTitle": {
+    "message": "Visor de imágenes Imageseec"
+  },
+  "viewerRegion": {
+    "message": "Visor de imágenes"
+  },
+  "zoomCycle": {
+    "message": "Zoom actual → Ajustar a la página → 100%"
+  },
+  "zoomSlider": {
+    "message": "Control de zoom"
+  },
+  "zoomTo": {
+    "message": "Zoom al $arg1$ %",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Bloquear zoom"
+  },
+  "unlockZoom": {
+    "message": "Desbloquear zoom"
+  },
+  "enterFullscreen": {
+    "message": "Activar pantalla completa"
+  },
+  "exitFullscreen": {
+    "message": "Volver a la vista de página"
+  },
+  "closeViewer": {
+    "message": "Cerrar el visor"
+  },
+  "previous": {
+    "message": "Imagen anterior"
+  },
+  "next": {
+    "message": "Imagen siguiente"
+  },
+  "nearby": {
+    "message": "Imágenes cercanas"
+  },
+  "thumbnails": {
+    "message": "Miniaturas"
+  },
+  "retry": {
+    "message": "Reintentar"
+  },
+  "loading": {
+    "message": "Cargando imagen…"
+  },
+  "loadFailed": {
+    "message": "No se pudo cargar esta imagen. Reinténtalo o elige otra."
+  },
+  "imageN": {
+    "message": "Imagen $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Imagen $arg1$ de $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Ver imagen $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "No se permitió la pantalla completa; se mantiene la vista de página."
+  },
+  "sessionExpired": {
+    "message": "La sesión de imagen ha caducado. Vuelve a la página y abre la imagen de nuevo."
+  },
+  "galleryGeneric": {
+    "message": "Galería web"
+  }
+}

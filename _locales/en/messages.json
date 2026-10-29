@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "View webpage images with gallery navigation, zoom, free panning and thumbnail previews."
+  },
+  "settingsTitle": {
+    "message": "Imageseec settings"
+  },
+  "contextOpen": {
+    "message": "Open with Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "This page restricts access; only the selected image is available."
+  },
+  "shortcuts": {
+    "message": "Shortcuts"
+  },
+  "quickOpen": {
+    "message": "Ctrl + click to open"
+  },
+  "doubleClickExit": {
+    "message": "Double-click to close"
+  },
+  "zoom": {
+    "message": "Zoom"
+  },
+  "zoomStep": {
+    "message": "Alt + wheel step"
+  },
+  "holdZoom": {
+    "message": "Hold-to-magnify"
+  },
+  "preload": {
+    "message": "Preloading"
+  },
+  "cacheBefore": {
+    "message": "Previous images"
+  },
+  "cacheAfter": {
+    "message": "Next images"
+  },
+  "previews": {
+    "message": "Thumbnail strip"
+  },
+  "previewBefore": {
+    "message": "Left previews"
+  },
+  "previewAfter": {
+    "message": "Right previews"
+  },
+  "saveFailed": {
+    "message": "Could not save"
+  },
+  "reset": {
+    "message": "Reset defaults"
+  },
+  "reload": {
+    "message": "Reload extension"
+  },
+  "viewerTitle": {
+    "message": "Imageseec image viewer"
+  },
+  "viewerRegion": {
+    "message": "Image viewer"
+  },
+  "zoomCycle": {
+    "message": "Current zoom → Fit page → 100%"
+  },
+  "zoomSlider": {
+    "message": "Zoom slider"
+  },
+  "zoomTo": {
+    "message": "Zoom to $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Lock zoom"
+  },
+  "unlockZoom": {
+    "message": "Unlock zoom"
+  },
+  "enterFullscreen": {
+    "message": "Enter browser fullscreen"
+  },
+  "exitFullscreen": {
+    "message": "Return to page view"
+  },
+  "closeViewer": {
+    "message": "Close image viewer"
+  },
+  "previous": {
+    "message": "Previous image"
+  },
+  "next": {
+    "message": "Next image"
+  },
+  "nearby": {
+    "message": "Nearby images"
+  },
+  "thumbnails": {
+    "message": "Thumbnails"
+  },
+  "retry": {
+    "message": "Retry"
+  },
+  "loading": {
+    "message": "Loading image…"
+  },
+  "loadFailed": {
+    "message": "Could not load this image. Retry or choose another image."
+  },
+  "imageN": {
+    "message": "Image $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Image $arg1$ of $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "View image $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Fullscreen was not allowed; staying in page view."
+  },
+  "sessionExpired": {
+    "message": "This image session expired. Return to the webpage and open the image again."
+  },
+  "galleryGeneric": {
+    "message": "Web gallery"
+  }
+}

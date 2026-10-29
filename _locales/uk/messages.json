@@ -1,0 +1,154 @@
+{
+  "extName": {
+    "message": "Imageseec"
+  },
+  "extDescription": {
+    "message": "Перегляд зображень із навігацією, масштабуванням, вільним переміщенням і мініатюрами."
+  },
+  "settingsTitle": {
+    "message": "Налаштування Imageseec"
+  },
+  "contextOpen": {
+    "message": "Відкрити в Imageseec"
+  },
+  "fallbackNotice": {
+    "message": "Сторінка обмежує доступ. Доступне лише вибране зображення."
+  },
+  "shortcuts": {
+    "message": "Швидкі дії"
+  },
+  "quickOpen": {
+    "message": "Відкривати через Ctrl + клацання"
+  },
+  "doubleClickExit": {
+    "message": "Закривати подвійним клацанням"
+  },
+  "zoom": {
+    "message": "Масштаб"
+  },
+  "zoomStep": {
+    "message": "Крок Alt + коліщатко"
+  },
+  "holdZoom": {
+    "message": "Збільшення при утриманні"
+  },
+  "preload": {
+    "message": "Попереднє завантаження"
+  },
+  "cacheBefore": {
+    "message": "Попередні"
+  },
+  "cacheAfter": {
+    "message": "Наступні"
+  },
+  "previews": {
+    "message": "Стрічка мініатюр"
+  },
+  "previewBefore": {
+    "message": "Ліворуч"
+  },
+  "previewAfter": {
+    "message": "Праворуч"
+  },
+  "saveFailed": {
+    "message": "Не вдалося зберегти"
+  },
+  "reset": {
+    "message": "Скинути налаштування"
+  },
+  "reload": {
+    "message": "Перезавантажити розширення"
+  },
+  "viewerTitle": {
+    "message": "Переглядач зображень Imageseec"
+  },
+  "viewerRegion": {
+    "message": "Перегляд зображень"
+  },
+  "zoomCycle": {
+    "message": "Поточний масштаб → За розміром сторінки → 100%"
+  },
+  "zoomSlider": {
+    "message": "Повзунок масштабу"
+  },
+  "zoomTo": {
+    "message": "Масштаб $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "lockZoom": {
+    "message": "Зафіксувати масштаб"
+  },
+  "unlockZoom": {
+    "message": "Зняти фіксацію масштабу"
+  },
+  "enterFullscreen": {
+    "message": "Повноекранний режим браузера"
+  },
+  "exitFullscreen": {
+    "message": "Повернутися до перегляду на сторінці"
+  },
+  "closeViewer": {
+    "message": "Закрити переглядач"
+  },
+  "previous": {
+    "message": "Попереднє зображення"
+  },
+  "next": {
+    "message": "Наступне зображення"
+  },
+  "nearby": {
+    "message": "Сусідні зображення"
+  },
+  "thumbnails": {
+    "message": "Мініатюри"
+  },
+  "retry": {
+    "message": "Повторити"
+  },
+  "loading": {
+    "message": "Завантаження зображення…"
+  },
+  "loadFailed": {
+    "message": "Не вдалося завантажити зображення. Спробуйте ще раз або виберіть інше."
+  },
+  "imageN": {
+    "message": "Зображення $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "imageCount": {
+    "message": "Зображення $arg1$ із $arg2$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      },
+      "arg2": {
+        "content": "$2"
+      }
+    }
+  },
+  "viewImage": {
+    "message": "Показати зображення $arg1$",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "fullscreenDenied": {
+    "message": "Повноекранний режим недоступний. Залишаємося на сторінці."
+  },
+  "sessionExpired": {
+    "message": "Сеанс завершився. Поверніться на сторінку та знову відкрийте зображення."
+  },
+  "galleryGeneric": {
+    "message": "Вебгалерея"
+  }
+}
