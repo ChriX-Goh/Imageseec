@@ -1,0 +1,22 @@
+See the image. Stay in your browser.
+
+Built for people who enjoy the viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and move quickly through images. Imageseec brings that desktop-inspired approach to webpage images, with its own browser controls.
+
+Imageseec opens webpage images in a focused, page-filling viewer. Right-click a picture or use Ctrl + left-click to get started.
+
+- Browse nearby images with your wheel, arrow keys or edge buttons.
+- Zoom with Alt + wheel and make one-percentage-point adjustments with Shift + wheel.
+- Hold the left mouse button to magnify temporarily, then release to return.
+- Alt-drag to pan freely, including beyond image edges.
+- Hover the percentage for a compact vertical zoom ruler, or click it to cycle through current zoom, fit page and 100%.
+- Lock a zoom percentage while switching pictures.
+- Move to the bottom edge for nearby thumbnail previews.
+- Adjust preloading and preview counts independently. Settings save immediately.
+
+The initial image keeps its aspect ratio, fits the available page area and is never enlarged beyond its original size. An optional fullscreen button hides browser chrome when you choose.
+
+No account is required by Imageseec. It has no analytics or developer-operated backend. Settings stay in local browser storage. Images and preloads are requested from their existing website image hosts.
+
+Gallery discovery depends on images already loaded by the webpage. Compatibility varies by site; canvas images, CSS backgrounds and galleries spanning multiple pages may not work. Chrome restricts extensions on internal browser pages and the Chrome Web Store.
+
+Imageseec is independent and is not affiliated with or endorsed by the makers of Photoshop or ACDSee. It is not a plugin for those applications. Product names belong to their respective owners.

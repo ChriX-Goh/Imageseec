@@ -26,4 +26,4 @@ The lightweight Ctrl-click listener runs on matching HTTP/HTTPS webpages so you 
 
 The developer does not sell, transfer or receive the information processed by the extension. The website and image host retain their own privacy practices. If Imageseec's data handling changes, this policy must be updated alongside the extension.
 
-Questions can be raised through the repository's issue tracker. Do not include private image links, signed URLs, credentials or personal screenshots in public reports.
+For privacy questions, use the support contact shown on the extension's Chrome Web Store listing. Do not include private image links, signed URLs, credentials or personal screenshots in public reports.

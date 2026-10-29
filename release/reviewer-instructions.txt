@@ -1,0 +1,18 @@
+Imageseec — reviewer instructions
+
+The extension itself does not require an account, subscription, payment or access to private website APIs.
+
+1. Open an ordinary HTTP/HTTPS webpage that contains several visible images, such as an HTML gallery with image links or repeated image cards.
+2. Right-click an image and choose "Open with Imageseec", or hold Ctrl and left-click an image. The viewer fills the webpage content area by default; browser fullscreen is optional.
+3. Use the wheel or left/right arrow keys to browse images discovered in the same document.
+4. Use Alt + wheel to zoom, Shift + wheel for one-percentage-point adjustments, or hover the percentage to reveal the vertical zoom ruler.
+5. Hold the left mouse button for temporary magnification and release to restore. Hold Alt while pressing the left button to pan freely; release to keep the position.
+6. Move to the bottom edge for nearby thumbnails. Move away to hide them.
+7. Open settings with the slider icon in the upper right or the toolbar extension button. Changes save immediately. Ctrl-click activation and double-click closing can be disabled here.
+8. Press Esc or click the close button to exit.
+
+Gallery discovery uses common DOM structure and image source relationships. It cannot discover an infinite-scroll image that the website has not loaded, nor browse images spanning different webpages. Internal Chrome pages and the Chrome Web Store restrict injection. There are no site-specific login credentials to provide.
+
+All executable code is bundled. The HTTP/HTTPS host permissions allow the lightweight shortcut listener to run on webpages; gallery scanning and image preloading begin only after a user opens a viewer. Requests for displayed or preloaded images go to image hosts supplied by the webpage. The developer operates no data-collection backend.
+
+Language follows Chrome's UI language. Supported UI locales: en, zh_CN, zh_TW, ja, ko, de, fr, es, ru, uk, pl. Unsupported language families fall back to English.
