@@ -1,0 +1,24 @@
+Oglądaj obraz i pozostań w przeglądarce.
+
+Dla osób przyzwyczajonych do sposobu przeglądania zdjęć w Photoshopie i ACDSee: chwilowe powiększenie, bezpośrednie przesuwanie, precyzyjny zoom i szybkie przechodzenie między obrazami. Imageseec przenosi ten styl pracy z komputera do przeglądarki, oferując własne sterowanie.
+
+Otwórz obraz ze strony w przejrzystej przeglądarce zajmującej obszar treści. Kliknij obraz prawym przyciskiem lub użyj Ctrl + lewego przycisku myszy.
+
+Interfejs jest dostępny w 11 językach i może używać języka przeglądarki.
+
+- Przeglądaj sąsiednie obrazy kółkiem myszy, strzałkami lub przyciskami przy krawędziach.
+- Użyj Alt + kółko, aby zmieniać powiększenie, oraz Shift + kółko, aby regulować je co jeden punkt procentowy.
+- Przytrzymaj lewy przycisk, aby chwilowo powiększyć obraz; zwolnij, aby wrócić.
+- Przeciągaj z klawiszem Alt, aby swobodnie przesuwać obraz także poza jego krawędzie.
+- Najedź na wartość procentową, aby wyświetlić pionową skalę zoomu. Kliknięcie przełącza bieżące powiększenie, dopasowanie do strony i 100%.
+- Zablokuj powiększenie podczas zmiany obrazów.
+- Przesuń wskaźnik do dolnej krawędzi, aby zobaczyć miniatury sąsiednich obrazów.
+- Ustaw osobno liczbę wstępnie wczytywanych obrazów i miniatur. Zmiany zapisują się od razu.
+
+Obraz zachowuje proporcje i w widoku dopasowanym do strony nie przekracza oryginalnego rozmiaru. Opcjonalny pełny ekran przeglądarki ukrywa jej paski.
+
+Imageseec nie wymaga konta, nie zawiera analityki ani reklam i nie korzysta z serwera dewelopera. Ustawienia pozostają w lokalnym profilu przeglądarki. Obrazy i ich wstępne wczytywanie są pobierane z serwerów obrazów wskazanych przez stronę.
+
+Wykrywanie galerii korzysta z treści już załadowanej na stronie. Zgodność zależy od witryny; obrazy canvas, tła CSS oraz galerie obejmujące wiele stron mogą być niewidoczne. Chrome ogranicza działanie rozszerzeń na stronach wewnętrznych i w Chrome Web Store.
+
+Imageseec to niezależny projekt, niepowiązany z producentami Photoshop ani ACDSee i przez nich niewspierany. Nie jest wtyczką do tych aplikacji. Nazwy produktów należą do ich właścicieli.

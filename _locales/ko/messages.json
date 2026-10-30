@@ -150,5 +150,11 @@
   },
   "galleryGeneric": {
     "message": "웹 갤러리"
+  },
+  "language": {
+    "message": "언어"
+  },
+  "languageAuto": {
+    "message": "자동(브라우저 설정)"
   }
 }

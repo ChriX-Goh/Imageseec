@@ -1,0 +1,24 @@
+Regardez l’image. Restez dans votre navigateur.
+
+Pour les personnes qui apprécient les habitudes de visualisation de Photoshop et d’ACDSee : agrandissement temporaire, déplacement direct, zoom précis et navigation rapide entre les images. Imageseec transpose cette approche de bureau au Web avec ses propres commandes.
+
+Ouvrez une image d’une page Web dans une visionneuse épurée qui occupe la zone de contenu. Faites un clic droit sur une image ou utilisez Ctrl + clic gauche.
+
+L’interface est disponible en 11 langues et peut suivre la langue du navigateur.
+
+- Parcourez les images voisines avec la molette, les flèches ou les boutons latéraux.
+- Utilisez Alt + molette pour zoomer et Maj + molette pour régler le zoom par incréments d’un point de pourcentage.
+- Maintenez le bouton gauche enfoncé pour agrandir temporairement, puis relâchez pour revenir.
+- Faites glisser avec Alt pour déplacer librement l’image, même au-delà de ses bords.
+- Survolez le pourcentage pour afficher une règle de zoom verticale. Cliquez pour passer du zoom actuel à l’ajustement à la page, puis à 100 %.
+- Verrouillez le zoom pendant le changement d’image.
+- Placez le pointeur près du bord inférieur pour afficher les miniatures voisines.
+- Réglez séparément le nombre d’images préchargées et de miniatures. Les modifications sont enregistrées immédiatement.
+
+L’image conserve ses proportions. Dans l’affichage adapté à la page, elle ne dépasse jamais sa taille d’origine. Le plein écran du navigateur est facultatif et masque ses barres.
+
+Imageseec ne demande aucun compte, ne contient ni outil d’analyse ni publicité et n’exploite pas de serveur propre. Les préférences restent dans le navigateur. Les images et leur préchargement sont demandés aux serveurs d’images utilisés par la page.
+
+La détection de galerie repose sur le contenu déjà chargé par la page. La compatibilité varie selon le site ; les images canvas, les arrière-plans CSS et les galeries réparties sur plusieurs pages peuvent ne pas être détectés. Chrome limite les extensions sur ses pages internes et dans le Chrome Web Store.
+
+Imageseec est un projet indépendant, sans affiliation ni approbation des éditeurs de Photoshop ou d’ACDSee. Ce n’est pas un plugin pour ces applications. Les noms de produits appartiennent à leurs propriétaires respectifs.

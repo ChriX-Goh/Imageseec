@@ -26,7 +26,7 @@
         if (settings?.quickOpen === false) return { ok: false };
         if (!globalThis.ImageLens?.open) {
           modules ||= (async () => {
-            for (const file of ['i18n.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js']) {
+            for (const file of ['locale-catalogs.js', 'i18n.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js']) {
               await new Promise((resolve, reject) => {
                 const script = document.createElement('script'); script.src = `/${file}`;
                 script.onload = resolve; script.onerror = reject; document.head.append(script);

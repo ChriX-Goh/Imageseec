@@ -1,0 +1,24 @@
+Das Bild im Blick. Im Browser bleiben.
+
+Für alle, die die Bildbetrachtung aus Photoshop und ACDSee schätzen: vorübergehend vergrößern, direkt verschieben, präzise zoomen und schnell durch Bilder blättern. Imageseec bringt diese desktoporientierte Bedienung mit eigenen Steuerelementen ins Web.
+
+Öffnen Sie ein Webseitenbild in einer fokussierten Ansicht, die den Inhaltsbereich der Seite ausfüllt. Klicken Sie mit der rechten Maustaste auf ein Bild oder verwenden Sie Strg + Linksklick.
+
+Die Benutzeroberfläche ist in 11 Sprachen verfügbar und kann der Browsersprache folgen.
+
+- Mit Mausrad, Pfeiltasten oder den Schaltflächen am Rand durch benachbarte Bilder blättern.
+- Mit Alt + Mausrad zoomen; mit Umschalt + Mausrad in Schritten von einem Prozent feinjustieren.
+- Linke Maustaste gedrückt halten, um vorübergehend zu vergrößern; loslassen, um zurückzukehren.
+- Mit Alt + Ziehen frei verschieben, auch über die Bildränder hinaus.
+- Über der Prozentanzeige erscheint ein vertikaler Zoomregler. Ein Klick wechselt zwischen aktueller Vergrößerung, Seitenansicht und 100 %.
+- Vergrößerung beim Bildwechsel sperren.
+- Am unteren Rand werden Vorschaubilder benachbarter Bilder eingeblendet.
+- Anzahl der vorgeladenen Bilder und der Vorschauen separat einstellen. Änderungen werden sofort gespeichert.
+
+Das Bild behält sein Seitenverhältnis und wird in der Seitenansicht nicht größer als das Original dargestellt. Eine optionale Browser-Vollbildansicht blendet die Browserleisten aus.
+
+Imageseec benötigt kein Konto, enthält keine Analyse- oder Werbedienste und betreibt keinen eigenen Server. Einstellungen bleiben im lokalen Browserprofil. Bilder und Vorschauen werden von den Bildservern angefordert, die die Webseite verwendet.
+
+Die Galerieerkennung nutzt bereits geladene Seiteninhalte. Die Kompatibilität hängt von der jeweiligen Seite ab; Canvas-Bilder, CSS-Hintergründe und Galerien über mehrere Seiten werden möglicherweise nicht erkannt. Chrome schränkt Erweiterungen auf internen Seiten und im Chrome Web Store ein.
+
+Imageseec ist ein unabhängiges Projekt und wird weder von den Herstellern von Photoshop und ACDSee unterstützt noch mit ihnen verbunden. Es ist kein Plugin für diese Anwendungen. Produktnamen gehören ihren jeweiligen Inhabern.

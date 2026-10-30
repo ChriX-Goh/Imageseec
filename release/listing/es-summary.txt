@@ -1,0 +1,1 @@
+Ve imágenes web con navegación, zoom, desplazamiento libre y miniaturas.

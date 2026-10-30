@@ -10,12 +10,15 @@ const escape = value => value.replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;'
 const doc = fs.readFileSync(path.join(root, 'docs/STORE-LISTING.md'), 'utf8');
 const section = title => doc.split(`## ${title}\n`)[1].split('\n## ')[0].trim();
 const english = [section('English title'), section('English short description'), section('English full description')];
+for (const locale of fs.readdirSync(path.join(root, '_locales'))) {
+  const messages = JSON.parse(fs.readFileSync(path.join(root, '_locales', locale, 'messages.json'), 'utf8'));
+  write(path.join(here,`listing/${locale}-title.txt`), 'Imageseec\n');
+  write(path.join(here,`listing/${locale}-summary.txt`), messages.extDescription.message + '\n');
+}
 write(path.join(here,'listing/en-title.txt'), english[0] + '\n');
 write(path.join(here,'listing/en-summary.txt'), english[1] + '\n');
 write(path.join(here,'listing/en-description.txt'), english[2] + '\n');
-write(path.join(here,'listing/zh_CN-title.txt'), 'Imageseec — 网页图片查看器\n');
-write(path.join(here,'listing/zh_CN-summary.txt'), '为熟悉桌面看图习惯的用户设计，支持快速切图、临时放大、自由拖拽和缩略图预览。\n');
-write(path.join(here,'listing/zh_CN-description.txt'), section('简体中文介绍草稿') + '\n');
+write(path.join(here,'listing/zh_CN-description.txt'), section('简体中文商店文案').split('### 详细介绍\n')[1].trim() + '\n');
 const policy = fs.readFileSync(path.join(root,'PRIVACY.md'),'utf8').replace(/^\uFEFF/,'').trim();
 const content = policy.split(/\n\s*\n/).map(block => {
   if (block.startsWith('# ')) return `<h1>${escape(block.slice(2))}</h1>`;
@@ -23,7 +26,7 @@ const content = policy.split(/\n\s*\n/).map(block => {
   return `<p>${escape(block).replace(/`([^`]+)`/g,'<code>$1</code>')}</p>`;
 }).join('\n');
 write(path.join(here,'web/privacy.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imageseec Privacy Policy</title><meta name="description" content="How Imageseec handles local settings, webpage images and network requests."><style>body{margin:0;background:#f6f7fb;color:#242a38;font:16px/1.75 system-ui,sans-serif}main{max-width:780px;margin:auto;padding:48px 24px 72px}h1{font-size:32px;line-height:1.25}h2{font-size:21px;margin-top:34px}p{margin:16px 0}code{font-size:.88em;background:#e7ebf4;padding:2px 4px;border-radius:4px}</style></head><body><main>${content}</main></body></html>\n`);
-const symbol = '<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#d4defe"/><stop offset="1" stop-color="#879deb"/></linearGradient></defs><rect x="4" y="4" width="120" height="120" rx="30" fill="#1d2333"/><rect x="24" y="24" width="80" height="80" rx="24" fill="none" stroke="url(#g)" stroke-width="7"/><circle cx="64" cy="64" r="20" fill="none" stroke="url(#g)" stroke-width="7"/><circle cx="90" cy="39" r="4" fill="#e1e7ff"/>';
+const symbol = '<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#d4defe"/><stop offset="1" stop-color="#879deb"/></linearGradient></defs><rect x="4" y="4" width="120" height="120" rx="30" fill="#1d2333"/><g fill="none" stroke="url(#g)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M44 27H27v17 M84 27h17v17 M101 84v17H84 M44 101H27V84"/><circle cx="64" cy="64" r="22"/><path d="M64 34v7 M64 87v7 M34 64h7 M87 64h7"/></g><circle cx="64" cy="64" r="7" fill="#e1e7ff"/>';
 const svg = (width,height,body) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${body}</svg>`);
 (async () => {
   const assets = path.join(here, 'assets'); fs.mkdirSync(assets,{recursive:true});

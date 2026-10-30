@@ -5,6 +5,13 @@ const root = path.resolve(__dirname, '..');
 const files = execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
 if (!files.length) throw Error('Stage the intended source files before auditing.');
 const problems = [];
+const reviewedStoreScreenshots = new Set([
+  'release/assets/store-screenshot-01-viewer-1280x800.png',
+  'release/assets/store-screenshot-02-navigation-1280x800.png',
+  'release/assets/store-icon-128.png',
+  'release/assets/promo-small-440x280.png',
+  'release/assets/promo-marquee-1400x560.png'
+]);
 const rules = [
   ['absolute local path', /\b[A-Za-z]:[\\/](?:Users|Documents|MyBrowser|Program Files)\b|\/(?:Users|home)\/[^/\s]+\//],
   ['private key', /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
@@ -13,7 +20,7 @@ const rules = [
 ];
 for (const file of files) {
   if (/^(?:tests\/(?:backups|local-only)\/|dist\/)|(?:^|\/)\.env(?:\.|$)|\.(?:pem|key|crx|zip)$/i.test(file)) problems.push(`${file}: excluded material is tracked`);
-  if (/\.png$/i.test(file) && !/^icons\/\d+\.png$/.test(file)) problems.push(`${file}: screenshot requires explicit publication review`);
+  if (/\.png$/i.test(file) && !/^icons\/\d+\.png$/.test(file) && !reviewedStoreScreenshots.has(file)) problems.push(`${file}: screenshot requires explicit publication review`);
   if (!/\.(?:[cm]?js|json|md|html|css|py|ya?ml|txt)$/.test(file) && !/^\.(?:gitignore|gitattributes)$|^LICENSE$/.test(file)) continue;
   const lines = execFileSync('git', ['show', `:${file}`], { cwd: root, encoding: 'utf8' }).split(/\r?\n/);
   lines.forEach((line, index) => {

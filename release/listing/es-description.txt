@@ -1,0 +1,24 @@
+Mira la imagen. Sigue en tu navegador.
+
+Para quienes disfrutan la forma de ver imágenes de Photoshop y ACDSee: amplía temporalmente, desplaza directamente, ajusta el zoom con precisión y recorre imágenes rápidamente. Imageseec lleva ese estilo de escritorio a la web con controles propios.
+
+Abre una imagen de una página web en un visor enfocado que ocupa el área de contenido. Haz clic derecho en una imagen o usa Ctrl + clic izquierdo.
+
+La interfaz está disponible en 11 idiomas y puede seguir el idioma del navegador.
+
+- Recorre imágenes cercanas con la rueda, las flechas o los botones laterales.
+- Usa Alt + rueda para ampliar y Shift + rueda para ajustar en incrementos de un punto porcentual.
+- Mantén pulsado el botón izquierdo para ampliar temporalmente y suéltalo para volver.
+- Arrastra con Alt para mover la imagen libremente, incluso más allá de sus bordes.
+- Pasa el cursor por el porcentaje para mostrar una escala vertical de zoom. Haz clic para alternar entre el zoom actual, ajustar a la página y 100 %.
+- Bloquea el zoom al cambiar de imagen.
+- Acerca el cursor al borde inferior para ver miniaturas de imágenes cercanas.
+- Configura por separado cuántas imágenes se precargan y cuántas miniaturas se muestran. Los cambios se guardan al instante.
+
+La imagen conserva sus proporciones y, al ajustarla a la página, nunca supera su tamaño original. Puedes activar el modo de pantalla completa del navegador para ocultar sus barras.
+
+Imageseec no requiere cuenta, no incluye analítica ni publicidad y no opera servidores propios. Las preferencias se guardan en el navegador. Las imágenes y sus precargas se solicitan a los servidores de imágenes indicados por la página.
+
+La detección de galerías usa contenido que la página ya haya cargado. La compatibilidad depende de cada sitio; puede que no detecte imágenes en canvas, fondos CSS o galerías repartidas entre varias páginas. Chrome restringe las extensiones en páginas internas y en Chrome Web Store.
+
+Imageseec es un proyecto independiente, sin afiliación ni respaldo de los fabricantes de Photoshop o ACDSee. No es un plugin para esas aplicaciones. Los nombres de producto pertenecen a sus respectivos titulares.

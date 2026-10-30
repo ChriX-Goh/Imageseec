@@ -1,14 +1,14 @@
 # Chrome Web Store copy draft
 
-This is a draft for the release being prepared, not a claim that the extension is listed or approved. The extension UI supports 11 languages; only English and Simplified Chinese listing drafts are currently written. Listing languages and extension UI languages are configured separately.
+This is release copy for the Chrome Web Store. The detailed descriptions are prepared in `release/listing/` for all 11 package locales. The package provides each locale's title and short summary; the dashboard uses these when that language is selected.
 
 ## English title
 
-Imageseec — Image Viewer
+Imageseec
 
 ## English short description
 
-Open webpage images in a focused viewer with gallery navigation, zoom, free panning and thumbnail previews.
+View webpage images with gallery navigation, zoom, free panning and thumbnail previews.
 
 ## English full description
 
@@ -17,6 +17,8 @@ See the image. Stay in your browser.
 Built for people who enjoy the viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and move quickly through images. Imageseec brings that desktop-inspired approach to webpage images, with its own browser controls.
 
 Imageseec opens webpage images in a focused, page-filling viewer. Right-click a picture or use Ctrl + left-click to get started.
+
+Choose from 11 interface languages, or let Imageseec follow your browser language.
 
 - Browse nearby images with your wheel, arrow keys or edge buttons.
 - Zoom with Alt + wheel and make one-percentage-point adjustments with Shift + wheel.
@@ -35,7 +37,27 @@ Gallery discovery depends on images already loaded by the webpage. Compatibility
 
 Imageseec is independent and is not affiliated with or endorsed by the makers of Photoshop or ACDSee. It is not a plugin for those applications. Product names belong to their respective owners.
 
-## 简体中文介绍草稿
+## 简体中文商店文案
+
+### 商店标题
+
+Imageseec
+
+### 简短说明
+
+查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。
+
+### 详细介绍
+
+### 商店标题
+
+Imageseec
+
+### 简短说明
+
+查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。
+
+### 详细介绍
 
 为熟悉 Photoshop、ACDSee 看图操作习惯的用户设计：临时放大、直接拖拽、精细缩放、快速切图，把桌面看图的操作思路带进浏览器。Imageseec 有自己的快捷键设计，不代表完全复刻这两款软件。
 

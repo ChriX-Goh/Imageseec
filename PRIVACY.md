@@ -1,6 +1,6 @@
 # Imageseec Privacy Policy
 
-Last updated: October 30, 2026.
+Last updated: October 31, 2026.
 
 Imageseec is an image-viewing Chrome extension. It has no developer-operated server and does not send webpage content, images, browsing history or settings to its developer. It includes no analytics, advertising or tracking SDKs and executes no remotely hosted JavaScript.
 

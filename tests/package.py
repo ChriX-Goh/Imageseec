@@ -9,7 +9,7 @@ manifest = json.loads((root / 'manifest.json').read_text(encoding='utf-8'))
 archive = root / 'dist' / f"Imageseec-v{manifest['version']}.zip"
 archive.parent.mkdir(exist_ok=True)
 files = [
-    'manifest.json', 'i18n.js', 'background.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js', 'quick-open.js',
+    'manifest.json', 'locale-catalogs.js', 'i18n.js', 'background.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js', 'quick-open.js',
     'options.html', 'options.css', 'options.js', 'standalone.html', 'standalone.js',
     'README.md', 'PRIVACY.md', 'LICENSE', 'icons/16.png', 'icons/48.png', 'icons/128.png',
 ]

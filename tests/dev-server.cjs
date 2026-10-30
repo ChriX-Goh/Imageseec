@@ -33,7 +33,7 @@ const server = http.createServer((req, res) => {
   fs.readFile(file, (error, data) => {
     if (error) { res.writeHead(404); res.end(); return; }
     res.setHeader('Content-Type', mime[path.extname(file)] || 'text/plain');
-    if (u.pathname === '/options.html' && u.searchParams.has('fixture')) data = Buffer.from(data.toString().replace('<script src="i18n.js">', '<script src="tests/demo-setup.js"></script><script src="i18n.js">'));
+    if (u.pathname === '/options.html' && u.searchParams.has('fixture')) data = Buffer.from(data.toString().replace('<script src="locale-catalogs.js">', '<script src="tests/demo-setup.js"></script><script src="locale-catalogs.js">'));
     if (path.extname(file) === '.html') {
       const script = `<script src="/tests/i18n-fixture.js?locale=${encodeURIComponent(u.searchParams.get('locale') || 'en')}"></script>`;
       data = Buffer.from(data.toString().replace(/(<script src="(?:\/tests\/|tests\/)?demo-setup\.js"><\/script>)/, `$1${script}`));

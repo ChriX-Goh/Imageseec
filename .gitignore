@@ -3,7 +3,6 @@
 /tests/local-only/
 /tests/*.png
 /dist/
-/release/assets/
 /release/capture.html
 /release/capture.js
 *.zip

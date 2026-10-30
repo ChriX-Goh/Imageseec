@@ -4,6 +4,8 @@ Built for people who enjoy the viewing habits of Photoshop and ACDSee: hold to m
 
 Imageseec opens webpage images in a focused, page-filling viewer. Right-click a picture or use Ctrl + left-click to get started.
 
+Choose from 11 interface languages, or let Imageseec follow your browser language.
+
 - Browse nearby images with your wheel, arrow keys or edge buttons.
 - Zoom with Alt + wheel and make one-percentage-point adjustments with Shift + wheel.
 - Hold the left mouse button to magnify temporarily, then release to return.

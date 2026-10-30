@@ -4,7 +4,7 @@ A Chrome Manifest V3 image viewer with page-filling viewing, adjacent-image navi
 
 Designed around the desktop viewing habits familiar to Photoshop and ACDSee users: temporary magnification, precise zoom, direct panning and quick image browsing, brought to the browser. Imageseec uses its own controls and does not reproduce every shortcut from either application.
 
-The UI supports English, Simplified Chinese (China), Traditional Chinese (Taiwan), Japanese, Korean, German, French, Spanish, Russian, Ukrainian and Polish. It follows Chrome's UI language and falls back to English for unsupported languages. See [localization](docs/LOCALIZATION.md). The project is licensed under [MIT](LICENSE).
+The UI supports English, Simplified Chinese (China), Traditional Chinese (Taiwan), Japanese, Korean, German, French, Spanish, Russian, Ukrainian and Polish. It follows Chrome's UI language by default, or you can choose a language in the settings; unsupported browser languages use English. See [localization](docs/LOCALIZATION.md). The project is licensed under [MIT](LICENSE).
 
 ## Install for development
 

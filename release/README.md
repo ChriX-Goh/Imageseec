@@ -1,17 +1,13 @@
-# Store submission materials
+# Imageseec store submission files
 
-The publisher account is registered, the one-time fee is paid, the contact email is verified, and the publisher name and trader declaration are saved. The source repository remains private; no store item has been uploaded or published.
+- `listing/`: detailed descriptions, titles and summaries in English, Simplified Chinese, Traditional Chinese (Taiwan), Japanese, Korean, German, French, Spanish, Russian, Ukrainian and Polish.
+- `assets/`: store icon, optional promo art and two manually reviewed desktop product screenshots at 1280 × 800.
+- `reviewer-instructions.txt`: test steps that require no account or credentials.
+- `web/privacy.html`: generated mirror of the canonical policy in the repository root, `PRIVACY.md`.
+- `../dist/Imageseec-v1.5.2.zip`: the extension package generated from the runtime allowlist; version 1.5.2 is uploaded to the store draft.
 
-- `listing/`: English and Simplified Chinese store copy.
-- `reviewer-instructions.txt`: basic viewing steps with no third-party account requirement.
-- `web/privacy.html`: standalone privacy policy prepared for public HTTPS hosting; it is not published yet.
-- `assets/`: generated store artwork. These files are excluded from Git; final product screenshots still need to be captured and reviewed.
+The draft contains the screenshots and localized descriptions. Its selected distribution is free, public and all regions. The home and privacy links point to the main repository, which is still private; the dashboard cannot verify those links until the repository is made public.
 
-## Remaining release steps
+Before submission, the account owner must review the privacy and permission disclosures and confirm they are accurate. The owner must also choose whether an approved item publishes automatically or remains deferred.
 
-- Enable two-step verification in the Google account before uploading the package; the dashboard currently blocks uploads until it is enabled.
-- Choose a public HTTPS location for the privacy policy and enter its real URL in the dashboard.
-- Create the item draft, upload the extension ZIP, and complete the store listing and privacy disclosures.
-- Add reviewed store screenshots and finish the installed-Chrome release checks before submitting for review.
-
-Use the English listing as the default. The extension UI supports eleven languages; localized store copy is currently prepared only for English and Simplified Chinese.
+Build the ZIP with `python tests/package.py`. Product copy and screenshots use generic gallery examples and do not name or brand specific websites. The viewer discovers adjacent images from common page structures; compatibility varies.

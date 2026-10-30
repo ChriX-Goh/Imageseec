@@ -150,5 +150,11 @@
   },
   "galleryGeneric": {
     "message": "Вебгалерея"
+  },
+  "language": {
+    "message": "Мова"
+  },
+  "languageAuto": {
+    "message": "Автоматично (мова браузера)"
   }
 }

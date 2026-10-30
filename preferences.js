@@ -1,15 +1,24 @@
 (() => {
   const lens = globalThis.ImageLens ||= {};
-  const h = lens.i18n.html;
+  const languages = [
+    ['auto', 'languageAuto'], ['en', 'English'], ['zh_CN', '简体中文'], ['zh_TW', '繁體中文'],
+    ['ja', '日本語'], ['ko', '한국어'], ['de', 'Deutsch'], ['fr', 'Français'],
+    ['es', 'Español'], ['ru', 'Русский'], ['uk', 'Українська'], ['pl', 'Polski']
+  ];
   const number = (key, label, min, max, unit = '') => `<label class="pref-row"><span>${label}</span><span class="pref-value"><input name="${key}" type="number" min="${min}" max="${max}" step="1" required aria-label="${label}">${unit ? `<span>${unit}</span>` : ''}</span></label>`;
   const toggle = (key, label) => `<label class="pref-row"><span>${label}</span><input class="pref-toggle" name="${key}" type="checkbox" role="switch" aria-label="${label}"></label>`;
-  const html = `<div class="lens-prefs">
-    <section><h3>${h('shortcuts')}</h3>${toggle('quickOpen', h('quickOpen'))}${toggle('doubleClickExit', h('doubleClickExit'))}</section>
-    <section><h3>${h('zoom')}</h3>${number('zoomStep', h('zoomStep'), 1, 100, '%')}${number('holdZoom', h('holdZoom'), 100, 800, '%')}</section>
-    <section><h3>${h('preload')}</h3><div class="pref-pair">${number('cacheBefore', h('cacheBefore'), 0, 12)}${number('cacheAfter', h('cacheAfter'), 0, 12)}</div></section>
-    <section><h3>${h('previews')}</h3><div class="pref-pair">${number('previewBefore', h('previewBefore'), 0, 12)}${number('previewAfter', h('previewAfter'), 0, 12)}</div></section>
-    <output class="pref-error" role="status" hidden></output>
-  </div>`;
+  function render() {
+    const h = lens.i18n.html;
+    const languageOptions = languages.map(([code, label]) => `<option value="${code}">${label === 'languageAuto' ? h(label) : label}</option>`).join('');
+    return `<div class="lens-prefs">
+      <section class="pref-language"><label class="pref-row"><span>${h('language')}</span><select name="language" aria-label="${h('language')}">${languageOptions}</select></label></section>
+      <section><h3>${h('shortcuts')}</h3>${toggle('quickOpen', h('quickOpen'))}${toggle('doubleClickExit', h('doubleClickExit'))}</section>
+      <section><h3>${h('zoom')}</h3>${number('zoomStep', h('zoomStep'), 1, 100, '%')}${number('holdZoom', h('holdZoom'), 100, 800, '%')}</section>
+      <section><h3>${h('preload')}</h3><div class="pref-pair">${number('cacheBefore', h('cacheBefore'), 0, 12)}${number('cacheAfter', h('cacheAfter'), 0, 12)}</div></section>
+      <section><h3>${h('previews')}</h3><div class="pref-pair">${number('previewBefore', h('previewBefore'), 0, 12)}${number('previewAfter', h('previewAfter'), 0, 12)}</div></section>
+      <output class="pref-error" role="status" hidden></output>
+    </div>`;
+  }
   const css = `
     .lens-prefs { font: 13px/1.5 system-ui, sans-serif; color: #dfe5f1; }
     .lens-prefs section { padding: 14px 0; border-top: 1px solid #ffffff10; }
@@ -20,7 +29,8 @@
     .lens-prefs .pref-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
     .lens-prefs .pref-value { display: flex; gap: 6px; align-items: center; color: #8090ab; flex-shrink: 0; }
     .lens-prefs input[type=number] { width: 66px; height: 31px; margin: 0; border: 1px solid #ffffff16; border-radius: 8px; background: #11151e; color: #e5ecfc; font: inherit; padding: 4px 6px 4px 9px; }
-    .lens-prefs input:focus-visible { outline: 2px solid #a9beef; outline-offset: 2px; }
+    .lens-prefs select { max-width: 185px; height: 33px; border: 1px solid #ffffff16; border-radius: 8px; background: #11151e; color: #e5ecfc; font: inherit; padding: 4px 26px 4px 9px; }
+    .lens-prefs input:focus-visible, .lens-prefs select:focus-visible { outline: 2px solid #a9beef; outline-offset: 2px; }
     .lens-prefs .pref-toggle { appearance: none; width: 33px; height: 19px; flex: 0 0 33px; border: 1px solid #ffffff22; border-radius: 20px; background: #3b4353; margin: 0; padding: 2px; cursor: pointer; }
     .lens-prefs .pref-toggle::before { content: ''; display: block; width: 13px; height: 13px; border-radius: 50%; background: #b7c1d3; transition: transform .15s; }
     .lens-prefs .pref-toggle:checked { background: #a5bcef; }
@@ -32,7 +42,7 @@
     .lens-prefs .pref-error[hidden] { display: none; }
   `;
   function fill(form, settings) {
-    for (const control of form.querySelectorAll('input[name]')) {
+    for (const control of form.querySelectorAll('input[name], select[name]')) {
       if (control.type === 'checkbox') control.checked = Boolean(settings[control.name]);
       else control.value = settings[control.name];
     }
@@ -40,13 +50,13 @@
   function bind(form, getSettings, apply, signal) {
     const change = event => {
       const control = event.target;
-      if (!control.matches('input[name]') || !control.validity.valid || control.value === '') return;
-      const value = control.type === 'checkbox' ? control.checked : Number(control.value);
+      if (!control.matches('input[name], select[name]') || (control.type === 'number' && (!control.validity.valid || control.value === ''))) return;
+      const value = control.type === 'checkbox' ? control.checked : control.type === 'number' ? Number(control.value) : control.value;
       apply(lens.settings.normalize({ ...getSettings(), [control.name]: value }));
     };
     form.addEventListener('input', change, { signal });
     form.addEventListener('submit', event => event.preventDefault(), { signal });
     fill(form, getSettings());
   }
-  lens.preferences = { html, css, fill, bind };
+  lens.preferences = { get html() { return render(); }, css, fill, bind };
 })();

@@ -8,7 +8,7 @@ const source = file => fs.readFileSync(path.join(root, file), 'utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
 const i18nFixture = require('./i18n-fixture.cjs');
 const locales = ['en','zh_CN','zh_TW','ja','ko','de','fr','es','ru','uk','pl'];
-for (const locale of locales) test(`complete localized settings and placeholders: ${locale}`, () => {
+for (const locale of locales) test(`complete localized settings and placeholders: ${locale}`, async () => {
   const english = JSON.parse(source('_locales/en/messages.json'));
   const messages = JSON.parse(source(`_locales/${locale}/messages.json`));
   assert.deepEqual(Object.keys(messages).sort(), Object.keys(english).sort());
@@ -18,9 +18,12 @@ for (const locale of locales) test(`complete localized settings and placeholders
     assert.deepEqual(value.placeholders, english[key].placeholders, key);
   }
   const c = vm.createContext({ chrome: { i18n: i18nFixture.forLocale(locale.replace('_','-')) } });
-  vm.runInContext(source('i18n.js'), c); vm.runInContext(source('preferences.js'), c);
+  vm.runInContext(source('locale-catalogs.js'), c); vm.runInContext(source('i18n.js'), c); vm.runInContext(source('preferences.js'), c);
+  assert.deepEqual(plain(c.ImageLens.catalogs[locale]), messages);
+  await c.ImageLens.i18n.setLanguage(locale);
   assert.equal(c.ImageLens.i18n.locale, locale);
   assert.ok(c.ImageLens.preferences.html.includes(c.ImageLens.i18n.html('quickOpen')));
+  assert.match(c.ImageLens.preferences.html, /name="language"/);
   assert.ok(c.ImageLens.i18n.text('imageCount', 3, 9).includes('3'));
   assert.ok(c.ImageLens.i18n.text('imageCount', 3, 9).includes('9'));
   assert.equal(c.ImageLens.i18n.text('zoomTo', 150).includes('150'), true);
@@ -38,6 +41,23 @@ test('browser UI language resolution and unsupported-language English fallback',
   assert.equal(manifest.default_locale,'en'); assert.equal(manifest.description,'__MSG_extDescription__');
 });
 
+test('manual language selection loads the chosen catalog and auto restores browser language', async () => {
+  const chrome = {
+    i18n: i18nFixture.forLocale('zh-CN'),
+    runtime: { async sendMessage({ locale }) { return { locale, messages: JSON.parse(source(`_locales/${locale}/messages.json`)) }; } }
+  };
+  const c = vm.createContext({ chrome });
+  vm.runInContext(source('locale-catalogs.js'), c); vm.runInContext(source('i18n.js'), c);
+  await c.ImageLens.i18n.setLanguage('en');
+  assert.equal(c.ImageLens.i18n.locale, 'en');
+  assert.equal(c.ImageLens.i18n.text('loading'), 'Loading image…');
+  await c.ImageLens.i18n.setLanguage('ru');
+  assert.equal(c.ImageLens.i18n.text('loading'), 'Загрузка изображения…');
+  await c.ImageLens.i18n.setLanguage('auto');
+  assert.equal(c.ImageLens.i18n.locale, 'zh_CN');
+  assert.equal(c.ImageLens.i18n.text('loading'), '正在载入图片…');
+});
+
 test('translated HTML and substituted values are escaped before template insertion', () => {
   const c = vm.createContext({ chrome: { i18n: i18nFixture.forLocale('en') } });
   vm.runInContext(source('i18n.js'), c);
@@ -47,10 +67,12 @@ test('translated HTML and substituted values are escaped before template inserti
 
 test('packaged UI has no untranslated Chinese literals or unlisted message keys', () => {
   const messages = JSON.parse(source('_locales/en/messages.json'));
-  for (const file of ['viewer.js','preferences.js','options.js','background.js','standalone.js','options.html','standalone.html']) {
+  for (const file of ['viewer.js','options.js','background.js','standalone.js','options.html','standalone.html']) {
     assert.doesNotMatch(source(file), /\p{Script=Han}/u, file);
     for (const match of source(file).matchAll(/(?:\bt|\bh|\bgetMessage)\('([A-Za-z]+)'/g)) assert.ok(messages[match[1]], `${file}: ${match[1]}`);
   }
+  assert.match(source('preferences.js'), /\['zh_CN', '简体中文'\]/);
+  assert.match(source('preferences.js'), /\['zh_TW', '繁體中文'\]/);
   assert.match(source('LICENSE'), /MIT License/);
   assert.match(source('LICENSE'), /2026 Imageseec contributors/);
 });
@@ -70,8 +92,9 @@ function context(hostname = 'example.com') {
 }
 test('settings defaults, invalid storage values and independent bounds', () => {
   const { c } = context(); const normalize = c.ImageLens.settings.normalize;
-  assert.deepEqual(plain(normalize(null)), { zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, zoomLocked: false, doubleClickExit: true, quickOpen: true });
-  assert.deepEqual(plain(normalize({ zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, doubleClickExit: false })), { zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, zoomLocked: false, doubleClickExit: true, quickOpen: true });
+  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.equal(normalize({ language: 'pt' }).language, 'auto');
 });
 test('compact ruler keeps clickable quarter ticks and expands only its upper endpoint', () => {
   const { c } = context(); const controls = c.ImageLens.controls;
@@ -225,8 +248,8 @@ function background(existingStore = {}, settings = { zoomStep: 25 }) {
   const chrome = {
     i18n: i18nFixture.forLocale('en'),
     runtime: { onInstalled: event(), onMessage: event(), getURL: p => `chrome-extension://unit/${p}` },
-    contextMenus: { onClicked: event(), removeAll: fn => fn(), create: item => calls.push(['menu', item]) },
-    storage: { local: { get: async () => ({ settings }) }, session: storage },
+    contextMenus: { onClicked: event(), removeAll: fn => fn(), create: item => calls.push(['menu', item]), update: () => {} },
+    storage: { local: { get: async () => ({ settings }) }, onChanged: event(), session: storage },
     scripting: { async executeScript(options) { calls.push(['inject', options]); } },
     tabs: { async create(options) { calls.push(['tab', options]); } }
   };
@@ -250,7 +273,7 @@ test('context menu opens the selected image in its original frame', async () => 
   await b.c.openImage({ srcUrl: 'https://cdn.example.com/image.jpg', frameId: 3 }, { id: 4 });
   const injects = b.calls.filter(c => c[0] === 'inject');
   assert.deepEqual(plain(injects[0][1].target), { tabId: 4, frameIds: [3] });
-  assert.deepEqual(plain(injects[0][1].files), ['i18n.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js', 'quick-open.js']);
+  assert.deepEqual(plain(injects[0][1].files), ['locale-catalogs.js', 'i18n.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js', 'quick-open.js']);
   assert.deepEqual(plain(injects[1][1].args), ['https://cdn.example.com/image.jpg', { zoomStep: 25 }]);
 });
 test('cross-origin frame falls back to one-image tab, without changing any window', async () => {

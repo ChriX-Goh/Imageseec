@@ -150,5 +150,11 @@
   },
   "galleryGeneric": {
     "message": "一般相簿"
+  },
+  "language": {
+    "message": "介面語言"
+  },
+  "languageAuto": {
+    "message": "自動（依瀏覽器）"
   }
 }

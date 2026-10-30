@@ -1,1 +1,1 @@
-Open webpage images in a focused viewer with gallery navigation, zoom, free panning and thumbnail previews.
+View webpage images with gallery navigation, zoom, free panning and thumbnail previews.

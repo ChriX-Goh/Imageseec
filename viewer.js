@@ -1,6 +1,6 @@
 (() => {
   const lens = globalThis.ImageLens ||= {};
-  const { text: t, html: h, locale } = lens.i18n;
+  const { text: t, html: h } = lens.i18n;
   // Each invocation reads the current unpacked source, including after an update.
   lens.close?.();
 
@@ -72,7 +72,7 @@
     @media(prefers-reduced-motion: reduce) { * { transition: none !important; } }
   `;
   const icon = name => {
-    const paths = { close: '<path d="m6 6 12 12M18 6 6 18"/>', prev: '<path d="m14 5-7 7 7 7"/>', next: '<path d="m10 5 7 7-7 7"/>', full: '<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>', settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="#25272c"/><circle cx="15" cy="12" r="2" fill="#25272c"/><circle cx="9" cy="18" r="2" fill="#25272c"/>', lens: '<rect x="3" y="3" width="18" height="18" rx="6"/><circle cx="12" cy="12" r="4"/>' };
+    const paths = { close: '<path d="m6 6 12 12M18 6 6 18"/>', prev: '<path d="m14 5-7 7 7 7"/>', next: '<path d="m10 5 7 7-7 7"/>', full: '<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>', settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="#25272c"/><circle cx="15" cy="12" r="2" fill="#25272c"/><circle cx="9" cy="18" r="2" fill="#25272c"/>', lens: '<path d="M8 3H3v5m18 0V3h-5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="5"/><path d="M12 4v3m0 10v3M4 12h3m10 0h3"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>' };
     paths.lock = '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/>';
     paths.unlock = '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/><path d="M12 14v3"/>';
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
@@ -140,12 +140,13 @@
     const pool = new ImagePool();
     const controller = new AbortController();
     const signal = controller.signal;
+    let preferencesBinding = new AbortController();
     const focused = document.activeElement;
     const scroll = { value: document.documentElement.style.getPropertyValue('overflow'), priority: document.documentElement.style.getPropertyPriority('overflow') };
     document.documentElement.style.setProperty('overflow', 'hidden', 'important');
     const host = document.createElement('div');
     host.id = 'image-lens-viewer';
-    host.lang = locale.replace('_', '-');
+    host.lang = lens.i18n.locale.replace('_', '-');
     const shadow = host.attachShadow({ mode: 'open' });
     shadow.innerHTML = `<style>${css}${lens.preferences.css}</style><dialog aria-label="${h('viewerTitle')}"><section class="viewer" tabindex="-1" role="region" aria-label="${h('viewerRegion')}">
       <div class="stage"><img class="photo" alt="" draggable="false" hidden></div>
@@ -182,7 +183,7 @@
 
     function close() {
       if (closed) return;
-      closed = true; serial++; controller.abort(); observer.disconnect(); pool.clear();
+      closed = true; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       endHold(); clearTimeout(scanTimer);
       globalThis.chrome?.storage?.onChanged?.removeListener(storageChanged);
       if (document.fullscreenElement === viewer || document.fullscreenElement === host) document.exitFullscreen().catch(() => {});
@@ -251,6 +252,58 @@
       $('.zoom-lock').setAttribute('aria-label', t(settings.zoomLocked ? 'unlockZoom' : 'lockZoom'));
       $('.zoom-lock').title = t(settings.zoomLocked ? 'unlockZoom' : 'lockZoom');
       $('.zoom-lock').innerHTML = icon(settings.zoomLocked ? 'lock' : 'unlock');
+    }
+    function updateFullscreenLabel() {
+      const full = shadow.fullscreenElement === viewer || document.fullscreenElement === host || document.fullscreenElement === viewer;
+      const label = t(full ? 'exitFullscreen' : 'enterFullscreen');
+      $('.fullscreen').setAttribute('aria-label', label);
+      $('.fullscreen').setAttribute('aria-pressed', String(full));
+      $('.fullscreen').title = `${label} (F)`;
+    }
+    function bindPreferences() {
+      preferencesBinding.abort();
+      preferencesBinding = new AbortController();
+      lens.preferences.bind(form, () => settings, savePreferences, preferencesBinding.signal);
+    }
+    function savePreferences(next) {
+      const languageChanged = settings.language !== next.language;
+      settings = next; cacheNeighbors(); updateLock();
+      if (strip.classList.contains('visible')) renderStrip();
+      chrome.storage.local.set({ settings }).then(async () => {
+        $('.pref-error').hidden = true;
+        if (languageChanged) await refreshLanguage();
+      }, () => { $('.pref-error').textContent = t('saveFailed'); $('.pref-error').hidden = false; });
+    }
+    async function refreshLanguage() {
+      const wasOpen = !form.hidden;
+      const focusedName = shadow.activeElement?.name;
+      await lens.i18n.setLanguage(settings.language);
+      host.lang = lens.i18n.locale.replace('_', '-');
+      dialog.setAttribute('aria-label', t('viewerTitle'));
+      viewer.setAttribute('aria-label', t('viewerRegion'));
+      $('.fit').setAttribute('aria-label', t('zoom'));
+      $('.fit').title = t('zoomCycle');
+      $('.zoom-slider').setAttribute('aria-label', t('zoomSlider'));
+      $('.preferences').setAttribute('aria-label', t('settingsTitle'));
+      $('.preferences').title = t('settingsTitle');
+      $('.close').setAttribute('aria-label', t('closeViewer'));
+      $('.close').title = `${t('closeViewer')} (Esc)`;
+      $('.prev').setAttribute('aria-label', t('previous'));
+      $('.prev').title = `${t('previous')} (←)`;
+      $('.next').setAttribute('aria-label', t('next'));
+      $('.next').title = `${t('next')} (→)`;
+      $('.strip').setAttribute('aria-label', t('nearby'));
+      $('.thumbs').setAttribute('aria-label', t('thumbnails'));
+      updateLock(); updateFullscreenLabel(); updateRuler(); updateEdgePreviews();
+      if (!message.hidden && photo.hidden) status(t(message.querySelector('button') ? 'loadFailed' : 'loading'), Boolean(message.querySelector('button')));
+      if (width && height) $('.sr').textContent = t('imageCount', index + 1, entries.length);
+      form.innerHTML = lens.preferences.html;
+      bindPreferences();
+      form.hidden = !wasOpen;
+      lens.preferences.fill(form, settings);
+      if (wasOpen && focusedName === 'language') form.querySelector('[name="language"]').focus();
+      if (strip.classList.contains('visible')) renderStrip();
+      updateEdgePreviews();
     }
     function cacheNeighbors() {
       const keys = new Set(); const nearby = [];
@@ -354,10 +407,12 @@
     function storageChanged(changes, area) {
       if (area !== 'local' || !changes.settings) return;
       const previouslyLocked = settings.zoomLocked;
+      const previousLanguage = settings.language;
       settings = lens.settings.normalize(changes.settings.newValue); cacheNeighbors();
       if (settings.zoomLocked && !previouslyLocked) lockedScale = hold?.scale ?? scale;
       updateLock();
-      lens.preferences.fill(form, settings);
+      if (previousLanguage !== settings.language) refreshLanguage();
+      else lens.preferences.fill(form, settings);
       if (strip.classList.contains('visible')) renderStrip();
     }
     const observer = new MutationObserver(() => { clearTimeout(scanTimer); scanTimer = setTimeout(refresh, 350); });
@@ -426,11 +481,7 @@
       if (!form.hidden) lens.preferences.fill(form, settings);
     });
     on(form, 'pointerleave', () => { form.hidden = true; if (form.contains(shadow.activeElement)) viewer.focus(); });
-    lens.preferences.bind(form, () => settings, next => {
-      settings = next; cacheNeighbors();
-      if (strip.classList.contains('visible')) renderStrip();
-      chrome.storage.local.set({ settings }).then(() => { $('.pref-error').hidden = true; }, () => { $('.pref-error').textContent = t('saveFailed'); $('.pref-error').hidden = false; });
-    }, signal);
+    bindPreferences();
     on(viewer, 'wheel', event => {
       if (event.composedPath().includes(form) || event.composedPath().includes($('.zoom-control'))) return;
       event.preventDefault(); event.stopPropagation();
@@ -511,10 +562,7 @@
       const full = shadow.fullscreenElement === viewer || document.fullscreenElement === host || document.fullscreenElement === viewer;
       if (!full && wasFullscreen && !returningToPage) { close(); return; }
       wasFullscreen = full; returningToPage = false;
-      const label = t(full ? 'exitFullscreen' : 'enterFullscreen');
-      $('.fullscreen').setAttribute('aria-label', label);
-      $('.fullscreen').setAttribute('aria-pressed', String(full));
-      $('.fullscreen').title = `${label} (F)`;
+      updateFullscreenLabel();
       fit(false);
     });
     on(window, 'pagehide', close);
