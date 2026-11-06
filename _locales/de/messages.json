@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Webbilder mit Galerienavigation, Zoom, freiem Verschieben und Vorschaubildern ansehen."
+    "message": "Webbilder nebeneinander vergleichen, als Mosaik durchsuchen, zoomen und verschieben."
   },
   "settingsTitle": {
     "message": "Imageseec-Einstellungen"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "Automatisch (Browser)"
+  },
+  "compareStepSingle": {
+    "message": "Ein Bild"
+  },
+  "overviewEnd": {
+    "message": "Ende der Galerie"
+  },
+  "overviewTitle": {
+    "message": "Bildübersicht"
+  },
+  "leftPane": {
+    "message": "Linkes Bild"
+  },
+  "singleView": {
+    "message": "Einzelbildansicht"
+  },
+  "overviewLoading": {
+    "message": "Weitere Bilder werden geladen…"
+  },
+  "compareSection": {
+    "message": "Bildvergleich"
+  },
+  "splitView": {
+    "message": "Bilder vergleichen"
+  },
+  "dividerMin": {
+    "message": "Mindestbreite des Bereichs"
+  },
+  "overviewBuffer": {
+    "message": "Miniaturpuffer voraus"
+  },
+  "rightPane": {
+    "message": "Rechtes Bild"
+  },
+  "compareStep": {
+    "message": "Weiterschalten"
+  },
+  "exitOverview": {
+    "message": "Zurück zur Ansicht"
+  },
+  "unlockPane": {
+    "message": "Fixierung lösen"
+  },
+  "overviewView": {
+    "message": "Bildübersicht"
+  },
+  "lockPane": {
+    "message": "Bereich fixieren"
+  },
+  "overviewSection": {
+    "message": "Gesamtübersicht"
+  },
+  "compareStepPair": {
+    "message": "Zwei Bilder"
+  },
+  "resetDivider": {
+    "message": "Trennlinie zurücksetzen"
+  },
+  "overviewDirection": {
+    "message": "Leserichtung"
+  },
+  "overviewVertical": {
+    "message": "Vertikal blättern"
+  },
+  "overviewHorizontal": {
+    "message": "Horizontal blättern"
+  },
+  "overviewClean": {
+    "message": "Rahmen und Beschriftungen ausblenden"
+  },
+  "overviewAlignment": {
+    "message": "Ausrichtung"
+  },
+  "alignmentAuto": {
+    "message": "Automatisch"
+  },
+  "alignmentVertical": {
+    "message": "Vertikal ausrichten"
+  },
+  "alignmentHorizontal": {
+    "message": "Horizontal ausrichten"
+  },
+  "overviewGap": {
+    "message": "Bildabstand"
+  },
+  "overviewPaused": {
+    "message": "Noch keine neuen Bilder. Zum Wiederholen scrollen."
+  },
+  "overviewScanFailed": {
+    "message": "Suche fehlgeschlagen. Zum Wiederholen scrollen."
   }
 }

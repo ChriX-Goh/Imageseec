@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Ve imágenes web con navegación, zoom, desplazamiento libre y miniaturas."
+    "message": "Compara imágenes en paralelo, explora una vista en mosaico, amplía y desplaza."
   },
   "settingsTitle": {
     "message": "Ajustes de Imageseec"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "Automático (navegador)"
+  },
+  "compareStepSingle": {
+    "message": "Una imagen"
+  },
+  "overviewEnd": {
+    "message": "Fin de la galería"
+  },
+  "overviewTitle": {
+    "message": "Vista general de imágenes"
+  },
+  "leftPane": {
+    "message": "Imagen izquierda"
+  },
+  "singleView": {
+    "message": "Vista de una imagen"
+  },
+  "overviewLoading": {
+    "message": "Cargando más imágenes…"
+  },
+  "compareSection": {
+    "message": "Comparación de imágenes"
+  },
+  "splitView": {
+    "message": "Comparar imágenes"
+  },
+  "dividerMin": {
+    "message": "Ancho mínimo del panel"
+  },
+  "overviewBuffer": {
+    "message": "Miniaturas anticipadas"
+  },
+  "rightPane": {
+    "message": "Imagen derecha"
+  },
+  "compareStep": {
+    "message": "Avance"
+  },
+  "exitOverview": {
+    "message": "Volver al visor"
+  },
+  "unlockPane": {
+    "message": "Desbloquear panel"
+  },
+  "overviewView": {
+    "message": "Vista general de imágenes"
+  },
+  "lockPane": {
+    "message": "Fijar panel"
+  },
+  "overviewSection": {
+    "message": "Vista general"
+  },
+  "compareStepPair": {
+    "message": "Dos imágenes"
+  },
+  "resetDivider": {
+    "message": "Restablecer separador"
+  },
+  "overviewDirection": {
+    "message": "Dirección de lectura"
+  },
+  "overviewVertical": {
+    "message": "Navegación vertical"
+  },
+  "overviewHorizontal": {
+    "message": "Navegación horizontal"
+  },
+  "overviewClean": {
+    "message": "Ocultar bordes y descripciones"
+  },
+  "overviewAlignment": {
+    "message": "Alineación"
+  },
+  "alignmentAuto": {
+    "message": "Automática"
+  },
+  "alignmentVertical": {
+    "message": "Alineación vertical"
+  },
+  "alignmentHorizontal": {
+    "message": "Alineación horizontal"
+  },
+  "overviewGap": {
+    "message": "Espacio entre imágenes"
+  },
+  "overviewPaused": {
+    "message": "Aún no hay imágenes nuevas. Desplázate para reintentar."
+  },
+  "overviewScanFailed": {
+    "message": "Error al buscar. Desplázate para reintentar."
   }
 }

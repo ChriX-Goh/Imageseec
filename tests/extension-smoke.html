@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imageseec extension smoke fixture</title>
+  <style>
+    body { margin: 36px; background: #17191f; color: #e4e8ef; font: 15px/1.5 system-ui, sans-serif; }
+    h1 { font-size: 24px; }
+    #gallery-scroll { height: 360px; overflow: auto; border: 1px solid #ffffff20; border-radius: 12px; }
+    [role="grid"] { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; padding: 12px; }
+    figure { margin: 0; overflow: hidden; border-radius: 12px; background: #242832; }
+    img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+    figcaption { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Image group</h1>
+  <button id="open-last">Open last image</button>
+  <div id="gallery-scroll">
+    <div role="grid" aria-label="Images">
+      <figure><img src="/image/1" data-full="/full/1" alt="Landscape 1"><figcaption>Landscape 1</figcaption></figure>
+      <figure><img src="/image/2" data-full="/full/2" alt="Landscape 2"><figcaption>Landscape 2</figcaption></figure>
+      <figure><img src="/image/3" data-full="/full/3" alt="Portrait 3"><figcaption>Portrait 3</figcaption></figure>
+      <figure><img src="/image/4" data-full="/full/4" alt="Landscape 4"><figcaption>Landscape 4</figcaption></figure>
+      <figure><img src="/image/5" data-full="/full/5" alt="Landscape 5"><figcaption>Landscape 5</figcaption></figure>
+      <figure><img src="/image/6" data-full="/full/6" alt="Landscape 6"><figcaption>Landscape 6</figcaption></figure>
+    </div>
+    <div style="height: 2400px" aria-hidden="true"></div>
+  </div>
+  <script src="demo-setup.js"></script>
+  <script>
+    const scroller = document.querySelector('#gallery-scroll');
+    const gallery = scroller.querySelector('[role="grid"]');
+    let count = 6;
+    scroller.addEventListener('scroll', () => {
+      const target = Math.min(30, 6 + Math.floor(scroller.scrollTop / 260) * 6);
+      while (count < target) {
+        count++;
+        const figure = document.createElement('figure');
+        const image = new Image();
+        image.loading = 'lazy'; image.src = `/image/${count}`; image.alt = `Landscape ${count}`;
+        image.setAttribute('data-full', `/full/${count}`);
+        image.setAttribute('data-srcset', `/image/${count} 320w, /full/${count} 1800w`);
+        const caption = document.createElement('figcaption'); caption.textContent = image.alt;
+        figure.append(image, caption); gallery.append(figure);
+      }
+    }, { passive: true });
+    document.querySelector('#open-last').addEventListener('click', async () => {
+      scroller.scrollTop = 60;
+      await chrome.runtime.sendMessage({ type: 'lens-quick-open', source: gallery.querySelector('figure:last-child img').currentSrc });
+    });
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "ウェブ画像を表示。画像の切り替え、ズーム、自由な移動、サムネイルに対応。"
+    "message": "ウェブ画像を並べて比較し、一覧表示、ズーム、パンで閲覧。"
   },
   "settingsTitle": {
     "message": "Imageseec の設定"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "自動（ブラウザー）"
+  },
+  "compareStepSingle": {
+    "message": "1枚ずつ"
+  },
+  "overviewEnd": {
+    "message": "ギャラリーの終わり"
+  },
+  "overviewTitle": {
+    "message": "画像一覧"
+  },
+  "leftPane": {
+    "message": "左の画像"
+  },
+  "singleView": {
+    "message": "1枚表示"
+  },
+  "overviewLoading": {
+    "message": "画像を追加で読み込み中…"
+  },
+  "compareSection": {
+    "message": "画像比較"
+  },
+  "splitView": {
+    "message": "2枚を比較"
+  },
+  "dividerMin": {
+    "message": "パネルの最小幅"
+  },
+  "overviewBuffer": {
+    "message": "先読みするサムネイル"
+  },
+  "rightPane": {
+    "message": "右の画像"
+  },
+  "compareStep": {
+    "message": "切り替え単位"
+  },
+  "exitOverview": {
+    "message": "ビューアに戻る"
+  },
+  "unlockPane": {
+    "message": "パネルの固定を解除"
+  },
+  "overviewView": {
+    "message": "画像一覧"
+  },
+  "lockPane": {
+    "message": "パネルを固定"
+  },
+  "overviewSection": {
+    "message": "一覧表示"
+  },
+  "compareStepPair": {
+    "message": "2枚ずつ"
+  },
+  "resetDivider": {
+    "message": "仕切りをリセット"
+  },
+  "overviewDirection": {
+    "message": "閲覧方向"
+  },
+  "overviewVertical": {
+    "message": "縦に閲覧"
+  },
+  "overviewHorizontal": {
+    "message": "横に閲覧"
+  },
+  "overviewClean": {
+    "message": "枠と説明を非表示"
+  },
+  "overviewAlignment": {
+    "message": "整列"
+  },
+  "alignmentAuto": {
+    "message": "自動"
+  },
+  "alignmentVertical": {
+    "message": "縦方向に整列"
+  },
+  "alignmentHorizontal": {
+    "message": "横方向に整列"
+  },
+  "overviewGap": {
+    "message": "画像の間隔"
+  },
+  "overviewPaused": {
+    "message": "新しい画像はまだありません。スクロールして再試行。"
+  },
+  "overviewScanFailed": {
+    "message": "読み取りに失敗しました。スクロールして再試行。"
   }
 }

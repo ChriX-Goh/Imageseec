@@ -1,6 +1,6 @@
 # Localization
 
-Imageseec ships 45 UI messages in each of 11 Chrome locale catalogs. The default language setting follows Chrome's UI language; users can also select any supported language manually. Unsupported browser UI languages use English. Language selection does not inspect the website language or infer the user's country.
+Imageseec ships complete UI message catalogs in 11 Chrome locales. The default language setting follows Chrome's UI language; users can also select any supported language manually. Unsupported browser UI languages use English. Language selection does not inspect the website language or infer the user's country.
 
 ## Supported locales
 
@@ -28,6 +28,6 @@ Regional variants of a supported base language use that language (for example `r
 - Cover manifest metadata, context menus, settings, viewer controls, accessibility names, statuses and errors. The Imageseec brand remains unchanged.
 - Run catalog and escaping tests, regional/fallback checks and browser layout checks before releasing a changed translation. Longer settings labels and footer actions wrap instead of clipping.
 - The fixture models Chrome catalog APIs; it does not change the user's actual Chrome language. Verify both automatic and manually selected languages in the installed extension.
-- Store listing translations are separate from extension UI catalogs. Only English and Simplified Chinese listing copy is currently drafted; do not claim localized store listings already exist for all 11 languages.
+- Store listing translations are separate from extension UI catalogs. Review each listing language independently before a store release.
 
 [Chrome internationalization documentation](https://developer.chrome.com/docs/extensions/reference/api/i18n)

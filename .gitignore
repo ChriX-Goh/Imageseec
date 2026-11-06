@@ -13,6 +13,7 @@
 .env.*
 !.env.example
 node_modules/
+.qa-runtime/
 __pycache__/
 *.pyc
 .DS_Store

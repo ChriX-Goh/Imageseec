@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Visionnez les images du Web avec navigation, zoom, déplacement libre et miniatures."
+    "message": "Comparez des images côte à côte, parcourez une mosaïque, zoomez et déplacez."
   },
   "settingsTitle": {
     "message": "Paramètres Imageseec"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "Automatique (navigateur)"
+  },
+  "compareStepSingle": {
+    "message": "Une image"
+  },
+  "overviewEnd": {
+    "message": "Fin de la galerie"
+  },
+  "overviewTitle": {
+    "message": "Vue d’ensemble des images"
+  },
+  "leftPane": {
+    "message": "Image de gauche"
+  },
+  "singleView": {
+    "message": "Vue d’une image"
+  },
+  "overviewLoading": {
+    "message": "Chargement d’autres images…"
+  },
+  "compareSection": {
+    "message": "Comparaison d’images"
+  },
+  "splitView": {
+    "message": "Comparer les images"
+  },
+  "dividerMin": {
+    "message": "Largeur minimale du volet"
+  },
+  "overviewBuffer": {
+    "message": "Miniatures en avance"
+  },
+  "rightPane": {
+    "message": "Image de droite"
+  },
+  "compareStep": {
+    "message": "Avancement"
+  },
+  "exitOverview": {
+    "message": "Retour à la visionneuse"
+  },
+  "unlockPane": {
+    "message": "Déverrouiller le panneau"
+  },
+  "overviewView": {
+    "message": "Vue d’ensemble des images"
+  },
+  "lockPane": {
+    "message": "Verrouiller le panneau"
+  },
+  "overviewSection": {
+    "message": "Vue d’ensemble"
+  },
+  "compareStepPair": {
+    "message": "Deux images"
+  },
+  "resetDivider": {
+    "message": "Réinitialiser le séparateur"
+  },
+  "overviewDirection": {
+    "message": "Sens de lecture"
+  },
+  "overviewVertical": {
+    "message": "Défilement vertical"
+  },
+  "overviewHorizontal": {
+    "message": "Défilement horizontal"
+  },
+  "overviewClean": {
+    "message": "Masquer les bordures et légendes"
+  },
+  "overviewAlignment": {
+    "message": "Alignement"
+  },
+  "alignmentAuto": {
+    "message": "Automatique"
+  },
+  "alignmentVertical": {
+    "message": "Alignement vertical"
+  },
+  "alignmentHorizontal": {
+    "message": "Alignement horizontal"
+  },
+  "overviewGap": {
+    "message": "Espacement des images"
+  },
+  "overviewPaused": {
+    "message": "Aucune nouvelle image pour le moment. Faites défiler pour réessayer."
+  },
+  "overviewScanFailed": {
+    "message": "Échec de la recherche. Faites défiler pour réessayer."
   }
 }

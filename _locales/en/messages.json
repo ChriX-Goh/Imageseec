@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "View webpage images with gallery navigation, zoom, free panning and thumbnail previews."
+    "message": "Compare webpage images side by side, browse a masonry overview, zoom and pan."
   },
   "settingsTitle": {
     "message": "Imageseec settings"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "Auto (browser)"
+  },
+  "compareStepSingle": {
+    "message": "One image"
+  },
+  "overviewEnd": {
+    "message": "End of gallery"
+  },
+  "overviewTitle": {
+    "message": "Image overview"
+  },
+  "leftPane": {
+    "message": "Left image"
+  },
+  "singleView": {
+    "message": "Single-image view"
+  },
+  "overviewLoading": {
+    "message": "Loading more images…"
+  },
+  "compareSection": {
+    "message": "Image comparison"
+  },
+  "splitView": {
+    "message": "Compare images"
+  },
+  "dividerMin": {
+    "message": "Minimum panel width"
+  },
+  "overviewBuffer": {
+    "message": "Thumbnail buffer ahead"
+  },
+  "rightPane": {
+    "message": "Right image"
+  },
+  "compareStep": {
+    "message": "Advance"
+  },
+  "exitOverview": {
+    "message": "Back to viewer"
+  },
+  "unlockPane": {
+    "message": "Unlock panel"
+  },
+  "overviewView": {
+    "message": "Full image overview"
+  },
+  "lockPane": {
+    "message": "Lock panel"
+  },
+  "overviewSection": {
+    "message": "Full overview"
+  },
+  "compareStepPair": {
+    "message": "Two images"
+  },
+  "resetDivider": {
+    "message": "Reset divider"
+  },
+  "overviewDirection": {
+    "message": "Reading direction"
+  },
+  "overviewVertical": {
+    "message": "Vertical browsing"
+  },
+  "overviewHorizontal": {
+    "message": "Horizontal browsing"
+  },
+  "overviewClean": {
+    "message": "Hide borders and captions"
+  },
+  "overviewAlignment": {
+    "message": "Alignment"
+  },
+  "alignmentAuto": {
+    "message": "Automatic"
+  },
+  "alignmentVertical": {
+    "message": "Vertical alignment"
+  },
+  "alignmentHorizontal": {
+    "message": "Horizontal alignment"
+  },
+  "overviewGap": {
+    "message": "Image gap"
+  },
+  "overviewPaused": {
+    "message": "No new images yet. Scroll to retry."
+  },
+  "overviewScanFailed": {
+    "message": "Unable to scan. Scroll to retry."
   }
 }

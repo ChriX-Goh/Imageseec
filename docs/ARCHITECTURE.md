@@ -1,0 +1,7 @@
+# Architecture graph
+
+The current architecture graph lives in `.ua/knowledge-graph.json`. It includes generic source structure, runtime dependencies and links between implementation and regression tests. Private test captures, generated packages, browser state and historical backups are excluded by `.ua/.understandignore`.
+
+During feature work, inspect the graph relationships before changing a module and check the changed source files afterward. Run `node scripts/graph-freshness.cjs` to compare the worktree with per-file SHA-256 hashes recorded in the graph. Text is normalized to UTF-8 with LF line endings before hashing, so Windows and Linux checkouts compare the same content. A stale report names changed or new files and direct graph neighbors that may need review. After graph regeneration, rerun the checker; `"fresh": true` means every file currently in graph scope matches the graph snapshot. Before publishing a commit, add intended changes and run `node scripts/graph-freshness.cjs --check-index` to compare the staged Git blobs too.
+
+Regenerate the graph with the Understand Anything workflow using `--full --language zh`. The generator rereads source files and refreshes file/function nodes, edges, architectural layers, onboarding steps and source hashes. The freshness check reports code adjacency to guide review; it does not decide whether a behavior-level relationship still holds.

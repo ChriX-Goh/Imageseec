@@ -16,6 +16,8 @@
       <section><h3>${h('zoom')}</h3>${number('zoomStep', h('zoomStep'), 1, 100, '%')}${number('holdZoom', h('holdZoom'), 100, 800, '%')}</section>
       <section><h3>${h('preload')}</h3><div class="pref-pair">${number('cacheBefore', h('cacheBefore'), 0, 12)}${number('cacheAfter', h('cacheAfter'), 0, 12)}</div></section>
       <section><h3>${h('previews')}</h3><div class="pref-pair">${number('previewBefore', h('previewBefore'), 0, 12)}${number('previewAfter', h('previewAfter'), 0, 12)}</div></section>
+      <section><h3>${h('compare')}</h3><label class="pref-row"><span>${h('compareStep')}</span><select name="compareStep" aria-label="${h('compareStep')}"><option value="1">${h('compareStepSingle')}</option><option value="2">${h('compareStepPair')}</option></select></label>${number('dividerMin', h('dividerMin'), 10, 33, '%')}</section>
+      <section><h3>${h('overview')}</h3><label class="pref-row"><span>${h('overviewDirection')}</span><select name="overviewDirection" aria-label="${h('overviewDirection')}"><option value="vertical">${h('overviewVertical')}</option><option value="horizontal">${h('overviewHorizontal')}</option></select></label><label class="pref-row"><span>${h('overviewAlignment')}</span><select name="overviewAlignment" aria-label="${h('overviewAlignment')}"><option value="auto">${h('alignmentAuto')}</option><option value="vertical">${h('alignmentVertical')}</option><option value="horizontal">${h('alignmentHorizontal')}</option></select></label>${number('overviewGap', h('overviewGap'), 0, 48, 'px')}${toggle('overviewClean', h('overviewClean'))}${number('overviewBuffer', h('overviewBuffer'), 0, 12)}</section>
       <output class="pref-error" role="status" hidden></output>
     </div>`;
   }

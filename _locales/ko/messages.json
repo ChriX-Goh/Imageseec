@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "웹 이미지 뷰어. 이미지 전환, 확대·축소, 자유 이동 및 썸네일 미리보기 지원."
+    "message": "웹 이미지를 나란히 비교하고 전체 보기, 확대와 이동을 사용하세요."
   },
   "settingsTitle": {
     "message": "Imageseec 설정"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "자동(브라우저 설정)"
+  },
+  "compareStepSingle": {
+    "message": "한 장씩"
+  },
+  "overviewEnd": {
+    "message": "갤러리 끝"
+  },
+  "overviewTitle": {
+    "message": "이미지 전체 보기"
+  },
+  "leftPane": {
+    "message": "왼쪽 이미지"
+  },
+  "singleView": {
+    "message": "단일 이미지 보기"
+  },
+  "overviewLoading": {
+    "message": "이미지를 더 불러오는 중…"
+  },
+  "compareSection": {
+    "message": "이미지 비교"
+  },
+  "splitView": {
+    "message": "이미지 비교"
+  },
+  "dividerMin": {
+    "message": "패널 최소 너비"
+  },
+  "overviewBuffer": {
+    "message": "미리 불러올 썸네일"
+  },
+  "rightPane": {
+    "message": "오른쪽 이미지"
+  },
+  "compareStep": {
+    "message": "이동 단위"
+  },
+  "exitOverview": {
+    "message": "뷰어로 돌아가기"
+  },
+  "unlockPane": {
+    "message": "패널 고정 해제"
+  },
+  "overviewView": {
+    "message": "이미지 전체 보기"
+  },
+  "lockPane": {
+    "message": "패널 고정"
+  },
+  "overviewSection": {
+    "message": "전체 보기"
+  },
+  "compareStepPair": {
+    "message": "두 장씩"
+  },
+  "resetDivider": {
+    "message": "분할선 초기화"
+  },
+  "overviewDirection": {
+    "message": "보기 방향"
+  },
+  "overviewVertical": {
+    "message": "세로 보기"
+  },
+  "overviewHorizontal": {
+    "message": "가로 보기"
+  },
+  "overviewClean": {
+    "message": "테두리와 설명 숨기기"
+  },
+  "overviewAlignment": {
+    "message": "정렬"
+  },
+  "alignmentAuto": {
+    "message": "자동"
+  },
+  "alignmentVertical": {
+    "message": "세로 정렬"
+  },
+  "alignmentHorizontal": {
+    "message": "가로 정렬"
+  },
+  "overviewGap": {
+    "message": "이미지 간격"
+  },
+  "overviewPaused": {
+    "message": "아직 새 이미지가 없습니다. 스크롤하여 다시 시도하세요."
+  },
+  "overviewScanFailed": {
+    "message": "탐색하지 못했습니다. 스크롤하여 다시 시도하세요."
   }
 }

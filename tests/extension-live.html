@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imageseec live-extension fixture</title>
+  <style>
+    body { margin: 36px; background: #17191f; color: #e4e8ef; font: 15px/1.5 system-ui, sans-serif; }
+    #gallery-scroll { height: 360px; overflow: auto; border: 1px solid #ffffff20; border-radius: 12px; }
+    [role="grid"] { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; padding: 12px; }
+    figure { margin: 0; overflow: hidden; border-radius: 12px; background: #242832; }
+    img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+    figcaption { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Generic image group</h1>
+  <div id="gallery-scroll">
+    <div role="grid" aria-label="Images">
+      <figure><a href="/full/1"><img src="/image/1" data-full="/full/1" alt="Landscape 1"></a><figcaption>Landscape 1</figcaption></figure>
+      <figure><a href="/full/2"><img src="/image/2" data-full="/full/2" alt="Landscape 2"></a><figcaption>Landscape 2</figcaption></figure>
+      <figure><a href="/full/3"><img src="/image/3" data-full="/full/3" alt="Portrait 3"></a><figcaption>Portrait 3</figcaption></figure>
+      <figure><a href="/full/4"><img src="/image/4" data-full="/full/4" alt="Landscape 4"></a><figcaption>Landscape 4</figcaption></figure>
+      <figure><a href="/full/5"><img src="/image/5" data-full="/full/5" alt="Landscape 5"></a><figcaption>Landscape 5</figcaption></figure>
+      <figure><a href="/full/6"><img src="/image/6" data-full="/full/6" alt="Landscape 6"></a><figcaption>Landscape 6</figcaption></figure>
+    </div>
+    <div style="height: 2400px" aria-hidden="true"></div>
+  </div>
+  <script>
+    const scroller = document.querySelector('#gallery-scroll');
+    const gallery = scroller.querySelector('[role="grid"]');
+    let count = 6;
+    scroller.addEventListener('scroll', () => {
+      const target = Math.min(30, 6 + Math.floor(scroller.scrollTop / 260) * 6);
+      while (count < target) {
+        count++;
+        const figure = document.createElement('figure');
+        const image = new Image();
+        image.loading = 'lazy'; image.src = `/image/${count}`; image.alt = `Landscape ${count}`;
+        image.setAttribute('data-full', `/full/${count}`);
+        image.setAttribute('data-srcset', `/image/${count} 320w, /full/${count} 1800w`);
+        const link = document.createElement('a'); link.href = `/full/${count}`; link.append(image);
+        const caption = document.createElement('figcaption'); caption.textContent = image.alt;
+        figure.append(link, caption); gallery.append(figure);
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

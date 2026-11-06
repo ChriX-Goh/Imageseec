@@ -1,6 +1,6 @@
 See the image. Stay in your browser.
 
-Built for people who enjoy the viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and move quickly through images. Imageseec brings that desktop-inspired approach to webpage images, with its own browser controls.
+Built for people who enjoy the image-viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and browse images quickly. Imageseec brings that desktop-inspired approach to webpages with its own browser controls.
 
 Imageseec opens webpage images in a focused, page-filling viewer. Right-click a picture or use Ctrl + left-click to get started.
 
@@ -13,12 +13,15 @@ Choose from 11 interface languages, or let Imageseec follow your browser languag
 - Hover the percentage for a compact vertical zoom ruler, or click it to cycle through current zoom, fit page and 100%.
 - Lock a zoom percentage while switching pictures.
 - Move to the bottom edge for nearby thumbnail previews.
-- Adjust preloading and preview counts independently. Settings save immediately.
+- Compare two images at once. Drag the divider, double-click to reset it, and lock either pane while the other advances. Choose one-image or two-image steps.
+- Open an adaptive masonry overview, scroll with the wheel or Up / Down keys, and select an image to return to the viewer.
+- For detected galleries, scan for more thumbnails on demand as the webpage lazy-loads or virtualizes images. The page and nested scroll positions are restored after each scan.
+- Adjust full-resolution preloading, preview counts and overview thumbnails independently. Settings save immediately.
 
 The initial image keeps its aspect ratio, fits the available page area and is never enlarged beyond its original size. An optional fullscreen button hides browser chrome when you choose.
 
 No account is required by Imageseec. It has no analytics or developer-operated backend. Settings stay in local browser storage. Images and preloads are requested from their existing website image hosts.
 
-Gallery discovery depends on images already loaded by the webpage. Compatibility varies by site; canvas images, CSS backgrounds and galleries spanning multiple pages may not work. Chrome restricts extensions on internal browser pages and the Chrome Web Store.
+Gallery discovery uses common document structures, image sources, responsive `srcset` / `picture`, lazy source attributes and CSS backgrounds inside detected gallery cards. Compatibility is heuristic and varies by webpage. Canvas images, closed shadow roots and galleries spanning multiple pages are not supported. Chrome restricts extensions on internal browser pages and the Chrome Web Store.
 
 Imageseec is independent and is not affiliated with or endorsed by the makers of Photoshop or ACDSee. It is not a plugin for those applications. Product names belong to their respective owners.

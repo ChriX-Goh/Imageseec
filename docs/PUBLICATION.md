@@ -2,6 +2,8 @@
 
 A new source repository is being prepared without historical development backups or personal workstation documentation.
 
+Current beta delivery is governed by [the release workflow](RELEASE.md): GitHub test-source updates are allowed; Chrome Web Store upload, review submission and publication require owner acceptance of the exact build and explicit submission authorization.
+
 - Replaced local installation paths with relative instructions.
 - Removed workstation-specific dependency paths from the optional icon builder.
 - Replaced historical private-gallery counts and operator/tool logs with a generic verification record.

@@ -1,5 +1,8 @@
 const MENU_ID = 'image-lens-open';
 const LOCALES = ['en', 'zh_CN', 'zh_TW', 'ja', 'ko', 'de', 'fr', 'es', 'ru', 'uk', 'pl'];
+chrome.tabs.onActivated?.addListener(() => {
+  chrome.contextMenus.update(MENU_ID, { contexts: ['image'] }, () => { void chrome.runtime.lastError; });
+});
 
 function localeFor(language = 'auto') {
   if (LOCALES.includes(language)) return language;
@@ -41,11 +44,22 @@ chrome.storage.onChanged?.addListener((changes, area) => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId !== MENU_ID || !tab?.id || !info.srcUrl) return;
-  openImage(info, tab).catch(() => console.warn('Imageseec: unable to open image'));
+  if (info.menuItemId !== MENU_ID || !Number.isInteger(tab?.id)) return;
+  (async () => {
+    let source = info.srcUrl;
+    if (!source) {
+      const result = await chrome.tabs.sendMessage(tab.id, { type: 'lens-resolve-context' }, { frameId: info.frameId ?? 0 });
+      source = result?.source;
+    }
+    if (imageSource(source)) await openImage({ ...info, srcUrl: source }, tab);
+  })().catch(() => console.warn('Imageseec: unable to open image'));
 });
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
+  if (message?.type === 'lens-context-target' && Number.isInteger(sender.tab?.id)) {
+    chrome.contextMenus.update(MENU_ID, { contexts: message.detected ? ['image', 'link', 'page', 'frame'] : ['image'] }, () => { void chrome.runtime.lastError; });
+    return false;
+  }
   if (message?.type === 'lens-get-messages') {
     const locale = LOCALES.includes(message.locale) ? message.locale : 'en';
     readMessages(locale).then(messages => respond({ locale, messages }), () => respond({ locale, messages: null }));

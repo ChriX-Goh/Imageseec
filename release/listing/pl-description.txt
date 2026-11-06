@@ -19,6 +19,8 @@ Obraz zachowuje proporcje i w widoku dopasowanym do strony nie przekracza orygin
 
 Imageseec nie wymaga konta, nie zawiera analityki ani reklam i nie korzysta z serwera dewelopera. Ustawienia pozostają w lokalnym profilu przeglądarki. Obrazy i ich wstępne wczytywanie są pobierane z serwerów obrazów wskazanych przez stronę.
 
-Wykrywanie galerii korzysta z treści już załadowanej na stronie. Zgodność zależy od witryny; obrazy canvas, tła CSS oraz galerie obejmujące wiele stron mogą być niewidoczne. Chrome ogranicza działanie rozszerzeń na stronach wewnętrznych i w Chrome Web Store.
+Porównuj dwa obrazy obok siebie. Przeciągnij separator, a dwukrotnie kliknij, by go wyśrodkować. Zablokuj jeden panel, aby zmieniał się tylko drugi. Wybierz krok jednego lub dwóch obrazów. W adaptacyjnej mozaice przewijaj kółkiem lub klawiszami góra/dół i wybierz obraz, by wrócić do podglądu. Wykryte galerie są skanowane w razie potrzeby, także przy leniwym ładowaniu i wirtualnych listach. Po skanowaniu przywracane są pozycje przewijania strony i zagnieżdżonych obszarów. Wstępne ładowanie, podglądy i bufor widoku ogólnego ustawisz osobno; zmiany zapisują się od razu.
+
+Wykrywanie używa typowych struktur dokumentu, responsywnych źródeł obrazów, atrybutów leniwego ładowania oraz teł CSS w rozpoznanych kartach galerii. Zgodność zależy od struktury strony. Canvas, zamknięty Shadow DOM i galerie obejmujące wiele stron nie są obsługiwane w sposób ogólny. Chrome ogranicza rozszerzenia na stronach wewnętrznych i w Chrome Web Store.
 
 Imageseec to niezależny projekt, niepowiązany z producentami Photoshop ani ACDSee i przez nich niewspierany. Nie jest wtyczką do tych aplikacji. Nazwy produktów należą do ich właścicieli.

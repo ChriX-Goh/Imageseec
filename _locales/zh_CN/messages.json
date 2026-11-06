@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。"
+    "message": "并排比较网页图片，瀑布流浏览图库，精细缩放与自由拖拽。"
   },
   "settingsTitle": {
     "message": "Imageseec 设置"
@@ -156,5 +156,95 @@
   },
   "languageAuto": {
     "message": "自动（跟随浏览器）"
+  },
+  "compareStepSingle": {
+    "message": "逐张切换"
+  },
+  "overviewEnd": {
+    "message": "已到图库末尾"
+  },
+  "overviewTitle": {
+    "message": "图片全览"
+  },
+  "leftPane": {
+    "message": "左侧图片"
+  },
+  "singleView": {
+    "message": "切换单图查看"
+  },
+  "overviewLoading": {
+    "message": "正在加载更多图片…"
+  },
+  "compareSection": {
+    "message": "双图对照"
+  },
+  "splitView": {
+    "message": "切换双图对照"
+  },
+  "dividerMin": {
+    "message": "单栏最小宽度"
+  },
+  "overviewBuffer": {
+    "message": "预载缩略图数量"
+  },
+  "rightPane": {
+    "message": "右侧图片"
+  },
+  "compareStep": {
+    "message": "切换步长"
+  },
+  "exitOverview": {
+    "message": "返回图片查看"
+  },
+  "unlockPane": {
+    "message": "解除固定"
+  },
+  "overviewView": {
+    "message": "打开全览模式"
+  },
+  "lockPane": {
+    "message": "固定面板"
+  },
+  "overviewSection": {
+    "message": "全览模式"
+  },
+  "compareStepPair": {
+    "message": "每次两张"
+  },
+  "resetDivider": {
+    "message": "重置中线"
+  },
+  "overviewDirection": {
+    "message": "阅览方向"
+  },
+  "overviewVertical": {
+    "message": "上下阅览"
+  },
+  "overviewHorizontal": {
+    "message": "左右阅览"
+  },
+  "overviewClean": {
+    "message": "隐藏边框和描述"
+  },
+  "overviewAlignment": {
+    "message": "对齐方式"
+  },
+  "alignmentAuto": {
+    "message": "自动"
+  },
+  "alignmentVertical": {
+    "message": "上下对齐"
+  },
+  "alignmentHorizontal": {
+    "message": "左右对齐"
+  },
+  "overviewGap": {
+    "message": "图片间距"
+  },
+  "overviewPaused": {
+    "message": "暂未发现更多，滚动重试"
+  },
+  "overviewScanFailed": {
+    "message": "扫描失败，滚动重试"
   }
 }

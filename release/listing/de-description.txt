@@ -19,6 +19,8 @@ Das Bild behält sein Seitenverhältnis und wird in der Seitenansicht nicht grö
 
 Imageseec benötigt kein Konto, enthält keine Analyse- oder Werbedienste und betreibt keinen eigenen Server. Einstellungen bleiben im lokalen Browserprofil. Bilder und Vorschauen werden von den Bildservern angefordert, die die Webseite verwendet.
 
-Die Galerieerkennung nutzt bereits geladene Seiteninhalte. Die Kompatibilität hängt von der jeweiligen Seite ab; Canvas-Bilder, CSS-Hintergründe und Galerien über mehrere Seiten werden möglicherweise nicht erkannt. Chrome schränkt Erweiterungen auf internen Seiten und im Chrome Web Store ein.
+Vergleichen Sie zwei Bilder nebeneinander. Ziehen Sie den Trenner und setzen Sie ihn per Doppelklick zurück. Fixieren Sie eine Seite, während die andere weiterblättert. Die Schrittweite beträgt wahlweise ein oder zwei Bilder. In der adaptiven Mosaikübersicht scrollen Sie mit Mausrad oder Auf/Ab-Tasten und wählen ein Bild, um zum Viewer zurückzukehren. Erkannte Galerien werden bei Bedarf gescannt, auch bei Lazy Loading und virtuellen Listen. Seiten- und verschachtelte Scrollpositionen werden danach wiederhergestellt. Vorladen, Vorschauen und Übersichtspuffer lassen sich getrennt einstellen und sofort speichern.
+
+Die Erkennung nutzt übliche Dokumentstrukturen, responsive Bildquellen, Lazy-Loading-Attribute und CSS-Hintergründe innerhalb erkannter Galeriekarten. Die Kompatibilität hängt von der Seitenstruktur ab. Canvas-Bilder, geschlossene Shadow DOMs und seitenübergreifende Galerien werden nicht allgemein erkannt. Chrome beschränkt Erweiterungen auf internen Seiten und im Chrome Web Store.
 
 Imageseec ist ein unabhängiges Projekt und wird weder von den Herstellern von Photoshop und ACDSee unterstützt noch mit ihnen verbunden. Es ist kein Plugin für diese Anwendungen. Produktnamen gehören ihren jeweiligen Inhabern.

@@ -1,0 +1,14 @@
+# Graph exclusions: preserve the source architecture and generic regression tests.
+# Exclude private live-site observations, historic copies, local browser state,
+# generated binaries and images. No private QA paths enter graph nodes.
+/tests/local-only/
+/tests/backups/
+/tests/*.png
+/.qa-runtime/
+/dist/
+/release/assets/*.png
+/.ua/knowledge-graph.json
+/.ua/.gitignore
+/.ua/intermediate/
+/.ua/tmp/
+/.ua/meta.json

@@ -16,5 +16,54 @@
   }
   function holdPan(initialPan, anchor, delta, ratio) { return anchor - (anchor - initialPan) * ratio - delta * ratio; }
   function wheelMode(event) { return event.shiftKey ? 'fine' : event.altKey ? 'zoom' : 'navigate'; }
-  lens.controls = { ticks, rulerMax, fromPosition, toPosition, holdPan, wheelMode };
+  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12) {
+    const padding = clean ? 0 : 12, caption = clean ? 0 : 27;
+    const safe = ratios.map(r => Number.isFinite(r) && r > 0 ? r : 1);
+    const boxes = [];
+    const resolved = alignment === 'auto' ? horizontal ? 'horizontal' : 'vertical' : alignment;
+    if (resolved === (horizontal ? 'horizontal' : 'vertical')) {
+      const limit = horizontal ? height : width;
+      const target = horizontal ? 180 + padding + caption : 210 + padding;
+      const count = Math.max(1, Math.floor((limit + gap) / (target + gap)));
+      const cross = Math.max(1, (limit - gap * (count - 1)) / count);
+      const ends = Array(count).fill(0);
+      for (const ratio of safe) {
+        const lane = ends.indexOf(Math.min(...ends));
+        const w = horizontal ? Math.max(1, cross - padding - caption) * ratio + padding : cross;
+        const h = horizontal ? cross : Math.max(1, cross - padding) / ratio + padding + caption;
+        boxes.push({ x: horizontal ? ends[lane] : lane * (cross + gap), y: horizontal ? lane * (cross + gap) : ends[lane], width: w, height: h });
+        ends[lane] += (horizontal ? w : h) + gap;
+      }
+      const extent = Math.max(0, ...ends) - (safe.length ? gap : 0);
+      return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent };
+    }
+    let offset = 0;
+    for (let start = 0; start < safe.length;) {
+      let end = start, sum = 0;
+      const target = horizontal ? Math.min(210, width) : Math.min(180, Math.max(100, width / 3));
+      const limit = horizontal ? height : width;
+      while (end < safe.length) {
+        const value = horizontal ? 1 / safe[end] : safe[end];
+        const n = end - start + 1;
+        const projected = (sum + value) * target + n * (horizontal ? padding + caption : padding) + (n - 1) * gap;
+        if (horizontal && end > start && projected > limit) break;
+        sum += value; end++;
+        if (projected >= limit) break;
+      }
+      const n = end - start;
+      const fit = Math.max(1, (limit - (n - 1) * gap - n * (horizontal ? padding + caption : padding)) / sum);
+      const size = Math.min(fit, target * (end === safe.length || horizontal ? 1 : 1.35));
+      let cross = 0;
+      for (let i = start; i < end; i++) {
+        const w = (horizontal ? size : size * safe[i]) + padding;
+        const h = (horizontal ? size / safe[i] : size) + padding + caption;
+        boxes.push({ x: horizontal ? offset : cross, y: horizontal ? cross : offset, width: w, height: h });
+        cross += (horizontal ? h : w) + gap;
+      }
+      offset += size + padding + (horizontal ? 0 : caption) + gap;
+      start = end;
+    }
+    return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap) };
+  }
+  lens.controls = { ticks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout };
 })();

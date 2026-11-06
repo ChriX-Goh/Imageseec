@@ -17,7 +17,7 @@ for (const locale of locales) test(`complete localized settings and placeholders
     assert.deepEqual(Object.keys(value.placeholders || {}).sort(), Object.keys(english[key].placeholders || {}).sort(), key);
     assert.deepEqual(value.placeholders, english[key].placeholders, key);
   }
-  const c = vm.createContext({ chrome: { i18n: i18nFixture.forLocale(locale.replace('_','-')) } });
+  const c = vm.createContext({ setTimeout, clearTimeout, chrome: { i18n: i18nFixture.forLocale(locale.replace('_','-')) } });
   vm.runInContext(source('locale-catalogs.js'), c); vm.runInContext(source('i18n.js'), c); vm.runInContext(source('preferences.js'), c);
   assert.deepEqual(plain(c.ImageLens.catalogs[locale]), messages);
   await c.ImageLens.i18n.setLanguage(locale);
@@ -32,7 +32,7 @@ for (const locale of locales) test(`complete localized settings and placeholders
 });
 
 test('browser UI language resolution and unsupported-language English fallback', () => {
-  const c = vm.createContext({ chrome: { i18n: i18nFixture.forLocale('sv-SE') } });
+  const c = vm.createContext({ setTimeout, clearTimeout, chrome: { i18n: i18nFixture.forLocale('sv-SE') } });
   vm.runInContext(source('i18n.js'), c);
   assert.equal(c.ImageLens.i18n.locale, 'en'); assert.equal(c.ImageLens.i18n.text('zoom'), 'Zoom');
   assert.deepEqual(plain(c.ImageLens.i18n.locales), locales);
@@ -46,7 +46,7 @@ test('manual language selection loads the chosen catalog and auto restores brows
     i18n: i18nFixture.forLocale('zh-CN'),
     runtime: { async sendMessage({ locale }) { return { locale, messages: JSON.parse(source(`_locales/${locale}/messages.json`)) }; } }
   };
-  const c = vm.createContext({ chrome });
+  const c = vm.createContext({ setTimeout, clearTimeout, chrome });
   vm.runInContext(source('locale-catalogs.js'), c); vm.runInContext(source('i18n.js'), c);
   await c.ImageLens.i18n.setLanguage('en');
   assert.equal(c.ImageLens.i18n.locale, 'en');
@@ -59,7 +59,7 @@ test('manual language selection loads the chosen catalog and auto restores brows
 });
 
 test('translated HTML and substituted values are escaped before template insertion', () => {
-  const c = vm.createContext({ chrome: { i18n: i18nFixture.forLocale('en') } });
+  const c = vm.createContext({ setTimeout, clearTimeout, chrome: { i18n: i18nFixture.forLocale('en') } });
   vm.runInContext(source('i18n.js'), c);
   const value = c.ImageLens.i18n.html('viewImage', '<img src=x onerror="alert(1)">');
   assert.doesNotMatch(value, /<img/); assert.match(value, /&lt;img/); assert.match(value, /&quot;/);
@@ -76,10 +76,39 @@ test('packaged UI has no untranslated Chinese literals or unlisted message keys'
   assert.match(source('LICENSE'), /MIT License/);
   assert.match(source('LICENSE'), /2026 Imageseec contributors/);
 });
+test('2.0 store listings exist for all UI locales and fit Chrome text limits', () => {
+  const manifest = JSON.parse(source('manifest.json'));
+  const beta = manifest.version_name?.match(/^2\.0 b([1-9]\d*)$/);
+  assert.ok(beta, 'test builds must display an explicit beta number');
+  assert.equal(manifest.version, `2.0.0.${beta[1]}`);
+  assert.ok(Number(beta[1]) <= 65535, 'Chrome version components must fit their allowed range');
+  const copy = [];
+  for (const locale of locales) {
+    const title = source(`release/listing/${locale}-title.txt`).trim();
+    const summary = source(`release/listing/${locale}-summary.txt`).trim();
+    const description = source(`release/listing/${locale}-description.txt`).trim();
+    assert.ok(title.length > 0 && title.length <= 75, `${locale} title length`);
+    assert.ok(summary.length > 0 && summary.length <= 132, `${locale} summary length`);
+    assert.ok(description.length > 0 && description.length <= 16000, `${locale} description length`);
+    copy.push(title, summary, description);
+  }
+  assert.doesNotMatch(copy.join('\n'), /https?:\/\//i);
+});
+test('compare and overview controls are wired to group-scoped lazy scanning', () => {
+  const viewer = source('viewer.js');
+  assert.match(viewer, /on\(\$\('\.compare-toggle'\), 'click'/);
+  assert.match(viewer, /on\(\$\('\.overview-toggle'\), 'click'/);
+  assert.match(viewer, /function scanSegment\(signal, direction/);
+  assert.match(viewer, /restorePagePosition\(true\)/);
+  assert.match(viewer, /settings\.overviewBuffer/);
+  assert.match(viewer, /settings\.compareStep/);
+  assert.match(viewer, /settings\.dividerMin/);
+  assert.doesNotMatch(viewer, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)/i);
+});
 function context(hostname = 'example.com') {
   const images = [];
   const document = { baseURI: `https://${hostname}/album/`, images, body: null, querySelectorAll: s => s === 'img' ? images : [] };
-  const c = vm.createContext({ URL, document, chrome: { i18n: i18nFixture.forLocale('en') }, location: { hostname }, matchMedia: () => ({ matches: true }), getComputedStyle: () => ({ display: 'block', visibility: 'visible' }) });
+  const c = vm.createContext({ setTimeout, clearTimeout, URL, document, chrome: { i18n: i18nFixture.forLocale('en') }, location: { hostname }, matchMedia: () => ({ matches: true }), getComputedStyle: () => ({ display: 'block', visibility: 'visible' }) });
   vm.runInContext(source('i18n.js'), c);
   vm.runInContext(source('settings.js'), c); vm.runInContext(source('controls.js'), c); vm.runInContext(source('gallery.js'), c);
   function image(src, attributes = {}) {
@@ -92,9 +121,105 @@ function context(hostname = 'example.com') {
 }
 test('settings defaults, invalid storage values and independent bounds', () => {
   const { c } = context(); const normalize = c.ImageLens.settings.normalize;
-  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, zoomLocked: false, doubleClickExit: true, quickOpen: true });
-  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewBuffer: 6, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
+  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, overviewBuffer: 20, dividerMin: 1, compareStep: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, overviewBuffer: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 10, compareStep: 1, compareEnabled: false, zoomLocked: false, doubleClickExit: false, quickOpen: true });
   assert.equal(normalize({ language: 'pt' }).language, 'auto');
+  assert.equal(normalize({ overviewDirection: 'sideways' }).overviewDirection, 'vertical');
+  assert.equal(normalize({ overviewDirection: 'horizontal', overviewClean: true }).overviewDirection, 'horizontal');
+  assert.equal(normalize({ overviewClean: 'true' }).overviewClean, false);
+});
+test('overview packs ordered rows or columns without cropping or cross-axis overflow', () => {
+  const { c } = context();
+  const ratios = [1.8, .6, 1.3, 2, .8, 1, 1.6, .5, 3, 1.4, .7, 1.1, 1.8, .6, 1.3, 2, .8, 1];
+  for (const horizontal of [false, true]) for (const clean of [false, true]) {
+    const result = c.ImageLens.controls.overviewLayout(ratios, 1000, 560, horizontal, clean);
+    assert.equal(result.boxes.length, ratios.length);
+    const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
+    result.boxes.forEach((box, n) => {
+      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - ratios[n]) < .0001);
+      assert.ok(box.width > 0 && box.height > 0);
+      assert.ok(horizontal ? box.y + box.height <= 560.001 : box.x + box.width <= 1000.001);
+      if (n) {
+        const prior = result.boxes[n - 1];
+        assert.ok(horizontal ? box.x > prior.x || box.x === prior.x && box.y >= prior.y + prior.height :
+          box.y > prior.y || box.y === prior.y && box.x >= prior.x + prior.width);
+      }
+    });
+    assert.ok(horizontal ? result.width > 1000 : result.height > 560);
+  }
+});
+
+test('overview alignment and gap remain independent from scroll direction and decoration', () => {
+  const { c } = context(), ratios = [2, .45, 1, 3.2, .7, 1.5, 1, .5, 2.1, .9, 1.1, .4];
+  for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) for (const gap of [0, 12, 48]) for (const clean of [false, true]) {
+    const { boxes, width, height } = c.ImageLens.controls.overviewLayout(ratios, 1000, 600, horizontal, clean, alignment, gap);
+    const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
+    assert.equal(boxes.length, ratios.length);
+    boxes.forEach((a, n) => {
+      assert.ok(Math.abs((a.width - inset) / (a.height - inset - caption) - ratios[n]) < .00001);
+      assert.ok(a.x >= 0 && a.y >= 0 && a.x + a.width <= width + .01 && a.y + a.height <= height + .01);
+      for (const b of boxes.slice(n + 1)) assert.ok(a.x + a.width + gap <= b.x + .01 || b.x + b.width + gap <= a.x + .01 || a.y + a.height + gap <= b.y + .01 || b.y + b.height + gap <= a.y + .01);
+    });
+    if (horizontal) assert.equal(height, 600); else assert.equal(width, 1000);
+    if (alignment === 'auto') assert.ok(boxes.every(box => Math.abs((horizontal ? box.height : box.width) - (horizontal ? boxes[0].height : boxes[0].width)) < .01));
+  }
+  const normalize = c.ImageLens.settings.normalize;
+  assert.equal(normalize({ overviewAlignment: 'bogus' }).overviewAlignment, 'auto');
+  assert.equal(normalize({ overviewGap: -1 }).overviewGap, 0);
+  assert.equal(normalize({ overviewGap: 99 }).overviewGap, 48);
+});
+
+test('image identity preserves query identifiers, dimensions and signatures', () => {
+  const { c } = context(), g = c.ImageLens.gallery;
+  for (const param of ['q', 'w', 'width', 'height', 'quality', 'fit', 'token', 'x-amz-signature']) {
+    const first = `https://media.example.test/image?${param}=first`, second = `https://media.example.test/image?${param}=second`;
+    assert.notEqual(g.key(first), g.key(second));
+    assert.equal(g.key(first), first);
+  }
+});
+
+test('gallery snapshots retain identity and order across prepend, holes, aliases and recycled nodes', () => {
+  const { c } = context(), merge = c.ImageLens.gallery.mergeEntries;
+  const entry = (name, extra = {}) => ({ key: name, sources: [name], aliases: [name], ...extra });
+  const a = entry('a'), c1 = entry('c'), d = entry('d');
+  let records = merge([c1, d], [a, entry('b'), entry('c')], -1);
+  assert.deepEqual(plain(records.map(e => e.key)), ['a', 'b', 'c', 'd']);
+  records = merge(records, [entry('b'), entry('hole'), entry('c')]);
+  assert.deepEqual(plain(records.map(e => e.key)), ['a', 'b', 'hole', 'c', 'd']);
+  const oldBlob = entry('blob:old', { slotKey: 'data-id:7', slotStable: true });
+  const blobs = merge([oldBlob], [entry('blob:new', { slotKey: 'data-id:7', slotStable: true })]);
+  assert.equal(blobs.length, 1); assert.equal(blobs[0].key, 'blob:old'); assert.deepEqual(plain(blobs[0].sources), ['blob:new']);
+  assert.equal(merge([entry('thumb', { aliases: ['thumb', 'original'] })], [entry('original')]).length, 1);
+  const node = {};
+  assert.equal(merge([entry('first', { node })], [entry('unrelated', { node })]).length, 2);
+  assert.deepEqual(plain(merge([entry('e'), entry('f')], [entry('a'), entry('b'), entry('c')], -1).map(e=>e.key)), ['a', 'b', 'c', 'e', 'f']);
+});
+
+test('repeated reserved image slots exclude unrelated recommendation cards', () => {
+  const { c, image } = context(), pictures = [1, 2].map(n => image(`https://media.example.test/${n}.jpg`));
+  const scope = { children: [] }, attributes = id => [{ name: 'data-id', value: String(id) }];
+  for (let n = 0; n < 18; n++) {
+    const picture = pictures[n];
+    const node = { tagName: 'DIV', className: 'image-slot centered', parentElement: scope, attributes: attributes(n), children: picture ? [picture] : [],
+      getAttribute: name => name === 'data-id' ? String(n) : null, closest: () => null,
+      getBoundingClientRect: () => ({ width: 1000, height: 1600 }), querySelectorAll: selector => selector === 'img' && picture ? [picture] : [] };
+    if (picture) picture.parentElement = node;
+    scope.children.push(node);
+  }
+  scope.children.push({ tagName: 'DIV', className: 'recommendations', getBoundingClientRect: () => ({ width: 1000, height: 1600 }), closest: () => null });
+  const slots = c.ImageLens.gallery.slotsFor(scope, pictures[0]);
+  assert.equal(slots.length, 18); assert.equal(slots.filter(s => s.pending).length, 16);
+  assert.ok(slots.every(s => s.stable)); assert.equal(new Set(slots.map(s => s.key)).size, 18);
+});
+
+test('connected virtual nodes are revalidated before exit navigation', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const node = image('https://media.example.test/first.jpg'); node.isConnected = true;
+  const entry = { key: node.src, aliases: [node.src], node };
+  assert.equal(g.connectedEntryNode(entry, null), node);
+  node.src = node.currentSrc = 'https://media.example.test/second.jpg';
+  node.getAttribute = name => name === 'src' ? node.src : null;
+  assert.equal(g.connectedEntryNode(entry, null), null);
 });
 test('compact ruler keeps clickable quarter ticks and expands only its upper endpoint', () => {
   const { c } = context(); const controls = c.ImageLens.controls;
@@ -148,6 +273,18 @@ test('URL-parameter proxies retain supplied filenames instead of inventing origi
   assert.doesNotMatch(c.ImageLens.gallery.sources(i).join(' '), /photo\.png/);
 });
 
+test('generic detail links unwrap supplied image query parameters', () => {
+  const { c, image } = context();
+  const original = 'https://media.example.net/photos/landscape.jpg?token=abc';
+  const thumb = image('https://thumbs.example.net/landscape-320.jpg');
+  thumb.closest = selector => selector === 'a[href]' ? { href: `https://gallery.example.org/view?id=42&mediaurl=${encodeURIComponent(original)}` } : null;
+  assert.equal(c.ImageLens.gallery.sources(thumb)[0], original);
+  assert.equal(c.ImageLens.gallery.collect(original).entries.length, 1);
+  const underscoreAlias = 'https://media.example.net/photos/another.webp';
+  thumb.closest = selector => selector === 'a[href]' ? { href: `https://gallery.example.org/view?original_url=${encodeURIComponent(underscoreAlias)}` } : null;
+  assert.equal(c.ImageLens.gallery.sources(thumb)[0], underscoreAlias);
+});
+
 test('srcset and explicit original links, lazy images and safe protocols', () => {
   const { c, image } = context(); const g = c.ImageLens.gallery;
   const i = image('https://images.example.com/small.jpg', { srcset: 'https://images.example.com/medium.jpg 800w, https://images.example.com/full.jpg 2400w' });
@@ -156,20 +293,52 @@ test('srcset and explicit original links, lazy images and safe protocols', () =>
   const lazy = image('', { 'data-src': '/lazy.jpg' }); assert.equal(g.sources(lazy)[0], 'https://example.com/lazy.jpg');
   const signed = 'https://cdn.example.com/file.jpg?w=300&token=private&expires=123'; assert.equal(g.key(signed), signed);
 });
+test('lazy data-srcset and image CSS backgrounds use only page-supplied image URLs', () => {
+  const { c, image } = context(); const g = c.ImageLens.gallery;
+  const lazy = image('data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=', {
+    'data-srcset': '/thumb.webp 320w, /full.webp 1800w'
+  });
+  assert.equal(g.sources(lazy)[0], 'https://example.com/full.webp');
+  const background = { tagName: 'DIV', style: { backgroundImage: 'url("/background.webp")' },
+    getAttribute: () => null, hasAttribute: () => false, querySelector: () => null, querySelectorAll: () => [],
+    closest: () => null, getBoundingClientRect: () => ({ width: 240, height: 160 }) };
+  assert.deepEqual(plain(g.sources(background)), ['https://example.com/background.webp']);
+  const dataBackground = { ...background, style: {}, getAttribute: name => name === 'data-bg' ? 'url(/lazy-background.webp)' : null };
+  assert.deepEqual(plain(g.sources(dataBackground)), ['https://example.com/lazy-background.webp']);
+});
 test('generic gallery filters navigation, tiny icons and duplicate variants', () => {
   const { c, image } = context();
   const a = image('https://cdn.example.com/1.jpg?w=400');
-  image('https://cdn.example.com/1.jpg?w=1200');
-  image('https://cdn.example.com/2.jpg');
+  const duplicate = image('https://cdn.example.com/1.jpg?w=1200');
+  a.getAttribute = name => name === 'srcset' ? `${a.src} 400w, ${duplicate.src} 1200w` : null;
+  const second = image('https://cdn.example.com/2.jpg');
   const icon = image('https://cdn.example.com/icon.jpg'); icon.alt = 'avatar';
   const tiny = image('https://cdn.example.com/tiny.jpg'); tiny.getBoundingClientRect = () => ({ width: 16, height: 16 });
+  albumFixture(c, [a, duplicate, second, icon, tiny]);
   const result = c.ImageLens.gallery.collect(a.src);
   assert.equal(result.entries.length, 2); assert.equal(result.index, 0);
+});
+test('transparent one-pixel lazy placeholders do not become gallery entries', () => {
+  const { c, image } = context();
+  const placeholder = image('data:image/gif;base64,R0lGODlhAQABAIAAAAUEBA==');
+  Object.assign(placeholder, { complete: true, naturalWidth: 1, naturalHeight: 1 });
+  const first = image('https://media.example.net/first.jpg');
+  const second = image('https://media.example.net/second.jpg');
+  albumFixture(c, [placeholder, first, second]);
+  const result = c.ImageLens.gallery.collect(first.src);
+  assert.deepEqual(plain(result.entries.map(e => e.key)), [first.src, second.src]);
+  const deferred = image(placeholder.src, { 'data-src': 'https://media.example.net/deferred.jpg' });
+  Object.assign(deferred, { complete: true, naturalWidth: 1, naturalHeight: 1 });
+  assert.deepEqual(plain(c.ImageLens.gallery.sources(deferred)), ['https://media.example.net/deferred.jpg']);
+  albumFixture(c, [deferred, first, second]);
+  const entry = c.ImageLens.gallery.collect('https://media.example.net/deferred.jpg').entries[0];
+  assert.equal(entry.thumb, 'https://media.example.net/deferred.jpg');
+  assert.equal(entry.dimensions, null);
 });
 function albumFixture(c, pictures, { semantic = true, hidden = false, positions = false } = {}) {
   const grid = { children: [], parentElement: null, querySelectorAll: selector => selector === 'img' ? pictures : [] };
   pictures.forEach((img, index) => {
-    const card = { tagName: 'FIGURE', parentElement: grid, children: [img], querySelectorAll: selector => selector === 'img' ? [img] : [],
+    const card = { getBoundingClientRect: () => ({ width: 320, height: 240 }), tagName: 'FIGURE', parentElement: grid, children: [img], querySelectorAll: selector => selector === 'img' ? [img] : [],
       getAttribute: name => positions && name === 'aria-posinset' ? String([3,1,2][index]) : null };
     grid.children.push(card); img.parentElement = card;
     img.closest = selector => selector.includes('[data-gallery]') ? (semantic ? grid : null) : selector.includes('[aria-posinset]') ? (positions ? card : null) : selector === '[aria-hidden="true"]' && hidden ? grid : null;
@@ -193,6 +362,67 @@ test('repeated image cards work without semantic classes or custom data attribut
   albumFixture(c, pictures, { semantic: false });
   image('https://media.example.net/unrelated.jpg');
   assert.equal(c.ImageLens.gallery.collect(pictures[0].src).entries.length, 2);
+});
+test('repeated media cards can use mixed child element tags', () => {
+  const { c, image } = context();
+  const pictures = [1,2,3].map(n => image(`https://media.example.net/${n}.jpg`));
+  const list = { children: [], parentElement: null, querySelectorAll: selector => selector === 'img' ? pictures : [] };
+  pictures.forEach((img, index) => {
+    const card = { getBoundingClientRect: () => ({ width: 320, height: 240 }), tagName: ['ARTICLE', 'LI', 'SECTION'][index], parentElement: list, children: [img],
+      querySelectorAll: selector => selector === 'img' ? [img] : [], getAttribute: () => null };
+    list.children.push(card); img.parentElement = card;
+    img.closest = () => null;
+  });
+  const result = c.ImageLens.gallery.collect(pictures[1].src, pictures[1]);
+  assert.equal(result.entries.length, 3); assert.equal(result.index, 1);
+});
+test('visually grouped image results can expose originals through detail-link parameters', () => {
+  const { c, image } = context();
+  const originals = [1,2,3].map(n => `https://media.example.net/${n}.jpg`);
+  const pictures = originals.map((original, index) => image(`https://thumb.example.net/${index + 1}-320.jpg`));
+  const list = { children: [], parentElement: null, querySelectorAll: selector => selector === 'img' ? pictures : [] };
+  pictures.forEach((img, index) => {
+    const link = { href: `https://gallery.example.org/detail?id=${index}&mediaurl=${encodeURIComponent(originals[index])}` };
+    const card = { getBoundingClientRect: () => ({ width: 320, height: 240 }), tagName: ['ARTICLE', 'LI', 'SECTION'][index], parentElement: list, children: [link],
+      querySelector: selector => selector === 'a[href]' ? link : selector.includes('img') ? img : null,
+      querySelectorAll: selector => selector === 'img' ? [img] : [], getAttribute: () => null };
+    link.parentElement = card; list.children.push(card); img.parentElement = card;
+    img.closest = selector => selector === 'a[href]' ? link : null;
+  });
+  const result = c.ImageLens.gallery.collect(pictures[1].src, pictures[1]);
+  assert.equal(result.entries.length, 3); assert.equal(result.index, 1);
+  assert.deepEqual(plain(result.entries.map(entry => entry.key)), originals);
+});
+test('nested repeated image rows form one bounded gallery group', () => {
+  const { c, image } = context();
+  const pictures = [1,2,3,4].map(n => image(`https://media.example.net/row-${n}.jpg`));
+  const grid = { children: [], parentElement: null, querySelectorAll: selector => selector === 'img' ? pictures : [] };
+  for (let rowIndex = 0; rowIndex < 2; rowIndex++) {
+    const row = { tagName: 'UL', parentElement: grid, children: [],
+      querySelector: selector => selector.includes('img') ? pictures[rowIndex * 2] : null,
+      querySelectorAll: selector => selector === 'img' ? pictures.slice(rowIndex * 2, rowIndex * 2 + 2) : [] };
+    for (const img of pictures.slice(rowIndex * 2, rowIndex * 2 + 2)) {
+      const card = { tagName: 'LI', parentElement: row, children: [img], getAttribute: () => null,
+        querySelector: selector => selector.includes('img') ? img : null,
+        querySelectorAll: selector => selector === 'img' ? [img] : [] };
+      img.parentElement = card; img.closest = () => null; row.children.push(card);
+    }
+    grid.children.push(row);
+  }
+  const result = c.ImageLens.gallery.collect(pictures[2].src, pictures[2]);
+  assert.equal(result.entries.length, 4); assert.equal(result.index, 2);
+});
+test('same-level image cards can mix IMG elements and CSS background photos', () => {
+  const { c, image } = context();
+  const first = image('https://media.example.net/first.jpg');
+  const background = { tagName: 'DIV', style: { backgroundImage: 'url(https://media.example.net/second.jpg)' },
+    getAttribute: () => null, hasAttribute: () => false, querySelector: () => null, querySelectorAll: () => [],
+    closest: () => null, getBoundingClientRect: () => ({ width: 200, height: 140 }) };
+  const third = image('https://media.example.net/third.jpg');
+  albumFixture(c, [first, background, third]);
+  const result = c.ImageLens.gallery.collect(first.src);
+  assert.equal(result.entries.length, 3);
+  assert.equal(result.entries[1].key, 'https://media.example.net/second.jpg');
 });
 
 test('a modal original reconnects to its explicitly linked background gallery', () => {
@@ -223,12 +453,12 @@ test('gallery discovery uses structural data rather than host dispatch or propri
   const gallery = source('gallery.js');
   assert.doesNotMatch(gallery, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)|https?:\/\/[a-z]/i);
   const attributes = new Set(gallery.match(/data-[a-z-]+/g));
-  const allowed = new Set(['data-original','data-full','data-full-src','data-large-file','data-src','data-gallery']);
+  const allowed = new Set(['data-original','data-original-src','data-full','data-full-src','data-large-file','data-src','data-lazy-src','data-image','data-image-src','data-url','data-srcset','data-lazy-srcset','data-original-srcset','data-bg','data-background','data-background-image','data-gallery']);
   for (const attribute of attributes) assert.ok(allowed.has(attribute), attribute);
 });
 
 test('product descriptions omit development endpoints and retain independent product positioning', () => {
-  for (const file of ['README.md','PRIVACY.md','docs/STORE-LISTING.md']) assert.doesNotMatch(source(file), /127\.0\.0\.1|localhost|18766|node tests\//i, file);
+  for (const file of ['README.md','PRIVACY.md','docs/STORE-LISTING.md', ...locales.map(locale => `release/listing/${locale}-description.txt`)]) assert.doesNotMatch(source(file), /127\.0\.0\.1|localhost|18766|node tests\//i, file);
   for (const file of ['README.md','docs/STORE-LISTING.md']) {
     assert.match(source(file), /Photoshop/); assert.match(source(file), /ACDSee/);
     assert.match(source(file), /not affiliated|not.*affiliated/);
@@ -253,7 +483,7 @@ function background(existingStore = {}, settings = { zoomStep: 25 }) {
     scripting: { async executeScript(options) { calls.push(['inject', options]); } },
     tabs: { async create(options) { calls.push(['tab', options]); } }
   };
-  const c = vm.createContext({ chrome, console, URL, crypto: { randomUUID: () => 'unit-token' } });
+  const c = vm.createContext({ setTimeout, clearTimeout, chrome, console, URL, crypto: { randomUUID: () => 'unit-token' } });
   vm.runInContext(source('background.js'), c);
   const message = (request, sender) => new Promise(resolve => {
     if (chrome.runtime.onMessage.callbacks[0](request, sender, resolve) !== true) resolve();
@@ -275,6 +505,23 @@ test('context menu opens the selected image in its original frame', async () => 
   assert.deepEqual(plain(injects[0][1].target), { tabId: 4, frameIds: [3] });
   assert.deepEqual(plain(injects[0][1].files), ['locale-catalogs.js', 'i18n.js', 'settings.js', 'controls.js', 'preferences.js', 'gallery.js', 'viewer.js', 'quick-open.js']);
   assert.deepEqual(plain(injects[1][1].args), ['https://cdn.example.com/image.jpg', { zoomStep: 25 }]);
+});
+
+test('covered image context menu resolves only in its sender frame and rejects missing targets', async () => {
+  const b = background();
+  b.chrome.tabs.sendMessage = async (tabId, message, options) => {
+    assert.equal(tabId, 4); assert.equal(options.frameId, 7); assert.equal(message.type, 'lens-resolve-context');
+    return { source: 'https://media.example.test/photo?q=identity' };
+  };
+  b.chrome.contextMenus.onClicked.callbacks[0]({ menuItemId: 'image-lens-open', frameId: 7 }, { id: 4 });
+  await new Promise(resolve => setImmediate(resolve));
+  const injected = b.calls.filter(c => c[0] === 'inject');
+  assert.deepEqual(plain(injected[0][1].target), { tabId: 4, frameIds: [7] });
+  assert.equal(injected[1][1].args[0], 'https://media.example.test/photo?q=identity');
+  b.calls.length = 0; b.chrome.tabs.sendMessage = async () => ({ source: '' });
+  b.chrome.contextMenus.onClicked.callbacks[0]({ menuItemId: 'image-lens-open', frameId: 7 }, { id: 4 });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(b.calls.length, 0);
 });
 test('cross-origin frame falls back to one-image tab, without changing any window', async () => {
   const b = background(); b.chrome.scripting.executeScript = async () => { throw Error('Cannot access frame'); };
@@ -306,23 +553,25 @@ test('quick entry worker rechecks the disabled switch and rejects invalid reques
 });
 
 test('Ctrl-click works before viewer modules load, leaves other clicks alone and updates its switch', async () => {
-  const handlers = new Map(); const calls = []; const listeners = new Set();
+  const handlers = new Map(); const calls = []; const listeners = new Set(); const messageListeners = new Set();
   let settings = { quickOpen: true };
-  const c = vm.createContext({
-    AbortController, URL, document: { baseURI: 'https://example.com/album/' },
+  const c = vm.createContext({ setTimeout, clearTimeout,
+    AbortController, URL, location: { href: 'https://example.com/album/' }, getComputedStyle: node => ({ backgroundImage: node.backgroundImage || 'none' }), document: { baseURI: 'https://example.com/album/' },
     window: { addEventListener(type, callback, { signal }) {
       if (!handlers.has(type)) handlers.set(type, new Set());
       handlers.get(type).add(callback);
       signal.addEventListener('abort', () => handlers.get(type).delete(callback));
     } },
-    chrome: { runtime: { async sendMessage(message) { calls.push(message); return { ok: true }; } }, storage: {
+    chrome: { runtime: { onMessage: { addListener: fn => messageListeners.add(fn), removeListener: fn => messageListeners.delete(fn) }, async sendMessage(message) { calls.push(message); return { ok: true }; } }, storage: {
       local: { async get() { return { settings }; } },
       onChanged: { addListener: fn => listeners.add(fn), removeListener: fn => listeners.delete(fn) }
     } }
   });
   vm.runInContext(source('quick-open.js'), c); await Promise.resolve();
   assert.equal(c.ImageLens.open, undefined); assert.equal(c.ImageLens.gallery, undefined);
-  const image = { tagName: 'IMG', src: '../picture.jpg', getAttribute: () => null };
+  let anchorHref = '';
+  const image = { tagName: 'IMG', src: '../picture.jpg', getAttribute: () => null,
+    closest: selector => selector === 'a[href]' && anchorHref ? { href: anchorHref } : null };
   const dispatch = (type = 'click', extra = {}) => {
     const event = { button: 0, ctrlKey: true, composedPath: () => [image], prevented: false, stopped: false,
       preventDefault() { this.prevented = true; }, stopImmediatePropagation() { this.stopped = true; }, ...extra };
@@ -336,11 +585,52 @@ test('Ctrl-click works before viewer modules load, leaves other clicks alone and
   assert.equal(dispatch('mousedown').prevented, true);
   assert.equal(dispatch().stopped, true);
   assert.deepEqual(plain(calls[0]), { type: 'lens-quick-open', source: 'https://example.com/picture.jpg' });
+  const linkedImage = 'https://media.example.net/photos/original.jpg?key=private';
+  anchorHref = `https://gallery.example.org/view?id=42&imgurl=${encodeURIComponent(linkedImage)}`;
+  dispatch();
+  assert.deepEqual(plain(calls[1]), { type: 'lens-quick-open', source: linkedImage });
+  anchorHref = `https://gallery.example.org/view?image_src=${encodeURIComponent(linkedImage)}`;
+  dispatch();
+  assert.deepEqual(plain(calls[2]), { type: 'lens-quick-open', source: linkedImage });
   settings = { quickOpen: false }; for (const listener of listeners) listener({ settings: { newValue: settings } }, 'local');
-  assert.equal(dispatch().prevented, false); assert.equal(calls.length, 1);
+  assert.equal(dispatch().prevented, false); assert.equal(calls.length, 3);
   settings = { quickOpen: true }; for (const listener of listeners) listener({ settings: { newValue: settings } }, 'local');
   vm.runInContext(source('quick-open.js'), c); await Promise.resolve();
   assert.equal(listeners.size, 1); assert.equal(handlers.get('click').size, 1);
-  dispatch(); assert.equal(calls.length, 2);
-  image.src = 'javascript:alert(1)'; assert.equal(dispatch().prevented, false); assert.equal(calls.length, 2);
+  dispatch(); assert.equal(calls.length, 4);
+  image.src = 'javascript:alert(1)'; anchorHref = ''; assert.equal(dispatch().prevented, false); assert.equal(calls.length, 4);
+  image.src = '../picture.jpg';
+  image.getBoundingClientRect = () => ({ left: 10, top: 20, right: 210, bottom: 220, width: 200, height: 200 });
+  const overlay = { tagName: 'A', getAttribute: () => null, querySelectorAll: () => [] };
+  const card = { tagName: 'DIV', getAttribute: () => null, querySelectorAll: () => [image] };
+  const overImage = { clientX: 100, clientY: 100, composedPath: () => [overlay, card] };
+  assert.equal(dispatch('click', overImage).prevented, true);
+  assert.equal(calls.length, 5);
+  assert.equal(dispatch('click', { ...overImage, clientX: 250 }).prevented, false);
+  assert.equal(dispatch('click', { ...overImage, composedPath: () => [{ tagName: 'BUTTON' }, card] }).prevented, false);
+  assert.equal(dispatch('click', { ...overImage, composedPath: () => [overlay, { ...card, querySelectorAll: () => [image, image] }] }).prevented, false);
+  assert.equal(dispatch('click', { ...overImage, composedPath: () => [overlay, { ...card, querySelectorAll: () => Array(9).fill(image) }] }).prevented, false);
+  assert.equal(calls.length, 5);
+  const background = { ...card, hasAttribute: () => false, getBoundingClientRect: image.getBoundingClientRect, backgroundImage: 'url(/texture.png)' };
+  const container = { ...background, tagName: 'MAIN', querySelectorAll: () => Array(12).fill(image) };
+  const body = { ...background, tagName: 'BODY' };
+  dispatch('click', { ...overImage, composedPath: () => [overlay, card, container, body] });
+  assert.equal(calls.at(-1).source, 'https://example.com/picture.jpg');
+  assert.equal(dispatch('click', { ...overImage, composedPath: () => [overlay, container, body] }).prevented, false);
+  const cssPhoto = { ...background, backgroundImage: 'url(/photo.webp)', querySelectorAll: () => [] };
+  assert.equal(dispatch('click', { ...overImage, composedPath: () => [overlay, cssPhoto, container, body] }).prevented, true);
+  assert.equal(calls.at(-1).source, 'https://example.com/photo.webp');
+  const pixel = { ...image, src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBA==', complete: true, naturalWidth: 1, naturalHeight: 1 };
+  dispatch('click', { ...overImage, composedPath: () => [pixel, { ...card, querySelectorAll: () => [pixel, image] }] });
+  assert.equal(calls.at(-1).source, 'https://example.com/picture.jpg');
+  image.isConnected = true;
+  dispatch('pointerover', { ...overImage, ctrlKey: false });
+  assert.equal(calls.at(-1).type, 'lens-context-target'); assert.equal(calls.at(-1).detected, true);
+  dispatch('contextmenu', { ...overImage, button: 2, ctrlKey: false });
+  let resolved; [...messageListeners][0]({ type: 'lens-resolve-context' }, {}, value => { resolved = value.source; });
+  assert.equal(resolved, 'https://example.com/picture.jpg');
+  [...messageListeners][0]({ type: 'lens-resolve-context' }, {}, value => { resolved = value.source; });
+  assert.equal(resolved, '');
+  dispatch('pointerover', { ctrlKey: false, composedPath: () => [{ tagName: 'BODY' }] });
+  assert.equal(calls.at(-1).detected, false);
 });
