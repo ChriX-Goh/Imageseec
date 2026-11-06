@@ -6631,8 +6631,6 @@
         "file:tests/generic-gallery.html",
         "file:tests/generic-gallery.js",
         "file:tests/i18n-fixture.cjs",
-        "file:tests/package.py",
-        "file:tests/public-audit.cjs",
         "document:tests/QA.md",
         "file:tests/quick-demo.html",
         "file:tests/quick-demo.js",
