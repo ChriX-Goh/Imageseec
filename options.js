@@ -7,7 +7,8 @@
   let settings = { ...defaults };
   let error;
   let binding;
-  const version = globalThis.chrome?.runtime?.getManifest?.().version;
+  const manifest = globalThis.chrome?.runtime?.getManifest?.();
+  const version = manifest?.version_name || manifest?.version;
   if (version) document.querySelector('.version').textContent = version;
 
   function render() {

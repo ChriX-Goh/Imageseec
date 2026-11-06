@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Przeglądaj obrazy w internecie z nawigacją, powiększaniem, przesuwaniem i miniaturami."
+    "message": "Porównuj obrazy obok siebie, przeglądaj mozaikę, powiększaj i przesuwaj."
   },
   "settingsTitle": {
     "message": "Ustawienia Imageseec"
@@ -156,5 +156,74 @@
   },
   "languageAuto": {
     "message": "Automatycznie (język przeglądarki)"
+  },
+  "compareStepSingle": {
+    "message": "Jeden obraz"
+  },
+  "overviewEnd": {
+    "message": "Koniec galerii"
+  },
+  "overviewTitle": {
+    "message": "Przegląd obrazów"
+  },
+  "leftPane": {
+    "message": "Lewy obraz"
+  },
+  "singleView": {
+    "message": "Widok jednego obrazu"
+  },
+  "overviewLoading": {
+    "message": "Wczytywanie kolejnych obrazów…"
+  },
+  "compareSection": {
+    "message": "Porównywanie obrazów"
+  },
+  "splitView": {
+    "message": "Porównaj obrazy"
+  },
+  "dividerMin": {
+    "message": "Minimalna szerokość panelu"
+  },
+  "overviewBuffer": {
+    "message": "Wcześniej wczytane miniatury"
+  },
+  "rightPane": {
+    "message": "Prawy obraz"
+  },
+  "compareStep": {
+    "message": "Przesunięcie"
+  },
+  "exitOverview": {
+    "message": "Wróć do przeglądarki"
+  },
+  "unlockPane": {
+    "message": "Odblokuj panel"
+  },
+  "overviewView": {
+    "message": "Pełny przegląd obrazów"
+  },
+  "lockPane": {
+    "message": "Zablokuj panel"
+  },
+  "overviewSection": {
+    "message": "Pełny przegląd"
+  },
+  "compareStepPair": {
+    "message": "Dwa obrazy"
+  },
+  "resetDivider": {
+    "message": "Zresetuj podział"
+  },
+  "overviewDirection": {
+    "message": "Kierunek przeglądania"
+  },
+  "overviewVertical": {
+    "message": "Przeglądanie pionowe"
+  },
+  "overviewHorizontal": {
+    "message": "Przeglądanie poziome"
+  },
+  "overviewClean": {
+    "message": "Ukryj obramowania i podpisy"
   }
 }

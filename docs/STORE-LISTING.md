@@ -8,13 +8,13 @@ Imageseec
 
 ## English short description
 
-View webpage images with gallery navigation, zoom, free panning and thumbnail previews.
+Compare webpage images side by side, browse a masonry overview, zoom and pan.
 
 ## English full description
 
 See the image. Stay in your browser.
 
-Built for people who enjoy the viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and move quickly through images. Imageseec brings that desktop-inspired approach to webpage images, with its own browser controls.
+Built for people who enjoy the image-viewing habits of Photoshop and ACDSee: hold to magnify, pan directly, adjust zoom precisely and browse images quickly. Imageseec brings that desktop-inspired approach to webpages with its own browser controls.
 
 Imageseec opens webpage images in a focused, page-filling viewer. Right-click a picture or use Ctrl + left-click to get started.
 
@@ -27,13 +27,16 @@ Choose from 11 interface languages, or let Imageseec follow your browser languag
 - Hover the percentage for a compact vertical zoom ruler, or click it to cycle through current zoom, fit page and 100%.
 - Lock a zoom percentage while switching pictures.
 - Move to the bottom edge for nearby thumbnail previews.
-- Adjust preloading and preview counts independently. Settings save immediately.
+- Compare two images at once. Drag the divider, double-click to reset it, and lock either pane while the other advances. Choose one-image or two-image steps.
+- Open an adaptive masonry overview, scroll with the wheel or Up / Down keys, and select an image to return to the viewer.
+- For detected galleries, scan for more thumbnails on demand as the webpage lazy-loads or virtualizes images. The page and nested scroll positions are restored after each scan.
+- Adjust full-resolution preloading, preview counts and overview thumbnails independently. Settings save immediately.
 
 The initial image keeps its aspect ratio, fits the available page area and is never enlarged beyond its original size. An optional fullscreen button hides browser chrome when you choose.
 
 No account is required by Imageseec. It has no analytics or developer-operated backend. Settings stay in local browser storage. Images and preloads are requested from their existing website image hosts.
 
-Gallery discovery depends on images already loaded by the webpage. Compatibility varies by site; canvas images, CSS backgrounds and galleries spanning multiple pages may not work. Chrome restricts extensions on internal browser pages and the Chrome Web Store.
+Gallery discovery uses common document structures, image sources, responsive `srcset` / `picture`, lazy source attributes and CSS backgrounds inside detected gallery cards. Compatibility is heuristic and varies by webpage. Canvas images, closed shadow roots and galleries spanning multiple pages are not supported. Chrome restricts extensions on internal browser pages and the Chrome Web Store.
 
 Imageseec is independent and is not affiliated with or endorsed by the makers of Photoshop or ACDSee. It is not a plugin for those applications. Product names belong to their respective owners.
 
@@ -45,27 +48,19 @@ Imageseec
 
 ### 简短说明
 
-查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。
-
-### 详细介绍
-
-### 商店标题
-
-Imageseec
-
-### 简短说明
-
-查看网页图片，支持相邻切图、缩放、自由拖拽和缩略图预览。
+并排比较网页图片，瀑布流浏览图库，精细缩放与自由拖拽。
 
 ### 详细介绍
 
 为熟悉 Photoshop、ACDSee 看图操作习惯的用户设计：临时放大、直接拖拽、精细缩放、快速切图，把桌面看图的操作思路带进浏览器。Imageseec 有自己的快捷键设计，不代表完全复刻这两款软件。
 
-Imageseec 将网页图片放进简洁的浏览器看图界面。右键打开，或 Ctrl＋左键直达；使用滚轮和方向键切图，Alt＋滚轮缩放，Shift＋滚轮微调。
+Imageseec 将网页图片放进专注的浏览器看图界面。右键打开，或 Ctrl＋左键快速进入；使用滚轮和方向键切图，Alt＋滚轮缩放，Shift＋滚轮微调。
 
-按住左键临时放大，松开恢复；Alt＋左键自由拖拽。悬停倍率按钮展开竖向刻度尺，锁定倍率后可连续浏览不同尺寸的图片。移到下边缘显示相邻缩略图，预缓存和预览数量可以独立设置。
+按住左键临时放大，松开恢复；Alt＋左键自由拖拽。可并排比较两张图片，拖动中线调整版面、双击复位，并锁定一侧让另一侧继续切换。切换步进可选单张或双张。移到下边缘显示相邻缩略图，悬停倍率按钮展开竖向刻度尺。
 
-默认保持比例并适合页面，小图不会在初次打开时被放大。Imageseec 不要求账号，不含统计服务；设置保存在本机，图片请求发往原网站图片服务器。相邻图识别依赖网页已经加载的内容，兼容情况因网站而异。
+瀑布流全览可滚动浏览当前图库。对于已识别的图库，Imageseec 会在需要更多缩略图时按需扫描网页懒加载或虚拟列表，并在每次扫描后恢复网页及嵌套区域的滚动位置。预缓存、缩略图预览和全览缓冲数量可分别设置，修改会立即保存。
+
+默认保持比例并适合页面，小图不会在初次打开时被放大。图片识别使用常见网页结构、响应式图片来源、懒加载属性，以及同级图库卡片中的 CSS 背景图；兼容性取决于网页结构。Canvas 图片、封闭的 Shadow DOM 和跨页面图库不支持通用识别。Imageseec 不要求账号，不含统计服务；设置保存在本机，图片请求发往网页指定的图片服务器。
 
 Imageseec 为独立项目，与 Photoshop、ACDSee 的厂商没有隶属、合作或认可关系，也不是安装到这两款软件中的插件。相关产品名称属于各自权利人。
 
@@ -89,9 +84,9 @@ Data disclosures must be completed against the final audited package, consistent
 
 ## Screenshot storyboard
 
-1. Full viewer on generated or author-owned imagery: page-filling view and original dimensions.
-2. Expanded vertical zoom ruler and zoom lock, with a high-zoom image.
-3. Bottom thumbnail strip and navigation on a synthetic album.
-4. Settings panel with immediate-save controls.
+1. Side-by-side comparison using generated or author-owned images, with the center divider and pane lock visible.
+2. Adaptive full-overview masonry with a selected image and neighboring thumbnails.
+3. Viewer navigation with the vertical zoom ruler and zoom lock.
+4. Settings panel with compare stepping, divider minimum and overview-buffer controls.
 
 Use only synthetic or properly licensed assets. Do not use private galleries, account menus, signed image URLs, personal browser tabs or unredacted profile details. Supply fresh screenshots from the final localized build.

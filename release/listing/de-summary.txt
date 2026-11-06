@@ -1,1 +1,1 @@
-Webbilder mit Galerienavigation, Zoom, freiem Verschieben und Vorschaubildern ansehen.
+Webbilder nebeneinander vergleichen, als Mosaik durchsuchen, zoomen und verschieben.

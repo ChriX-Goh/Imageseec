@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Просмотр изображений с навигацией, масштабированием, свободным перемещением и миниатюрами."
+    "message": "Сравнивайте изображения рядом, просматривайте мозаику, масштабируйте и перемещайте."
   },
   "settingsTitle": {
     "message": "Настройки Imageseec"
@@ -156,5 +156,74 @@
   },
   "languageAuto": {
     "message": "Автоматически (язык браузера)"
+  },
+  "compareStepSingle": {
+    "message": "По одному"
+  },
+  "overviewEnd": {
+    "message": "Конец галереи"
+  },
+  "overviewTitle": {
+    "message": "Обзор изображений"
+  },
+  "leftPane": {
+    "message": "Левое изображение"
+  },
+  "singleView": {
+    "message": "Одно изображение"
+  },
+  "overviewLoading": {
+    "message": "Загрузка следующих изображений…"
+  },
+  "compareSection": {
+    "message": "Сравнение изображений"
+  },
+  "splitView": {
+    "message": "Сравнить изображения"
+  },
+  "dividerMin": {
+    "message": "Минимальная ширина панели"
+  },
+  "overviewBuffer": {
+    "message": "Миниатюр в предзагрузке"
+  },
+  "rightPane": {
+    "message": "Правое изображение"
+  },
+  "compareStep": {
+    "message": "Шаг перехода"
+  },
+  "exitOverview": {
+    "message": "Вернуться к просмотру"
+  },
+  "unlockPane": {
+    "message": "Открепить панель"
+  },
+  "overviewView": {
+    "message": "Обзор изображений"
+  },
+  "lockPane": {
+    "message": "Закрепить панель"
+  },
+  "overviewSection": {
+    "message": "Общий обзор"
+  },
+  "compareStepPair": {
+    "message": "По два"
+  },
+  "resetDivider": {
+    "message": "Сбросить разделитель"
+  },
+  "overviewDirection": {
+    "message": "Направление просмотра"
+  },
+  "overviewVertical": {
+    "message": "Вертикальный просмотр"
+  },
+  "overviewHorizontal": {
+    "message": "Горизонтальный просмотр"
+  },
+  "overviewClean": {
+    "message": "Скрыть рамки и подписи"
   }
 }

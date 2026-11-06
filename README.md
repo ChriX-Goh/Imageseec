@@ -1,6 +1,8 @@
 # Imageseec
 
-A Chrome Manifest V3 image viewer with page-filling viewing, adjacent-image navigation, temporary magnification, free panning and a compact zoom ruler.
+Current development build: **2.0 b2** (Chrome version `2.0.0.2`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+
+A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, a masonry overview, temporary magnification, free panning and a compact zoom ruler.
 
 Designed around the desktop viewing habits familiar to Photoshop and ACDSee users: temporary magnification, precise zoom, direct panning and quick image browsing, brought to the browser. Imageseec uses its own controls and does not reproduce every shortcut from either application.
 
@@ -27,6 +29,13 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Zoom presets | Click the percentage: current zoom, fit page, 100%, current zoom |
 | Zoom ruler | Hover the percentage; click a tick, drag, or scroll |
 | Keep zoom across images | Toggle the zoom lock |
+| Compare two images | Split-view icon; the clicked image is on the left and the next image is on the right |
+| Move through comparisons | Choose one-image or two-image steps in settings; the default advances two images |
+| Hold one comparison pane | Hover a pane and select its lock icon; only the other pane then changes |
+| Resize comparison panes | Drag the divider; double-click it to reset to equal widths |
+| Browse the image group | Select overview; vertical browsing reads each row left to right and scrolls down by default |
+| Horizontal overview | Select Horizontal browsing in settings; read down each column and scroll right with the wheel or arrow keys |
+| Clean overview | Hide thumbnail borders and captions in settings |
 | Thumbnail strip | Move to the bottom edge; move away to hide |
 | Fit without enlarging | 0 |
 | First / last image | Home / End |
@@ -35,13 +44,13 @@ No build step, desktop helper or background server is required. Keep the unpacke
 
 The initial view preserves aspect ratio, fits the webpage viewport and never enlarges beyond the original image size. Manual fit-page mode can enlarge small images. The default view leaves the browser tabs and address bar visible; browser fullscreen is requested only through F or the fullscreen button.
 
-Settings save immediately. Defaults: 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, and three preview thumbnails on each side. Cache and preview counts are independent. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
+Settings save immediately. Defaults include 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, three preview thumbnails on each side, a 33% minimum pane width, two-image comparison steps, and six overview thumbnails buffered ahead. Cache, preview and overview counts are independent. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
 
 ## Gallery compatibility
 
-Imageseec discovers images already present in the page using common gallery, list, grid and repeated-card structures. It reads image links, responsive `srcset` / `picture`, lazy-loading attributes and explicitly supplied full-image addresses. DOM order is used unless a complete, unambiguous standard ARIA sequence is available. This is heuristic compatibility, not a guarantee for every webpage or future layout change.
+Imageseec discovers images using common gallery, list, grid and repeated-card structures. It reads `img`, responsive `srcset` / `picture`, common lazy source attributes, explicitly supplied full-image addresses and CSS backgrounds within the same detected group. It watches relevant DOM changes and can scroll the source group behind the viewer when the overview needs more thumbnails; the page and nested scroll positions are restored after each scan. DOM order is used unless a complete, unambiguous standard ARIA sequence is available. Discovery remains heuristic and does not guarantee compatibility with every webpage or future layout change.
 
-Infinite-scroll content must first be loaded by the website. CSS backgrounds, canvas images, closed shadow roots and cross-page galleries are not fully supported. Some restricted pages cannot host a viewer; a single-image tab is used as a fallback when possible. Expired or protected image URLs may fail.
+Canvas images, closed shadow roots and cross-page galleries are not supported by the generic DOM reader. A virtualized gallery may discard old items while scrolling, and protected image URLs may fail. Some restricted pages cannot host a viewer; a single-image tab is used as a fallback when possible.
 
 ## Permissions and privacy
 

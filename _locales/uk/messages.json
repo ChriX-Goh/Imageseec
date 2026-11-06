@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "Перегляд зображень із навігацією, масштабуванням, вільним переміщенням і мініатюрами."
+    "message": "Порівнюйте зображення поруч, переглядайте мозаїку, масштабуйте та переміщуйте."
   },
   "settingsTitle": {
     "message": "Налаштування Imageseec"
@@ -156,5 +156,74 @@
   },
   "languageAuto": {
     "message": "Автоматично (мова браузера)"
+  },
+  "compareStepSingle": {
+    "message": "По одному"
+  },
+  "overviewEnd": {
+    "message": "Кінець галереї"
+  },
+  "overviewTitle": {
+    "message": "Огляд зображень"
+  },
+  "leftPane": {
+    "message": "Ліве зображення"
+  },
+  "singleView": {
+    "message": "Одне зображення"
+  },
+  "overviewLoading": {
+    "message": "Завантаження наступних зображень…"
+  },
+  "compareSection": {
+    "message": "Порівняння зображень"
+  },
+  "splitView": {
+    "message": "Порівняти зображення"
+  },
+  "dividerMin": {
+    "message": "Мінімальна ширина панелі"
+  },
+  "overviewBuffer": {
+    "message": "Мініатюр у передзавантаженні"
+  },
+  "rightPane": {
+    "message": "Праве зображення"
+  },
+  "compareStep": {
+    "message": "Крок переходу"
+  },
+  "exitOverview": {
+    "message": "Повернутися до перегляду"
+  },
+  "unlockPane": {
+    "message": "Відкріпити панель"
+  },
+  "overviewView": {
+    "message": "Огляд зображень"
+  },
+  "lockPane": {
+    "message": "Закріпити панель"
+  },
+  "overviewSection": {
+    "message": "Загальний огляд"
+  },
+  "compareStepPair": {
+    "message": "По два"
+  },
+  "resetDivider": {
+    "message": "Скинути роздільник"
+  },
+  "overviewDirection": {
+    "message": "Напрямок перегляду"
+  },
+  "overviewVertical": {
+    "message": "Вертикальний перегляд"
+  },
+  "overviewHorizontal": {
+    "message": "Горизонтальний перегляд"
+  },
+  "overviewClean": {
+    "message": "Приховати рамки та підписи"
   }
 }

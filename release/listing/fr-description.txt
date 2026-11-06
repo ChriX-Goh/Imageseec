@@ -19,6 +19,8 @@ L’image conserve ses proportions. Dans l’affichage adapté à la page, elle 
 
 Imageseec ne demande aucun compte, ne contient ni outil d’analyse ni publicité et n’exploite pas de serveur propre. Les préférences restent dans le navigateur. Les images et leur préchargement sont demandés aux serveurs d’images utilisés par la page.
 
-La détection de galerie repose sur le contenu déjà chargé par la page. La compatibilité varie selon le site ; les images canvas, les arrière-plans CSS et les galeries réparties sur plusieurs pages peuvent ne pas être détectés. Chrome limite les extensions sur ses pages internes et dans le Chrome Web Store.
+Comparez deux images côte à côte. Déplacez le séparateur et double-cliquez pour le recentrer. Verrouillez un panneau pendant que l’autre avance. Choisissez un ou deux éléments par étape. Dans la mosaïque adaptative, faites défiler avec la molette ou les flèches haut/bas, puis sélectionnez une image pour revenir à la visionneuse. Les galeries détectées sont scannées à la demande, y compris avec chargement différé et listes virtuelles. Les défilements de la page et des zones imbriquées sont restaurés ensuite. Réglez séparément le préchargement, les vignettes et le tampon de la vue d’ensemble ; les changements sont enregistrés immédiatement.
+
+La détection utilise des structures courantes, des sources d’images adaptatives, des attributs de chargement différé et les arrière-plans CSS des cartes de galerie détectées. La compatibilité dépend de la page. Les images Canvas, Shadow DOM fermé et galeries réparties sur plusieurs pages ne sont pas détectés de façon générique. Chrome limite les extensions sur ses pages internes et dans le Chrome Web Store.
 
 Imageseec est un projet indépendant, sans affiliation ni approbation des éditeurs de Photoshop ou d’ACDSee. Ce n’est pas un plugin pour ces applications. Les noms de produits appartiennent à leurs propriétaires respectifs.

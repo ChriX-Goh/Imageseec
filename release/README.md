@@ -1,13 +1,11 @@
 # Imageseec store submission files
 
-- `listing/`: detailed descriptions, titles and summaries in English, Simplified Chinese, Traditional Chinese (Taiwan), Japanese, Korean, German, French, Spanish, Russian, Ukrainian and Polish.
-- `assets/`: store icon, optional promo art and two manually reviewed desktop product screenshots at 1280 × 800.
-- `reviewer-instructions.txt`: test steps that require no account or credentials.
+- `listing/`: English titles, summaries and descriptions for all 11 supported locales; full descriptions in English, Simplified Chinese and the remaining nine locales.
+- `assets/`: store icon, optional promotional art and desktop product screenshots. Screenshots must come from the final 2.0 build and use generated or author-owned imagery without third-party site branding.
+- `reviewer-instructions.txt`: account-free feature review steps.
 - `web/privacy.html`: generated mirror of the canonical policy in the repository root, `PRIVACY.md`.
-- `../dist/Imageseec-v1.5.2.zip`: the extension package generated from the runtime allowlist; version 1.5.2 is uploaded to the store draft.
+- `../dist/Imageseec-v2.0-b2.zip`: numbered local beta generated from the runtime allowlist. Final-source interaction QA and the owner's final acceptance remain outstanding. See `../docs/BUILDS.md`.
 
-The draft contains the screenshots and localized descriptions. Its selected distribution is free, public and all regions. The home and privacy links point to the main repository, which is still private; the dashboard cannot verify those links until the repository is made public.
+The 20-site compatibility matrix and its evidence stay outside the public repository and these listing files. Do not include site identities, private image URLs, login states or account details in screenshots or store copy.
 
-Before submission, the account owner must review the privacy and permission disclosures and confirm they are accurate. The owner must also choose whether an approved item publishes automatically or remains deferred.
-
-Build the ZIP with `python tests/package.py`. Product copy and screenshots use generic gallery examples and do not name or brand specific websites. The viewer discovers adjacent images from common page structures; compatibility varies.
+Build the ZIP with `python tests/package.py`. GitHub may receive clearly marked test builds. Do not upload, submit for review or publish on the Chrome Web Store before the owner has accepted the exact build and explicitly authorized submission. The eventual store package and GitHub source must use the same verified revision.

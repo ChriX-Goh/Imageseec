@@ -3,7 +3,7 @@
     "message": "Imageseec"
   },
   "extDescription": {
-    "message": "檢視網頁圖片，支援相鄰切圖、縮放、自由拖曳與縮圖預覽。"
+    "message": "並排比較網頁圖片，以瀑布流瀏覽圖庫，精細縮放與自由拖曳。"
   },
   "settingsTitle": {
     "message": "Imageseec 設定"
@@ -156,5 +156,74 @@
   },
   "languageAuto": {
     "message": "自動（依瀏覽器）"
+  },
+  "compareStepSingle": {
+    "message": "逐張切換"
+  },
+  "overviewEnd": {
+    "message": "已到圖庫末端"
+  },
+  "overviewTitle": {
+    "message": "圖片全覽"
+  },
+  "leftPane": {
+    "message": "左側圖片"
+  },
+  "singleView": {
+    "message": "切換單圖檢視"
+  },
+  "overviewLoading": {
+    "message": "正在載入更多圖片…"
+  },
+  "compareSection": {
+    "message": "雙圖對照"
+  },
+  "splitView": {
+    "message": "切換雙圖對照"
+  },
+  "dividerMin": {
+    "message": "單欄最小寬度"
+  },
+  "overviewBuffer": {
+    "message": "預載縮圖數量"
+  },
+  "rightPane": {
+    "message": "右側圖片"
+  },
+  "compareStep": {
+    "message": "切換步長"
+  },
+  "exitOverview": {
+    "message": "返回圖片檢視"
+  },
+  "unlockPane": {
+    "message": "解除固定"
+  },
+  "overviewView": {
+    "message": "開啟全覽模式"
+  },
+  "lockPane": {
+    "message": "鎖定面板"
+  },
+  "overviewSection": {
+    "message": "全覽模式"
+  },
+  "compareStepPair": {
+    "message": "每次兩張"
+  },
+  "resetDivider": {
+    "message": "重設中線"
+  },
+  "overviewDirection": {
+    "message": "閱覽方向"
+  },
+  "overviewVertical": {
+    "message": "上下閱覽"
+  },
+  "overviewHorizontal": {
+    "message": "左右閱覽"
+  },
+  "overviewClean": {
+    "message": "隱藏邊框與描述"
   }
 }

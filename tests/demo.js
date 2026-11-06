@@ -26,7 +26,7 @@
   let altDrag = false;
   document.querySelector('#arm-alt').onclick = () => { altDrag = true; document.querySelector('#log').textContent = '下次拖拽使用 Alt 修饰键'; };
   document.addEventListener('pointerdown', event => {
-    if (altDrag && event.composedPath().some(n => n.classList?.contains('stage'))) {
+    if (altDrag && event.composedPath().some(n => n.classList?.contains('stage') || n.classList?.contains('compare'))) {
       Object.defineProperty(event, 'altKey', { value: true }); altDrag = false;
     }
   }, true);
@@ -40,15 +40,20 @@
   const view = () => {
     const root = document.querySelector('#image-lens-viewer')?.shadowRoot;
     if (!root) return null;
-    return { scale: root.querySelector('.fit').textContent, transform: root.querySelector('.photo').style.transform, holding: root.querySelector('.stage').classList.contains('holding'), dragging: root.querySelector('.stage').classList.contains('dragging') };
+    const stage = root.querySelector('.stage'), compare = root.querySelector('.compare');
+    return { scale: root.querySelector('.fit').textContent, transform: root.querySelector('.photo').style.transform,
+      holding: stage.classList.contains('holding') || compare.classList.contains('holding'),
+      dragging: stage.classList.contains('dragging') || compare.classList.contains('dragging'),
+      compareTransforms: [...root.querySelectorAll('.compare-pane img')].map(image => image.style.transform) };
   };
+  const inViewerSurface = event => event.composedPath().some(n => n.classList?.contains('stage') || n.classList?.contains('compare'));
   function print() { document.querySelector('#log').textContent = JSON.stringify(receipt, null, 2); }
   document.addEventListener('pointerdown', event => {
-    if (!event.composedPath().some(n => n.classList?.contains('stage'))) return;
+    if (!inViewerSurface(event)) return;
     receipt.beforeHold = view();
   }, true);
   document.addEventListener('pointerdown', event => {
-    if (event.composedPath().some(n => n.classList?.contains('stage'))) { receipt.duringHold = view(); print(); }
+    if (inViewerSurface(event)) { receipt.duringHold = view(); print(); }
   });
   document.addEventListener('pointermove', () => {
     if (view()?.holding || view()?.dragging) { receipt.movedHold = view(); }
@@ -63,7 +68,7 @@
     }
   });
   document.addEventListener('pointerup', event => {
-    if (!event.composedPath().some(n => n.classList?.contains('stage'))) return;
+    if (!inViewerSurface(event)) return;
     receipt.afterHold = view(); print();
   });
 })();

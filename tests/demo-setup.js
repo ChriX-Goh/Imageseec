@@ -19,8 +19,22 @@
   const listeners = new Set();
   let modules;
   globalThis.chrome = {
+    i18n: {
+      getUILanguage() { return document.documentElement.lang || 'en'; },
+      getMessage(key, substitutions = []) {
+        const catalogs = globalThis.ImageLens?.catalogs;
+        const locale = (document.documentElement.lang || 'en').replace('-', '_');
+        const message = catalogs?.[locale]?.[key]?.message || catalogs?.en?.[key]?.message || '';
+        return message.replace(/\$(\d+)\$/g, (_, index) => substitutions[Number(index) - 1] ?? '');
+      }
+    },
     runtime: {
+      getURL(path) { return new URL(path, `${location.origin}/`).href; },
       async sendMessage(message) {
+        if (message.type === 'lens-get-messages') {
+          const messages = globalThis.ImageLens?.catalogs?.[message.locale];
+          return messages ? { locale: message.locale, messages } : { ok: false };
+        }
         if (message.type !== 'lens-quick-open') return { ok: false };
         const { settings } = await chrome.storage.local.get('settings');
         if (settings?.quickOpen === false) return { ok: false };
@@ -36,6 +50,7 @@
           await modules;
         }
         document.documentElement.dataset.quickOpens = String(Number(document.documentElement.dataset.quickOpens || 0) + 1);
+        await ImageLens.i18n.setLanguage(settings?.language || 'auto');
         ImageLens.open(message.source, settings);
         return { ok: true };
       }
