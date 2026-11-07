@@ -62,3 +62,11 @@ The installed in-app extension was also verified against transparent card overla
 - In an installed isolated browser, the default overview packs thumbnails left to right within each row. Horizontal overview packs top to bottom within each column and scrolls only horizontally. The clean option removes visible thumbnail borders and captions and retains accessible labels. The new preferences persist after reopening.
 - In the nested lazy fixture, horizontal overview expanded the gallery from 6 to 30 cards. Closing normally or interrupting scanning restored the original document and nested offsets (720 and 190 CSS pixels).
 - `tests/installed-checks.js` is a test function evaluated in the installed extension's isolated content-script world after opening a gallery. It uses synthetic events to check handler logic, and Chrome storage to test preferences. Native keyboard, pointer, wheel and activation paths require independent browser input. Site lists, raw captures and site-specific traces are private and do not enter the package.
+
+## 2.0 b3 current-source fixture checks
+
+- On 2026-11-07, Codex's in-app browser loaded the current b3 viewer code in the generated-gallery fixture at a 1440 × 900 CSS viewport. This page uses the test-only Chrome API shim and is not an installed-extension or live-site result.
+- Real browser input verified G toggles overview and back; selecting image 8 opens 8/9; Esc from the image returns to overview and a second Esc restores the earlier 5/6 pair; double-clicking the image returns to overview; 1/2 switches single/compare modes.
+- The settings panel showed vertical browsing, automatic alignment, a 12 px image gap, a 6-image thumbnail buffer and all 11 language choices.
+- Closing from overview returned to the generated page. All nine cards fit in the tested viewport, so this does not validate deep-page scroll restoration.
+- The final-source 20-site interaction sweep, installed-extension dynamic-growth checks, and native context-menu selection remain incomplete.
