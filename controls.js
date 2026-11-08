@@ -35,9 +35,9 @@
         ends[lane] += (horizontal ? w : h) + gap;
       }
       const extent = Math.max(0, ...ends) - (safe.length ? gap : 0);
-      return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent };
+      return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize: count };
     }
-    let offset = 0;
+    let offset = 0; const bands = [];
     for (let start = 0; start < safe.length;) {
       let end = start, sum = 0;
       const target = horizontal ? Math.min(210, width) : Math.min(180, Math.max(100, width / 3));
@@ -51,6 +51,7 @@
         if (projected >= limit) break;
       }
       const n = end - start;
+      bands.push(n);
       const fit = Math.max(1, (limit - (n - 1) * gap - n * (horizontal ? padding + caption : padding)) / sum);
       const size = Math.min(fit, target * (end === safe.length || horizontal ? 1 : 1.35));
       let cross = 0;
@@ -63,7 +64,19 @@
       offset += size + padding + (horizontal ? 0 : caption) + gap;
       start = end;
     }
-    return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap) };
+    bands.sort((a, b) => a - b);
+    const middle = Math.floor(bands.length / 2);
+    const bandSize = bands.length ? bands.length % 2 ? bands[middle] : Math.round((bands[middle - 1] + bands[middle]) / 2) : 1;
+    return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap), bandSize };
   }
-  lens.controls = { ticks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout };
+  function overviewCacheRange(total, firstVisible, lastVisible, before, after) {
+    const count = Math.max(0, Math.floor(Number(total) || 0));
+    if (!count) return { start: 0, end: -1, before: 0, after: 0 };
+    const first = Math.max(0, Math.min(count - 1, Math.floor(Number(firstVisible) || 0)));
+    const last = Math.max(first, Math.min(count - 1, Math.floor(Number(lastVisible) || first)));
+    const start = Math.max(0, first - Math.max(0, Math.floor(Number(before) || 0)));
+    const end = Math.min(count - 1, last + Math.max(0, Math.floor(Number(after) || 0)));
+    return { start, end, before: first - start, after: end - last };
+  }
+  lens.controls = { ticks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange };
 })();

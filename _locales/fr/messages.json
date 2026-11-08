@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Largeur minimale du volet"
   },
-  "overviewBuffer": {
-    "message": "Miniatures en avance"
+  "overviewCache": {
+    "message": "Préchargement des miniatures"
+  },
+  "overviewCacheBefore": {
+    "message": "Miniatures précédentes"
+  },
+  "overviewCacheAfter": {
+    "message": "Miniatures suivantes"
+  },
+  "overviewCacheAuto": {
+    "message": "Automatique"
+  },
+  "overviewCacheCustom": {
+    "message": "Personnalisé"
   },
   "rightPane": {
     "message": "Image de droite"

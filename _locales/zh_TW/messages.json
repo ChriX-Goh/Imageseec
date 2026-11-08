@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "單欄最小寬度"
   },
-  "overviewBuffer": {
-    "message": "預載縮圖數量"
+  "overviewCache": {
+    "message": "閱覽預先快取"
+  },
+  "overviewCacheBefore": {
+    "message": "前方縮圖"
+  },
+  "overviewCacheAfter": {
+    "message": "後方縮圖"
+  },
+  "overviewCacheAuto": {
+    "message": "自動"
+  },
+  "overviewCacheCustom": {
+    "message": "自訂"
   },
   "rightPane": {
     "message": "右側圖片"

@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Мінімальна ширина панелі"
   },
-  "overviewBuffer": {
-    "message": "Мініатюр у передзавантаженні"
+  "overviewCache": {
+    "message": "Попереднє завантаження мініатюр"
+  },
+  "overviewCacheBefore": {
+    "message": "Попередні мініатюри"
+  },
+  "overviewCacheAfter": {
+    "message": "Наступні мініатюри"
+  },
+  "overviewCacheAuto": {
+    "message": "Автоматично"
+  },
+  "overviewCacheCustom": {
+    "message": "Власне значення"
   },
   "rightPane": {
     "message": "Праве зображення"

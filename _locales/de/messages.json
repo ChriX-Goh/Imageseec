@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Mindestbreite des Bereichs"
   },
-  "overviewBuffer": {
-    "message": "Miniaturpuffer voraus"
+  "overviewCache": {
+    "message": "Vorschaubilder vorladen"
+  },
+  "overviewCacheBefore": {
+    "message": "Vorherige Vorschaubilder"
+  },
+  "overviewCacheAfter": {
+    "message": "Nächste Vorschaubilder"
+  },
+  "overviewCacheAuto": {
+    "message": "Automatisch"
+  },
+  "overviewCacheCustom": {
+    "message": "Benutzerdefiniert"
   },
   "rightPane": {
     "message": "Rechtes Bild"

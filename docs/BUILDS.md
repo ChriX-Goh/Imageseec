@@ -5,8 +5,9 @@ Number changed source deliveries sequentially: **2.0 b1**, **2.0 b2**, and so on
 | Build | Chrome version | Date | Scope | Acceptance |
 | --- | --- | --- | --- | --- |
 | 2.0 b1 | 2.0.0.1 | 2026-11-06 | Initial numbered 2.0 test delivery: comparison, overview, generic lazy discovery, pixel/overlay and scroll-restoration fixes | Developer QA incomplete; owner final acceptance pending; not submitted to the store |
-| 2.0 b3 | 2.0.0.3 | 2026-11-07 | Identity-safe discovery, bidirectional lazy scan, alignment/gap, G/1/2, nested return and current-image exit | Developer QA in progress; no store submission |
 | 2.0 b2 | 2.0.0.2 | 2026-11-06 | Row-ordered vertical overview by default; optional horizontal column browsing; hide borders/captions; direction-aware buffer and scan triggers | Developer QA in progress; owner acceptance pending; no store submission |
+| 2.0 b3 | 2.0.0.3 | 2026-11-07 | Identity-safe discovery, bidirectional lazy scan, alignment/gap, G/1/2, nested return and current-image exit | Developer QA in progress; no store submission |
+| 2.0 b4 | 2.0.0.4 | 2026-11-08 | Active-image and overview-center return; stable root scroll lock; pointer-follow divider handle; independent automatic/custom overview thumbnail caches | Developer QA partial; owner final acceptance pending; no store submission |
 
 ## b1
 
@@ -29,3 +30,9 @@ Package: `Imageseec-v2.0-b3.zip`, 32 files, 88,692 bytes. SHA-256: `92b23fa10d63
 52 automated checks pass. The installed generated-gallery suite passes 25/25. Twenty live sites each have 25 installed handler checks (500 checks); image entry and one navigation key use trusted browser input, while gesture/wheel assertions are synthetic. Exact final dynamic-growth coverage and the 15-pattern acceptance matrix remain incomplete. A finite lazy chapter reached 18/18 without recommendations; current source-position return and nested bidirectional scanning were checked separately. Native context-menu selection remains unverified because the current in-app browser does not expose that menu. No owner acceptance or store submission.
 
 The public graph contains generic source and tests only. Private site receipts and screenshots are excluded from the repository and package.
+
+## b4
+
+Package: `Imageseec-v2.0-b4.zip`, 32 files, 91,033 bytes. SHA-256: `892eb1fba388de898b5b413582085e2aa26e9904905d4a4cf3c3aa80d3ab2527`.
+
+55 automated checks pass; the public-source audit covers 113 project files. In the Codex in-app browser, a generated 80-image gallery returned to the opened image after long browsing, the overview returned to its central image, the divider handle followed pointer Y and hid on leave, and lazy scanning kept the modal/root scroll lock stable. Automatic and custom thumbnail windows were checked separately. The broader live-site matrix and owner acceptance remain pending. Google Web Store is unchanged.

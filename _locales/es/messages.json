@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Ancho mínimo del panel"
   },
-  "overviewBuffer": {
-    "message": "Miniaturas anticipadas"
+  "overviewCache": {
+    "message": "Precarga de miniaturas"
+  },
+  "overviewCacheBefore": {
+    "message": "Miniaturas anteriores"
+  },
+  "overviewCacheAfter": {
+    "message": "Miniaturas siguientes"
+  },
+  "overviewCacheAuto": {
+    "message": "Automático"
+  },
+  "overviewCacheCustom": {
+    "message": "Personalizado"
   },
   "rightPane": {
     "message": "Imagen derecha"

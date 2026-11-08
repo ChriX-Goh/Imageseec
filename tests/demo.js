@@ -15,6 +15,7 @@
   document.querySelector('#open').onclick = () => open(gallery.querySelectorAll('img')[4].src);
   document.querySelector('#small').onclick = () => open(gallery.querySelectorAll('img')[1].src);
   document.querySelector('#add').onclick = () => add(++count);
+  document.querySelector('#add-many').onclick = () => { while (count < 80) add(++count); };
   document.querySelector('#broken').onclick = () => open(`${location.origin}/image/98`);
   document.querySelector('#rapid').onclick = () => { const slow = add(97); open(slow.src); };
   document.querySelector('#defaults').onclick = async () => { await chrome.storage.local.set({ settings: ImageLens.settings.defaults }); document.querySelector('#log').textContent = '已恢复默认测试设置'; };

@@ -1,6 +1,10 @@
 (() => {
   const query = new URLSearchParams(location.search), mode = query.get('mode') || 'finite';
   const gallery = document.querySelector('.gallery'), region = document.querySelector('#scroll-region');
+  document.querySelector('#open-viewer').addEventListener('click', () => {
+    const source = gallery.querySelector('img')?.currentSrc;
+    if (source) ImageLens.open(source, ImageLens.settings.defaults);
+  });
   const delay = Number(query.get('delay')) || 950, total = mode === 'infinite' ? 72 : mode === 'loaded' ? 120 : 18;
   const middle = mode === 'middle', loaded = new Set(), requested = new Set();
   if (mode === 'infinite' || mode === 'loaded') gallery.classList.add('grid');

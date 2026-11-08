@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "パネルの最小幅"
   },
-  "overviewBuffer": {
-    "message": "先読みするサムネイル"
+  "overviewCache": {
+    "message": "サムネイルの先読み"
+  },
+  "overviewCacheBefore": {
+    "message": "前のサムネイル"
+  },
+  "overviewCacheAfter": {
+    "message": "後のサムネイル"
+  },
+  "overviewCacheAuto": {
+    "message": "自動"
+  },
+  "overviewCacheCustom": {
+    "message": "カスタム"
   },
   "rightPane": {
     "message": "右の画像"

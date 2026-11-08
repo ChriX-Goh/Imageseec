@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Minimum panel width"
   },
-  "overviewBuffer": {
-    "message": "Thumbnail buffer ahead"
+  "overviewCache": {
+    "message": "Thumbnail preloading"
+  },
+  "overviewCacheBefore": {
+    "message": "Previous thumbnails"
+  },
+  "overviewCacheAfter": {
+    "message": "Next thumbnails"
+  },
+  "overviewCacheAuto": {
+    "message": "Auto"
+  },
+  "overviewCacheCustom": {
+    "message": "Custom"
   },
   "rightPane": {
     "message": "Right image"

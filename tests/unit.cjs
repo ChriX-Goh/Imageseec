@@ -94,13 +94,23 @@ test('2.0 store listings exist for all UI locales and fit Chrome text limits', (
   }
   assert.doesNotMatch(copy.join('\n'), /https?:\/\//i);
 });
+test('settings page shows the manifest build label instead of a stale hard-coded version', () => {
+  assert.doesNotMatch(source('options.html'), /1\.5\.2/);
+  assert.match(source('options.html'), /class="version"><\/span>/);
+  assert.match(source('options.js'), /runtime\?\.getManifest\?\.\(\)/);
+});
 test('compare and overview controls are wired to group-scoped lazy scanning', () => {
   const viewer = source('viewer.js');
   assert.match(viewer, /on\(\$\('\.compare-toggle'\), 'click'/);
   assert.match(viewer, /on\(\$\('\.overview-toggle'\), 'click'/);
   assert.match(viewer, /function scanSegment\(signal, direction/);
-  assert.match(viewer, /restorePagePosition\(true\)/);
-  assert.match(viewer, /settings\.overviewBuffer/);
+  assert.match(viewer, /restorePageCoordinates/);
+  assert.match(viewer, /function overviewCacheCount/);
+  assert.match(viewer, /overviewCacheRange/);
+  assert.match(viewer, /scrollbar-gutter/);
+  assert.match(viewer, /function revealSource\(target/);
+  assert.match(viewer, /divider-handle-y/);
+  assert.doesNotMatch(viewer, /settings\.overviewBuffer/);
   assert.match(viewer, /settings\.compareStep/);
   assert.match(viewer, /settings\.dividerMin/);
   assert.doesNotMatch(viewer, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)/i);
@@ -121,8 +131,12 @@ function context(hostname = 'example.com') {
 }
 test('settings defaults, invalid storage values and independent bounds', () => {
   const { c } = context(); const normalize = c.ImageLens.settings.normalize;
-  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewBuffer: 6, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
-  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, overviewBuffer: 20, dividerMin: 1, compareStep: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, overviewBuffer: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 10, compareStep: 1, compareEnabled: false, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
+  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, overviewBuffer: 20, dividerMin: 1, compareStep: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'custom', overviewCacheAfter: 20, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 10, compareStep: 1, compareEnabled: false, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.equal(normalize({ overviewBuffer: 6 }).overviewCacheBeforeMode, 'auto');
+  assert.equal(normalize({ overviewCacheBeforeMode: 'custom', overviewCacheBefore: 0 }).overviewCacheBefore, 0);
+  assert.equal(normalize({ overviewCacheAfterMode: 'custom', overviewCacheAfter: 37 }).overviewCacheAfter, 37);
+  assert.equal(normalize({ overviewCacheAfterMode: 'invalid', overviewCacheAfter: -3 }).overviewCacheAfterMode, 'auto');
   assert.equal(normalize({ language: 'pt' }).language, 'auto');
   assert.equal(normalize({ overviewDirection: 'sideways' }).overviewDirection, 'vertical');
   assert.equal(normalize({ overviewDirection: 'horizontal', overviewClean: true }).overviewDirection, 'horizontal');
@@ -167,6 +181,27 @@ test('overview alignment and gap remain independent from scroll direction and de
   assert.equal(normalize({ overviewAlignment: 'bogus' }).overviewAlignment, 'auto');
   assert.equal(normalize({ overviewGap: -1 }).overviewGap, 0);
   assert.equal(normalize({ overviewGap: 99 }).overviewGap, 48);
+});
+
+test('overview automatic preload follows live visual band count and custom sides clamp to gallery', () => {
+  const { c } = context(), controls = c.ImageLens.controls;
+  const wide = controls.overviewLayout(Array(90).fill(1.5), 1392, 760, false, false, 'auto', 12);
+  const narrow = controls.overviewLayout(Array(90).fill(1.5), 720, 760, false, false, 'auto', 12);
+  const horizontal = controls.overviewLayout(Array(90).fill(1.5), 1392, 760, true, false, 'auto', 12);
+  assert.equal(wide.bandSize, 6);
+  assert.ok(narrow.bandSize < wide.bandSize);
+  assert.ok(horizontal.bandSize > 0);
+  assert.deepEqual(plain(controls.overviewCacheRange(100, 20, 25, wide.bandSize * 2, wide.bandSize * 2)), { start: 8, end: 37, before: 12, after: 12 });
+  assert.deepEqual(plain(controls.overviewCacheRange(100, 2, 95, 50, 50)), { start: 0, end: 99, before: 2, after: 4 });
+  assert.deepEqual(plain(controls.overviewCacheRange(3, 1, 1, 0, 0)), { start: 1, end: 1, before: 0, after: 0 });
+});
+test('overview virtual gallery grows ahead and behind the visible range as cache demand changes', () => {
+  const { c } = context(), controls = c.ImageLens.controls;
+  const cache = (total, first, last, band, beforeMode = 'auto', beforeValue = 12, afterMode = 'auto', afterValue = 12) =>
+    controls.overviewCacheRange(total, first, last, beforeMode === 'auto' ? band * 2 : beforeValue, afterMode === 'auto' ? band * 2 : afterValue);
+  assert.deepEqual(plain(cache(80, 30, 52, 6)), { start: 18, end: 64, before: 12, after: 12 });
+  assert.deepEqual(plain(cache(80, 30, 52, 4, 'auto', 0, 'custom', 35)), { start: 22, end: 79, before: 8, after: 27 });
+  assert.deepEqual(plain(cache(80, 30, 52, 6, 'custom', 0, 'custom', 0)), { start: 30, end: 52, before: 0, after: 0 });
 });
 
 test('image identity preserves query identifiers, dimensions and signatures', () => {

@@ -1,6 +1,6 @@
 # Release workflow
 
-Current test build: **2.0 b3**, Chrome numeric version `2.0.0.3`. Feature implementation and partial interaction evidence exist; final acceptance is incomplete. See [status](STATUS.zh-CN.md) and [build record](BUILDS.md).
+Current test build: **2.0 b4**, Chrome numeric version `2.0.0.4`. Feature implementation and partial interaction evidence exist; final acceptance is incomplete. See [status](STATUS.zh-CN.md) and [build record](BUILDS.md).
 
 ## Publication boundary
 
@@ -30,6 +30,6 @@ Chrome treats missing components as zero. A stable build following `2.0.0.N` mus
 python tests/package.py
 ```
 
-The current output is `dist/Imageseec-v2.0-b3.zip`. The allowlisted ZIP contains runtime files, locale catalogs, icons, README, privacy policy and license. Private QA, test fixtures and local development helpers are excluded. Every packaged file is compared with the local source after ZIP integrity verification.
+The current output is `dist/Imageseec-v2.0-b4.zip`. The allowlisted ZIP contains runtime files, locale catalogs, icons, README, privacy policy and license. Private QA, test fixtures and local development helpers are excluded. Every packaged file is compared with the local source after ZIP integrity verification.
 
 The 2.0 features add no permission or developer backend. Discovery remains limited to the detected image group and is not guaranteed for every webpage.

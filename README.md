@@ -1,6 +1,6 @@
 # Imageseec
 
-Current development build: **2.0 b2** (Chrome version `2.0.0.2`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+Current development build: **2.0 b4** (Chrome version `2.0.0.4`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
 
 A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, a masonry overview, temporary magnification, free panning and a compact zoom ruler.
 
@@ -36,6 +36,7 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Browse the image group | G opens the overview; vertical scrolling uses equal-width masonry columns by default |
 | Horizontal overview | Select Horizontal browsing in settings; scroll right through equal-height rows |
 | Alignment and spacing | Choose automatic, vertical or horizontal alignment; set gaps from 0–48 px (default 12 px) |
+| Overview thumbnail cache | Automatic preloads two visual rows or columns on each side; each side can use an independent custom count |
 | Choose image mode | 1 selects single-image view; 2 selects comparison; in overview, use the focused or central thumbnail |
 | Return from an overview selection | Double-click or Esc returns to the overview position; Esc in overview restores its parent image view |
 | Leave the viewer | The close button exits to the current source image or the nearby center image, including after long browsing sessions |
@@ -48,7 +49,7 @@ No build step, desktop helper or background server is required. Keep the unpacke
 
 The initial view preserves aspect ratio, fits the webpage viewport and never enlarges beyond the original image size. Manual fit-page mode can enlarge small images. The default view leaves the browser tabs and address bar visible; browser fullscreen is requested only through F or the fullscreen button.
 
-Settings save immediately. Defaults include 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, three preview thumbnails on each side, a 33% minimum pane width, two-image comparison steps, and six overview thumbnails buffered ahead. Cache, preview and overview counts are independent. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
+Settings save immediately. Defaults include 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, three preview thumbnails on each side, a 33% minimum pane width, two-image comparison steps, and automatic thumbnail preloading of two visual rows or columns before and after the visible area. Custom overview counts are independent on each side and are separate from full-resolution image caching. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
 
 ## Gallery compatibility
 

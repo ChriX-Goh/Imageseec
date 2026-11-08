@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Minimalna szerokość panelu"
   },
-  "overviewBuffer": {
-    "message": "Wcześniej wczytane miniatury"
+  "overviewCache": {
+    "message": "Wstępne wczytywanie miniatur"
+  },
+  "overviewCacheBefore": {
+    "message": "Poprzednie miniatury"
+  },
+  "overviewCacheAfter": {
+    "message": "Następne miniatury"
+  },
+  "overviewCacheAuto": {
+    "message": "Automatycznie"
+  },
+  "overviewCacheCustom": {
+    "message": "Własna wartość"
   },
   "rightPane": {
     "message": "Prawy obraz"

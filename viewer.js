@@ -53,8 +53,8 @@
     .compare-pane .pane-lock[aria-pressed="true"] { background: #b7c8f2; color: #172641; border-color: #d0dcfa; }
     .divider { position: absolute; z-index: 4; top: 0; bottom: 0; width: 34px; padding: 0; border: 0; border-radius: 0; transform: translateX(-50%); background: transparent; cursor: col-resize; touch-action: none; }
     .divider::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: #ffffffaa; box-shadow: 0 0 12px #0009; }
-    .divider::after { content: ''; position: absolute; left: 50%; top: 50%; width: 26px; height: 52px; transform: translate(-50%, -50%); border: 1px solid #ffffff70; border-radius: 13px; background: #20232bdd; box-shadow: 0 6px 18px #0008; }
-    .divider:hover::after, .divider:focus-visible::after { background: #3d4350; }
+    .divider::after { content: ''; position: absolute; left: 50%; top: var(--divider-handle-y, 50%); width: 26px; height: 52px; transform: translate(-50%, -50%); border: 1px solid #ffffff70; border-radius: 13px; background: #20232bdd; box-shadow: 0 6px 18px #0008; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s, visibility .12s, background .12s; }
+    .divider:hover::after, .divider:focus-visible::after, .divider.dragging::after { background: #3d4350; opacity: 1; visibility: visible; }
     .overview { position: absolute; z-index: 4; inset: 0; display: none; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 82px 24px 36px; background: #101114; scrollbar-width: thin; scrollbar-gutter: stable; }
     .overview.active { display: block; }
     .overview.horizontal { overflow-x: auto; overflow-y: hidden; }
@@ -180,6 +180,8 @@
     let preferencesBinding = new AbortController();
     const focused = document.activeElement;
     const scroll = { value: document.documentElement.style.getPropertyValue('overflow'), priority: document.documentElement.style.getPropertyPriority('overflow') };
+    const scrollbarGutter = { value: document.documentElement.style.getPropertyValue('scrollbar-gutter'), priority: document.documentElement.style.getPropertyPriority('scrollbar-gutter') };
+    const reserveScrollbarGutter = innerWidth > document.documentElement.clientWidth && !/\bstable\b/.test(scrollbarGutter.value);
     const pagePosition = { x: window.scrollX, y: window.scrollY, elements: [] };
     for (let node = collection.scope; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
       const style = getComputedStyle(node);
@@ -200,13 +202,21 @@
       window.scrollTo(pagePosition.x, pagePosition.y);
       for (const item of pagePosition.elements) if (item.node.isConnected) { item.node.scrollTop = item.top; item.node.scrollLeft = item.left; }
     };
-    const restorePagePosition = (relock = true) => {
-      restorePageCoordinates();
-      if (scroll.value) document.documentElement.style.setProperty('overflow', scroll.value, scroll.priority);
-      else document.documentElement.style.removeProperty('overflow');
-      if (relock) document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+    const lockPage = () => {
+      if (reserveScrollbarGutter) document.documentElement.style.setProperty('scrollbar-gutter', 'stable', 'important');
+      document.documentElement.style.setProperty('overflow', 'hidden', 'important');
     };
-    document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+    const restorePageStyles = () => {
+      if (document.documentElement.style.getPropertyValue('overflow') === 'hidden' && document.documentElement.style.getPropertyPriority('overflow') === 'important') {
+        if (scroll.value) document.documentElement.style.setProperty('overflow', scroll.value, scroll.priority);
+        else document.documentElement.style.removeProperty('overflow');
+      }
+      if (reserveScrollbarGutter && document.documentElement.style.getPropertyValue('scrollbar-gutter') === 'stable' && document.documentElement.style.getPropertyPriority('scrollbar-gutter') === 'important') {
+        if (scrollbarGutter.value) document.documentElement.style.setProperty('scrollbar-gutter', scrollbarGutter.value, scrollbarGutter.priority);
+        else document.documentElement.style.removeProperty('scrollbar-gutter');
+      }
+    };
+    lockPage();
     const host = document.createElement('div');
     host.id = 'image-lens-viewer';
     host.lang = lens.i18n.locale.replace('_', '-');
@@ -260,27 +270,25 @@
     let preset = null, rulerMaximum = 100, sliding = false;
     let compareEnabled = settings.compareEnabled, compareLeft = index, compareRight = index + 1, activePane = 0, lockedPane = null, pairNeedsAnchor = false;
     let compareScale = 1, comparePanX = [0, 0], comparePanY = [0, 0], compareDims = [null, null], dividerPosition = .5, dividerDragging = false;
-    let overviewOpen = false, overviewReturn = null, overviewRecent = null, overviewAnchor = null, fromOverview = false;
+    let overviewOpen = false, overviewReturn = null, overviewRecent = null, overviewAnchor = null, fromOverview = false, overviewBandSize = 1;
     let lastOverviewPick = null;
-    let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, scanRevision = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
+    let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, overviewCacheCheckTimer = 0, scanRevision = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
     const on = (node, type, handler, options = {}) => node.addEventListener(type, handler, { ...options, signal });
 
     function close(event) {
       if (closed) return;
       const target = entries[overviewOpen ? centralOverviewIndex() : activeIndex()];
       rememberSourceAnchors();
+      const targetPosition = target && sourceAnchors.get(target.key);
       closed = true; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       scanController?.abort(); scanRestore?.(); scanRestore = null;
-      endHold(); clearTimeout(scanTimer);
+      endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer);
       globalThis.chrome?.storage?.onChanged?.removeListener(storageChanged);
       if (document.fullscreenElement === viewer || document.fullscreenElement === host) document.exitFullscreen().catch(() => {});
       dialog.close(); host.remove();
-      if (document.documentElement.style.getPropertyValue('overflow') === 'hidden' && document.documentElement.style.getPropertyPriority('overflow') === 'important') {
-        if (scroll.value) document.documentElement.style.setProperty('overflow', scroll.value, scroll.priority);
-        else document.documentElement.style.removeProperty('overflow');
-      }
+      restorePageCoordinates(); restorePageStyles();
       focused?.focus?.({ preventScroll: true });
-      if (event?.type !== 'pagehide' && !standalone) revealSource(target);
+      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition);
       if (lens.close === close) lens.close = null;
       if (standalone) window.close();
     }
@@ -293,38 +301,55 @@
         if (!node?.isConnected) continue;
         const box = node.getBoundingClientRect();
         if (!box.width || !box.height) continue;
-        sourceAnchors.set(entry.key, { position: sourcePosition() + (scanHorizontal ? box.left - (container?.left || 0) + box.width / 2 : box.top - (container?.top || 0) + box.height / 2), pageX: window.scrollX, pageY: window.scrollY });
+        sourceAnchors.set(entry.key, {
+          position: sourcePosition() + (scanHorizontal ? box.left - (container?.left || 0) + box.width / 2 : box.top - (container?.top || 0) + box.height / 2),
+          pageX: window.scrollX, pageY: window.scrollY,
+          elements: pagePosition.elements.filter(item => item.node.isConnected && item.node.contains(node)).map(item => ({ node: item.node, top: item.node.scrollTop, left: item.node.scrollLeft }))
+        });
       }
     }
-    async function revealSource(target) {
+    function centerSourceNode(node) {
+      try { node.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }); }
+      catch { node.scrollIntoView({ block: 'center', inline: 'nearest' }); }
+    }
+    async function revealSource(target, position = sourceAnchors.get(target?.key)) {
       if (!target) return;
       const recovery = new AbortController(); lens.returnController?.abort(); lens.returnController = recovery;
       const stop = () => recovery.abort();
       for (const type of ['wheel', 'pointerdown', 'keydown']) window.addEventListener(type, stop, { capture: true, once: true, signal: recovery.signal });
-      const position = sourceAnchors.get(target.key);
-      if (!lens.gallery.connectedEntryNode(target, collection.scope) && position) {
-        if (scanScroller?.isConnected) {
-          window.scrollTo(position.pageX, position.pageY);
+      const restoreAnchor = () => {
+        if (!position) return;
+        window.scrollTo(position.pageX, position.pageY);
+        const elements = position.elements || [];
+        for (const item of [...elements].reverse()) if (item.node.isConnected && item.node !== scanScroller) {
+          item.node.scrollTop = item.top; item.node.scrollLeft = item.left;
+        }
+        if (scanScroller?.isConnected && elements.some(item => item.node === scanScroller)) {
           scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = position.position - (scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight) / 2;
-        } else window.scrollTo(pagePosition.x, position.position - innerHeight / 2);
+        } else {
+          window.scrollTo(position.pageX, position.position - innerHeight / 2);
+        }
       }
+      let node = lens.gallery.connectedEntryNode(target, collection.scope);
+      if (!node) restoreAnchor();
       const deadline = performance.now() + 2200;
       try {
         do {
           if (recovery.signal.aborted) return;
-          let node = lens.gallery.connectedEntryNode(target, collection.scope);
+          node = lens.gallery.connectedEntryNode(target, collection.scope);
           if (!node && collection.scope?.isConnected) {
             const fresh = lens.gallery.collect(target.thumb, null, collection.scope);
             node = fresh.entries.find(entry => lens.gallery.sameEntry(target, entry))?.node;
           }
-          if (node) { node.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }); return; }
-          if (!position) {
-            const index = entries.indexOf(target);
-            const nearby = entries.map((entry, n) => ({ entry, distance: Math.abs(n - index) })).filter(item => item.entry.node?.isConnected).sort((a, b) => a.distance - b.distance)[0];
-            nearby?.entry.node.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }); return;
-          }
+          if (node) { centerSourceNode(node); return; }
           await scanDelay(120, recovery.signal);
         } while (performance.now() < deadline);
+        if (!recovery.signal.aborted) {
+          const index = entries.indexOf(target);
+          const nearby = entries.map((entry, n) => ({ entry, distance: Math.abs(n - index) }))
+            .filter(item => item.entry.node?.isConnected).sort((a, b) => a.distance - b.distance)[0];
+          if (nearby) centerSourceNode(nearby.entry.node);
+        }
       } finally { recovery.abort(); if (lens.returnController === recovery) lens.returnController = null; }
     }
     function status(text, retry = false) {
@@ -663,7 +688,7 @@
         const state = scanStates[overviewDirection];
         setOverviewStatus(state.failed ? 'overviewScanFailed' : state.ended ? 'overviewEnd' : state.paused ? 'overviewPaused' : '', state.failed || state.ended || state.paused);
       }
-      requestAnimationFrame(() => checkOverviewBuffer());
+      requestAnimationFrame(() => checkOverviewCache());
     }
     function layoutOverview(anchor = captureOverviewAnchor()) {
       if (!overviewOpen) return;
@@ -674,6 +699,7 @@
       const width = Math.max(1, overview.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
       const height = Math.max(1, overview.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
       const layout = lens.controls.overviewLayout(entries.map(e => Number(e.aspectRatio)), width, height, horizontal, settings.overviewClean, settings.overviewAlignment, settings.overviewGap);
+      overviewBandSize = layout.bandSize || 1;
       [...overviewGrid.children].forEach((card, n) => {
         const box = layout.boxes[n];
         Object.assign(card.style, { left: `${box.x}px`, top: `${box.y}px`, width: `${box.width}px`, height: `${box.height}px` });
@@ -687,21 +713,32 @@
         ? { start: box.left, end: box.right, viewStart: rect.left, viewEnd: rect.right }
         : { start: box.top, end: box.bottom, viewStart: rect.top, viewEnd: rect.bottom };
     }
+    function overviewVisibleRange(rect = overview.getBoundingClientRect()) {
+      const visible = [...overviewGrid.children].filter(card => {
+        const box = card.getBoundingClientRect();
+        return box.right > rect.left && box.left < rect.right && box.bottom > rect.top && box.top < rect.bottom;
+      }).map(card => Number(card.dataset.index)).filter(Number.isInteger);
+      const fallback = Math.max(0, Math.min(entries.length - 1, centralOverviewIndex()));
+      return visible.length ? { first: Math.min(...visible), last: Math.max(...visible) } : { first: fallback, last: fallback };
+    }
+    function overviewCacheCount(side) {
+      const mode = settings[`overviewCache${side}Mode`];
+      return mode === 'custom' ? settings[`overviewCache${side}`] : Math.max(1, overviewBandSize) * 2;
+    }
+    function overviewCacheWindow(rect = overview.getBoundingClientRect()) {
+      const visible = overviewVisibleRange(rect);
+      const countBefore = overviewCacheCount('Before'), countAfter = overviewCacheCount('After');
+      return { ...visible, ...lens.controls.overviewCacheRange(entries.length, visible.first, visible.last, countBefore, countAfter), countBefore, countAfter };
+    }
     function updateOverviewThumbnails() {
       if (!overviewOpen) return;
-      const rect = overview.getBoundingClientRect(), cards = [...overviewGrid.children];
-      const visible = new Set(), below = [];
-      for (const card of cards) {
-        const box = overviewBounds(card, rect);
-        if (box.end > box.viewStart && box.start < box.viewEnd) visible.add(card);
-        else if (overviewDirection > 0 ? box.start >= box.viewEnd : box.end <= box.viewStart) below.push({ card, top: overviewDirection > 0 ? box.start - box.viewEnd : box.viewStart - box.end });
-      }
-      below.sort((a, b) => a.top - b.top);
-      for (const item of below.slice(0, settings.overviewBuffer)) visible.add(item.card);
+      const cards = [...overviewGrid.children], window = overviewCacheWindow();
       for (const card of cards) {
         const image = card.querySelector('img'), source = image.dataset.src;
         const entry = entries[Number(card.dataset.index)];
-        if (visible.has(card)) {
+        const index = Number(card.dataset.index), shouldLoad = index >= window.start && index <= window.end;
+        image.loading = shouldLoad ? 'eager' : 'lazy';
+        if (shouldLoad) {
           if (source && image.getAttribute('src') !== source) image.src = source;
           if (!entry?.dimensions) image.onload = () => {
             if (image.naturalWidth && image.naturalHeight && Number(card.dataset.index) < entries.length) {
@@ -709,7 +746,7 @@
               current.dimensions = [image.naturalWidth, image.naturalHeight];
               card.style.setProperty('--overview-ratio', String(current.aspectRatio));
               if (!overviewScrollFrame) overviewScrollFrame = requestAnimationFrame(() => {
-                overviewScrollFrame = 0; layoutOverview(); updateOverviewThumbnails(); checkOverviewBuffer();
+                overviewScrollFrame = 0; layoutOverview(); updateOverviewThumbnails(); checkOverviewCache();
               });
             }
           };
@@ -717,11 +754,35 @@
         else image.removeAttribute('src');
       }
     }
-    function checkOverviewBuffer(force = false) {
+    function scheduleOverviewCacheCheck() {
+      if (overviewCacheCheckTimer || closed) return;
+      overviewCacheCheckTimer = setTimeout(() => { overviewCacheCheckTimer = 0; checkOverviewCache(); }, 650);
+    }
+    function checkOverviewCache(force = false) {
       if (!overviewOpen || scanPromise || !collection.scope) return;
-      const rect = overview.getBoundingClientRect();
-      const remaining = [...overviewGrid.children].filter(card => { const box = overviewBounds(card, rect); return overviewDirection > 0 ? box.start >= box.viewEnd : box.end <= box.viewStart; }).length;
-      if (remaining <= settings.overviewBuffer) scanMore(overviewDirection, force);
+      const window = overviewCacheWindow();
+      const missing = {
+        [-1]: Math.max(0, window.countBefore - window.before),
+        [1]: Math.max(0, window.countAfter - window.after)
+      };
+      const horizontal = settings.overviewDirection === 'horizontal';
+      const offset = horizontal ? overview.scrollLeft : overview.scrollTop;
+      const viewport = horizontal ? overview.clientWidth : overview.clientHeight;
+      const extent = horizontal ? overview.scrollWidth : overview.scrollHeight;
+      const edgeDistance = Math.max(120, viewport * .35);
+      const nearEdge = {
+        [-1]: offset <= edgeDistance,
+        [1]: extent - offset - viewport <= edgeDistance
+      };
+      const directions = overviewDirection < 0 ? [-1, 1] : [1, -1];
+      for (const direction of directions) {
+        const state = scanStates[direction];
+        if ((!missing[direction] && !nearEdge[direction]) || state.ended || (state.paused && !force) || (state.failed && !force)) continue;
+        if (performance.now() - state.lastAttempt < 600) { scheduleOverviewCacheCheck(); return; }
+        const scan = scanMore(direction, force, Math.min(6, missing[direction] || 6));
+        if (scan) scan.finally(() => { if (!closed && overviewOpen) scheduleOverviewCacheCheck(); });
+        return;
+      }
     }
     function scanDelay(ms, signal) {
       return new Promise(resolve => {
@@ -755,10 +816,7 @@
       }
       next = Math.max(low, Math.min(high, next));
       const edge = direction > 0 ? next >= high - 2 : next <= low + 2;
-      if (scroll.value) document.documentElement.style.setProperty('overflow', scroll.value, scroll.priority);
-      else document.documentElement.style.removeProperty('overflow');
-      const restore = () => restorePagePosition(true);
-      scanRestore = () => restorePagePosition(false);
+      scanRestore = restorePageCoordinates;
       try {
         if (scanScroller) scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = next;
         else window.scrollTo(pagePosition.x, next);
@@ -777,10 +835,10 @@
         if (!signal.aborted && !closed) { refresh(direction); rememberSourceAnchors(); }
         return { edge, pending: collection.slots?.some(slot => slot.pending) };
       } finally {
-        if (scanRestore) { restore(); scanRestore = null; }
+        if (scanRestore) { scanRestore(); scanRestore = null; }
       }
     }
-    async function scanMore(direction = 1, force = false) {
+    async function scanMore(direction = 1, force = false, targetCount = 6) {
       const state = scanStates[direction];
       if (scanPromise || closed || !collection.scope || ((!force && (state.paused || state.ended)) || performance.now() - state.lastAttempt < 600)) return scanPromise;
       state.paused = state.ended = state.failed = false; state.lastAttempt = performance.now(); scanningDirection = direction;
@@ -788,7 +846,7 @@
       const signal = scanController.signal;
       if (overviewOpen) setOverviewStatus('overviewLoading');
       const initialCount = entries.length;
-      const target = Math.max(1, settings.overviewBuffer);
+      const target = Math.max(1, Math.min(6, Math.floor(Number(targetCount) || 6)));
       scanPromise = (async () => {
         try {
           const deadline = performance.now() + 16000;
@@ -826,6 +884,10 @@
     function enterOverview() {
       if (overviewOpen) return;
       endHold();
+      if (!overviewGrid.children.length && !overviewAnchor) {
+        const selected = entries[activeIndex()];
+        if (selected) overviewAnchor = { key: selected.key, x: .5, y: .5 };
+      }
       overviewRecent = pictureState();
       if (!fromOverview || !overviewReturn) overviewReturn = overviewRecent;
       overviewOpen = true; overview.classList.add('active'); overview.setAttribute('aria-hidden', 'false');
@@ -1058,7 +1120,7 @@
       if (!records.some(record => !host.contains(record.target) && (collection.scope?.contains(record.target) || record.target === scopeParent))) return;
       scanRevision++;
       if (!scanPromise) for (const state of Object.values(scanStates)) state.paused = state.ended = state.failed = false;
-      clearTimeout(scanTimer); scanTimer = setTimeout(() => { refresh(); if (!closed && overviewOpen) checkOverviewBuffer(); }, 300);
+      clearTimeout(scanTimer); scanTimer = setTimeout(() => { refresh(); if (!closed && overviewOpen) checkOverviewCache(); }, 300);
     });
     observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
     globalThis.chrome?.storage?.onChanged?.addListener(storageChanged);
@@ -1078,7 +1140,7 @@
       if (Math.abs(offset - lastOverviewOffset) > 2) overviewDirection = offset > lastOverviewOffset ? 1 : -1;
       lastOverviewOffset = offset;
       if (overviewScrollFrame) return;
-      overviewScrollFrame = requestAnimationFrame(() => { overviewScrollFrame = 0; updateOverviewThumbnails(); checkOverviewBuffer(); });
+      overviewScrollFrame = requestAnimationFrame(() => { overviewScrollFrame = 0; updateOverviewThumbnails(); checkOverviewCache(true); });
     }, { passive: true });
     on(overview, 'wheel', event => {
       if (event.ctrlKey || event.composedPath().includes(form)) return;
@@ -1088,7 +1150,7 @@
         event.preventDefault(); event.stopPropagation();
         overview.scrollLeft += delta * (event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? overview.clientWidth : 1);
       }
-      requestAnimationFrame(() => checkOverviewBuffer(true));
+      requestAnimationFrame(() => checkOverviewCache(true));
     }, { passive: false });
     for (let side = 0; side < comparePanes.length; side++) {
       const pane = comparePanes[side];
@@ -1103,15 +1165,23 @@
     }
     on(divider, 'pointerdown', event => {
       if (event.button !== 0) return;
-      dividerDragging = true; divider.setPointerCapture(event.pointerId); event.preventDefault(); event.stopPropagation();
+      dividerDragging = true; divider.classList.add('dragging'); divider.setPointerCapture(event.pointerId); event.preventDefault(); event.stopPropagation();
     });
     on(divider, 'pointermove', event => {
-      if (!dividerDragging) return;
       const rect = compare.getBoundingClientRect();
+      const handleY = Math.max(26, Math.min(Math.max(26, rect.height - 26), event.clientY - rect.top));
+      divider.style.setProperty('--divider-handle-y', `${handleY}px`);
+      if (!dividerDragging) return;
       dividerPosition = Math.max(settings.dividerMin / 100, Math.min(1 - settings.dividerMin / 100, (event.clientX - rect.left) / rect.width));
       transformCompare(); event.preventDefault();
     });
-    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(divider, type, () => { dividerDragging = false; });
+    on(divider, 'pointerenter', event => {
+      const rect = compare.getBoundingClientRect();
+      const handleY = Math.max(26, Math.min(Math.max(26, rect.height - 26), event.clientY - rect.top));
+      divider.style.setProperty('--divider-handle-y', `${handleY}px`);
+    });
+    on(divider, 'pointerleave', () => { if (!dividerDragging) divider.style.removeProperty('--divider-handle-y'); });
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(divider, type, () => { dividerDragging = false; divider.classList.remove('dragging'); });
     on(divider, 'dblclick', event => { event.preventDefault(); event.stopPropagation(); dividerPosition = .5; transformCompare(); });
     for (const selector of ['.prev', '.next']) {
       on($(selector), 'pointerenter', () => { $(selector).classList.add('pointer-preview'); updateEdgePreviews(); });
@@ -1328,7 +1398,7 @@
         if (event.key === 'Home') overview.scrollTo({ [axis]: 0, behavior: 'smooth' });
         else if (event.key === 'End') overview.scrollTo({ [axis]: horizontal ? overview.scrollWidth : overview.scrollHeight, behavior: 'smooth' });
         else overview.scrollBy({ [axis]: (['ArrowDown', 'ArrowRight'].includes(event.key) ? 1 : -1) * Math.max(120, (horizontal ? overview.clientWidth : overview.clientHeight) * .35), behavior: 'smooth' });
-        requestAnimationFrame(() => checkOverviewBuffer(true)); return;
+        requestAnimationFrame(() => checkOverviewCache(true)); return;
       }
       if (overviewOpen) return;
       if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
@@ -1342,7 +1412,7 @@
       if (event.key === '0') fit(); if (event.key === '+' || event.key === '=') zoom(1); if (event.key === '-') zoom(-1);
       if (event.key.toLowerCase() === 'f') $('.fullscreen').click();
     }, { capture: true });
-    on(window, 'resize', () => { fit(false); if (overviewOpen) { layoutOverview(); updateOverviewThumbnails(); checkOverviewBuffer(); } });
+    on(window, 'resize', () => { fit(false); if (overviewOpen) { layoutOverview(); updateOverviewThumbnails(); checkOverviewCache(); } });
     const sizeObserver = new ResizeObserver(() => {
       if (closed || !overviewOpen) return;
       layoutOverview(); updateOverviewThumbnails();

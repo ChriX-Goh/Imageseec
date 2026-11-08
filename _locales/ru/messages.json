@@ -184,8 +184,20 @@
   "dividerMin": {
     "message": "Минимальная ширина панели"
   },
-  "overviewBuffer": {
-    "message": "Миниатюр в предзагрузке"
+  "overviewCache": {
+    "message": "Предзагрузка миниатюр"
+  },
+  "overviewCacheBefore": {
+    "message": "Предыдущие миниатюры"
+  },
+  "overviewCacheAfter": {
+    "message": "Следующие миниатюры"
+  },
+  "overviewCacheAuto": {
+    "message": "Автоматически"
+  },
+  "overviewCacheCustom": {
+    "message": "Настраиваемое"
   },
   "rightPane": {
     "message": "Правое изображение"
