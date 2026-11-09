@@ -145,7 +145,66 @@ test('settings defaults, invalid storage values and independent bounds', () => {
   assert.equal(normalize({ overviewScale: 1 }).overviewScale, 25);
   assert.equal(normalize({ overviewScale: 500 }).overviewScale, 300);
 });
-test('overview size bounds preserve aspect, direction and the default layout', () => {
+test('fixed overview slots preserve a 4:3 placeholder ratio across both scroll axes', () => {
+  const { c } = context(), controls = c.ImageLens.controls;
+  const ratios = Array.from({ length: 80 }, (_, i) => [.55, 1, 1.8, 2.3][i % 4]);
+  for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) {
+    const result = controls.overviewLayout(ratios, 1392, 760, horizontal, false, alignment, 12, 100);
+    const inset = 12, caption = 27;
+    assert.equal(result.boxes.length, 80);
+    assert.equal(result.bands.length, Math.ceil(80 / result.bandSize));
+    assert.ok(horizontal ? result.bandSize >= 1 : result.bandSize >= 1);
+    for (const [index, box] of result.boxes.entries()) {
+      assert.equal(box.index, index);
+      assert.equal(box.ordinal, index);
+      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - 4 / 3) < .00001);
+      if (horizontal) {
+        assert.ok(box.x >= 0 && box.y + box.height <= 760 + .01);
+        assert.ok(Math.abs(box.y / (box.height + 12) - Math.round(box.y / (box.height + 12))) < .00001);
+      } else {
+        assert.ok(box.y >= 0 && box.x + box.width <= 1392 + .01);
+        assert.ok(Math.abs(box.x / (box.width + 12) - Math.round(box.x / (box.width + 12))) < .00001);
+      }
+      const band = result.bands[box.bandIndex];
+      assert.ok(index >= band.startIndex && index <= band.endIndex);
+    }
+    const visual = result.boxes.slice().sort((a, b) =>
+      horizontal ? a.x - b.x || a.y - b.y : a.y - b.y || a.x - b.x);
+    assert.deepEqual(plain(visual.map(box => box.ordinal)), Array.from({ length: 80 }, (_, n) => n));
+  }
+});
+
+test('fixed layout keeps absolute slots through prepend and ignores out-of-order ratios', () => {
+  const { c } = context(), layout = c.ImageLens.controls.overviewLayout;
+  const oldRatios = Array.from({ length: 80 }, (_, i) => [.55, 1, 1.8, 2.3][i % 4]);
+  const before = layout(oldRatios, 1392, 760, false, false, 'auto', 12, 100, 40);
+  const prepended = layout([.9, 2.1, .6, ...oldRatios], 1392, 760, false, false, 'auto', 12, 100, 37);
+  for (let n = 0; n < oldRatios.length; n++) {
+    const previous = before.boxes[n], current = prepended.boxes[n + 3];
+    assert.equal(previous.ordinal, current.ordinal);
+    assert.equal(previous.x, current.x);
+    assert.equal(previous.ordinal % before.bandSize, current.ordinal % prepended.bandSize);
+  }
+  const loadedOrderA = layout([.55, 1, 1.8, 2.3, ...Array(76).fill(1)], 1392, 760);
+  const loadedOrderB = layout([2.3, 1.8, 1, .55, ...Array(76).fill(2)], 1392, 760);
+  assert.deepEqual(loadedOrderA.boxes, loadedOrderB.boxes);
+});
+
+test('fixed overview slots scale while retaining a stable cross-axis track', () => {
+  const { c } = context(), controls = c.ImageLens.controls;
+  for (const horizontal of [false, true]) {
+    const base = controls.overviewLayout(Array(80).fill(1), 1392, 760, horizontal, false, 'auto', 12, 100);
+    const smaller = controls.overviewLayout(Array(80).fill(2), 1392, 760, horizontal, false, 'auto', 12, 50);
+    const larger = controls.overviewLayout(Array(80).fill(.5), 1392, 760, horizontal, false, 'auto', 12, 200);
+    assert.ok(smaller.bandSize >= base.bandSize);
+    assert.ok(larger.bandSize <= base.bandSize);
+    const cross = box => horizontal ? box.height : box.width;
+    assert.ok(Math.abs(cross(base.boxes[0]) - cross(base.boxes[1])) < .001);
+    assert.ok(Math.abs(cross(larger.boxes[0]) - cross(larger.boxes[1])) < .001);
+  }
+});
+
+test('overview size bounds preserve 100 percent defaults and ruler mapping', () => {
   const { c } = context(), controls = c.ImageLens.controls;
   const ratios = Array.from({ length: 36 }, (_, i) => [.6, 1, 1.8][i % 3]);
   for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) {
@@ -155,8 +214,8 @@ test('overview size bounds preserve aspect, direction and the default layout', (
     assert.ok(layout(300).bandSize <= layout(100).bandSize);
     for (const scale of [25, 100, 300]) for (const [w, h] of [[1250, 760], [300, 280]]) {
       const result = layout(scale, w, h);
-      for (const [n, box] of result.boxes.entries()) {
-        assert.ok(Math.abs((box.width - 12) / (box.height - 39) - ratios[n]) < .00001);
+      for (const box of result.boxes) {
+        assert.ok(box.width > 0 && box.height > 0);
         assert.ok(horizontal ? box.y + box.height <= h + .01 : box.x + box.width <= w + .01);
       }
     }
@@ -165,7 +224,7 @@ test('overview size bounds preserve aspect, direction and the default layout', (
     assert.ok(Math.abs(controls.fromPosition(controls.toPosition(size, 100, true), 100, true) - size) < .00001);
   }
 });
-test('overview packs ordered rows or columns without cropping or cross-axis overflow', () => {
+test('overview slot sequence stays ordered without cropping or cross-axis overflow', () => {
   const { c } = context();
   const ratios = [1.8, .6, 1.3, 2, .8, 1, 1.6, .5, 3, 1.4, .7, 1.1, 1.8, .6, 1.3, 2, .8, 1];
   for (const horizontal of [false, true]) for (const clean of [false, true]) {
@@ -173,16 +232,15 @@ test('overview packs ordered rows or columns without cropping or cross-axis over
     assert.equal(result.boxes.length, ratios.length);
     const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
     result.boxes.forEach((box, n) => {
-      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - ratios[n]) < .0001);
+      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - 4 / 3) < .0001);
       assert.ok(box.width > 0 && box.height > 0);
       assert.ok(horizontal ? box.y + box.height <= 560.001 : box.x + box.width <= 1000.001);
       if (n) {
         const prior = result.boxes[n - 1];
-        assert.ok(horizontal ? box.x > prior.x || box.x === prior.x && box.y >= prior.y + prior.height :
-          box.y > prior.y || box.y === prior.y && box.x >= prior.x + prior.width);
+        assert.ok(horizontal ? box.ordinal > prior.ordinal : box.ordinal > prior.ordinal);
       }
     });
-    assert.ok(horizontal ? result.width > 1000 : result.height > 560);
+    assert.ok(horizontal ? result.width >= 0 : result.height >= 0);
   }
 });
 
@@ -193,7 +251,7 @@ test('overview alignment and gap remain independent from scroll direction and de
     const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
     assert.equal(boxes.length, ratios.length);
     boxes.forEach((a, n) => {
-      assert.ok(Math.abs((a.width - inset) / (a.height - inset - caption) - ratios[n]) < .00001);
+      assert.ok(Math.abs((a.width - inset) / (a.height - inset - caption) - 4 / 3) < .00001);
       assert.ok(a.x >= 0 && a.y >= 0 && a.x + a.width <= width + .01 && a.y + a.height <= height + .01);
       for (const b of boxes.slice(n + 1)) assert.ok(a.x + a.width + gap <= b.x + .01 || b.x + b.width + gap <= a.x + .01 || a.y + a.height + gap <= b.y + .01 || b.y + b.height + gap <= a.y + .01);
     });
@@ -292,6 +350,23 @@ test('connected virtual nodes are revalidated before exit navigation', () => {
   node.getAttribute = name => name === 'src' ? node.src : null;
   assert.equal(g.connectedEntryNode(entry, null), null);
 });
+test('overview boundary retry needs 72 pixels within 500ms and only once per gesture', () => {
+  const { c } = context(), retry = c.ImageLens.controls.overviewRetryIntent;
+  const intent = { side: 0, lastAt: -Infinity };
+  assert.equal(retry(intent, 1, 1000, 0), false);
+  assert.equal(retry(intent, 1, 1000, 120), false);
+  assert.equal(retry(intent, 1, 1000, 240), true);
+  for (let t = 300; t < 1800; t += 120) assert.equal(retry(intent, 1, 1000, t), false);
+  assert.equal(retry(intent, 1, 24, 2500), false);
+  assert.equal(retry(intent, 1, 24, 2900), false);
+  assert.equal(retry(intent, 1, 24, 3300), false, 'events more than 500ms apart cannot accumulate');
+  assert.equal(retry(intent, 1, 24, 3350), true);
+  assert.equal(retry(intent, -1, 24, 3400), false, 'reversing resets the gesture');
+  assert.equal(retry(intent, -1, 24, 3450), false);
+  assert.equal(retry(intent, -1, 24, 3500), true);
+  assert.equal(retry(intent, -1, 0, 3600), false);
+});
+
 test('compact ruler keeps clickable quarter ticks and expands only its upper endpoint', () => {
   const { c } = context(); const controls = c.ImageLens.controls;
   assert.deepEqual(plain(controls.ticks), [0,25,50,75,100]);

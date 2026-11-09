@@ -1,8 +1,8 @@
 # Imageseec
 
-Current development build: **2.0 b5** (Chrome version `2.0.0.5`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+Current development build: **2.0 b6** (Chrome version `2.0.0.6`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
 
-A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, a masonry overview, temporary magnification, free panning and a compact zoom ruler.
+A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, a fixed-grid overview, temporary magnification, free panning and a compact zoom ruler.
 
 Designed around the desktop viewing habits familiar to Photoshop and ACDSee users: temporary magnification, precise zoom, direct panning and quick image browsing, brought to the browser. Imageseec uses its own controls and does not reproduce every shortcut from either application.
 
@@ -33,12 +33,12 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Move through comparisons | Choose one-image or two-image steps in settings; the default advances two images |
 | Hold one comparison pane | Hover a pane and select its lock icon; only the other pane then changes |
 | Resize comparison panes | Drag the divider; double-click it to reset to equal widths |
-| Browse the image group | G opens the overview; vertical scrolling uses equal-width masonry columns by default |
-| Horizontal overview | Select Horizontal browsing in settings; scroll right through equal-height rows |
+| Browse the image group | G opens the overview; scroll or drag through fixed slots ordered left to right, then down |
+| Horizontal overview | Select Horizontal browsing in settings; scroll or drag through fixed slots ordered top to bottom, then right |
 | Alignment and spacing | Choose automatic, vertical or horizontal alignment; set gaps from 0–48 px (default 12 px) |
 | Overview thumbnail cache | Automatic preloads two visual rows or columns on each side; each side can use an independent custom count |
 | Choose image mode | 1 selects single-image view; 2 selects comparison; in overview, use the focused or central thumbnail |
-| Return from an overview selection | Double-click or Esc returns to the overview position; Esc in overview restores its parent image view |
+| Return from an overview selection | Double-click the image or press G to return to the overview |
 | Leave the viewer | The close button exits to the current source image or the nearby center image, including after long browsing sessions |
 | Clean overview | Hide thumbnail borders and captions in settings |
 | Change thumbnail size | Use the overview ruler or Alt + wheel (Shift + wheel for 1% steps); click the percentage to reset to 100% |
@@ -46,7 +46,7 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Fit without enlarging | 0 |
 | First / last image | Home / End |
 | Browser fullscreen | F or fullscreen button |
-| Close | Esc, close button, or optional double-click |
+| Close | Esc or the close button exits every mode and returns to the current image on the page |
 
 The initial view preserves aspect ratio, fits the webpage viewport and never enlarges beyond the original image size. Manual fit-page mode can enlarge small images. The default view leaves the browser tabs and address bar visible; browser fullscreen is requested only through F or the fullscreen button.
 

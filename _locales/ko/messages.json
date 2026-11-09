@@ -271,10 +271,10 @@
     "message": "자동"
   },
   "alignmentVertical": {
-    "message": "세로 정렬"
+    "message": "열 너비 기준"
   },
   "alignmentHorizontal": {
-    "message": "가로 정렬"
+    "message": "행 높이 기준"
   },
   "overviewGap": {
     "message": "이미지 간격"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "탐색하지 못했습니다. 스크롤하여 다시 시도하세요."
+  },
+  "overviewWaitingTrigger": {
+    "message": "페이지 이미지 로드를 기다리는 중…"
+  },
+  "overviewThumbFailed": {
+    "message": "일부 썸네일을 불러오지 못했습니다. 스크롤하거나 끌어서 다시 시도하세요."
+  },
+  "overviewDiscovering": {
+    "message": "이미지를 더 찾는 중…"
+  },
+  "overviewSourceFailed": {
+    "message": "페이지 이미지를 불러오지 못했습니다. 스크롤하거나 끌어서 다시 시도하세요."
   }
 }

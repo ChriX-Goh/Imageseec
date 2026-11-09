@@ -8,7 +8,8 @@
   const srcsetAttributes = ['srcset', 'data-srcset', 'data-lazy-srcset', 'data-original-srcset'];
   const backgroundAttributes = ['data-bg', 'data-background', 'data-background-image'];
   const imageUrlParameters = new Set(['mediaurl', 'imgurl', 'imageurl', 'imagesrc', 'original', 'originalurl', 'originalimage', 'originalimageurl', 'fullimage', 'fullimageurl', 'fullsrc', 'fullsizeimage', 'contenturl', 'asseturl', 'fileurl', 'downloadurl']);
-  const observedAttributes = unique(['src', ...srcsetAttributes, ...sourceAttributes, ...backgroundAttributes, 'width', 'height', 'style', 'class']);
+  const observedAttributes = unique(['src', ...srcsetAttributes, ...sourceAttributes, ...backgroundAttributes,
+    'width', 'height', 'style', 'class', 'aria-posinset', 'aria-setsize', 'aria-rowindex']);
 
   function url(value) {
     if (!value) return '';
@@ -298,7 +299,8 @@
     return cards.map((node, order) => {
       if (!slotIds.has(node)) slotIds.set(node, `slot-${++nextSlotId}`);
       return { node, order, key: identity ? `${identity}:${node.getAttribute(identity)}` : slotIds.get(node), stable: Boolean(identity),
-        pending: !mediaNodes(node).some(media => sources(media).some(source => !/^data:image\/(gif|svg\+xml)/i.test(source))) };
+        pending: !mediaNodes(node).some(media => sources(media).some(source => !/^data:image\/(gif|svg\+xml)/i.test(source) ||
+          media.complete && media.naturalWidth > 2 && media.naturalHeight > 2)) };
     });
   }
   function connectedEntryNode(entry, scope) {
@@ -310,7 +312,7 @@
     }
     if (entry.slotStable && entry.slotNode?.isConnected) {
       const slot = slotsFor(scope, node?.isConnected ? node : entry.slotNode).find(slot => slot.node === entry.slotNode);
-      if (slot?.key === entry.slotKey) return slot.node;
+      if (slot?.key === entry.slotKey && slot.pending) return slot.node;
     }
     return null;
   }
@@ -364,7 +366,7 @@
     const scope = scopeHint?.isConnected ? scopeHint : scopeFor(selected);
     // Never widen an uncertain result to the whole page; the structural passes above must find a group.
     const candidates = ordered(scope ? mediaNodes(scope) : selected ? [selected] : []);
-    const slots = slotsFor(scope, selected || candidates.find(isVisibleCandidate));
+    const slots = slotsFor(scope, candidates.includes(selected) ? selected : candidates.find(isVisibleCandidate));
     const slotted = slots.length > 1 && (slots.some(slot => slot.pending) || slots.every(slot => slot.stable));
     const entries = [];
     for (const node of candidates) {
@@ -380,7 +382,11 @@
     const sourceKey = seedEntry?.key || key(source);
     let index = entries.findIndex(entry => entry.key === sourceKey);
     if (index < 0) {
-      if (seedEntry || !scope) { entries.unshift(seedEntry || { key: sourceKey, sources: [source], thumb: source, title: '', node: null }); index = 0; }
+      if (seedEntry || !scope) {
+        const slot = seedEntry && slots.find(item => item.node === selected || item.node.contains?.(selected));
+        if (slot) Object.assign(seedEntry, { slotKey: slot.key, slotStable: slot.stable, slotNode: slot.node });
+        entries.unshift(seedEntry || { key: sourceKey, sources: [source], thumb: source, title: '', node: null }); index = 0;
+      }
       else index = 0;
     }
     return { entries, index, seed: selected, scope, slots, confidence: scope ? 'group' : 'seed', adapter: lens.i18n.text('galleryGeneric') };

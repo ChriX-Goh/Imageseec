@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Imageseec b6 virtual gallery fixture</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;padding:20px;background:#141820;color:#e7ecf5;font:14px/1.5 system-ui,sans-serif}
+    header{max-width:1100px;margin:auto auto 12px}h1{margin:0;font-size:20px}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    button{padding:6px 10px;border:1px solid #566174;border-radius:8px;background:#252d3a;color:inherit;font:inherit}
+    .receipt{min-height:24px;color:#bbc8dd;font-variant-numeric:tabular-nums}
+    #viewport{max-width:1100px;height:min(72vh,680px);min-height:360px;margin:auto;overflow:auto;overscroll-behavior:contain;border:1px solid #4c5668;border-radius:12px;background:#10141b}
+    #gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:12px}
+    #gallery.virtual{position:relative;display:block;padding:0}
+    #gallery.virtual .slot{position:absolute;width:calc(25% - 9px);height:212px}
+    .slot{min-width:0;border:1px solid #3d4655;border-radius:9px;overflow:hidden;background:#1c2330}
+    .label{display:flex;justify-content:space-between;padding:4px 8px;color:#cbd4e3;font-size:11px}
+    .media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--tone)}
+    .media:before{content:'';position:absolute;inset:-18px;background:radial-gradient(ellipse at 25% 35%,var(--glow),transparent 64%);filter:blur(19px);opacity:.75}
+    .media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+    .media[data-state=loading]:after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,#fff2 48%,transparent 67%);animation:sheen 1.6s linear infinite}
+    .media[data-state=failed]:after{content:'Image unavailable';position:absolute;inset:0;display:grid;place-items:center;color:#f1b2a5;background:#17182088}
+    @keyframes sheen{to{transform:translateX(90%)}}
+    @media(max-width:760px){#gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:480px){#gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(prefers-reduced-motion:reduce){.media[data-state=loading]:after{animation:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Imageseec b6 · 80-image lazy gallery</h1>
+    <div>Fixed 4:3 placeholders; actual source ratios vary. Ctrl-click a loaded image to open the installed extension.</div>
+    <div class="tools"><button id="target">Bring center item into view</button><button id="prepend">Prepend 3 items</button><button id="top">Top</button><button id="bottom">Bottom</button><button id="reset">Reset</button></div>
+    <div id="receipt" class="receipt" role="status" aria-live="polite"></div><div id="mode" class="receipt"></div>
+  </header>
+  <main id="viewport" aria-label="Nested gallery viewport"><div id="gallery" data-gallery role="list" aria-label="Virtual image collection"></div><div id="sentinel" aria-hidden="true"></div></main>
+  <script>
+  (() => {
+    const p = new URLSearchParams(location.search);
+    const finite = p.get('total') !== 'unknown';
+    const count = Math.max(8, Math.min(240, Number(p.get('count')) || 80));
+    const unknownLimit = Math.max(count, Math.min(480, Number(p.get('limit')) || 240));
+    const recycle = p.get('recycle') === '1';
+    const delay = Math.max(0, Math.min(5000, Number(p.get('delay')) || 650));
+    const bad = new Set((p.get('fail') || '').split(',').filter(Boolean).map(Number).filter(Number.isInteger));
+    const view = document.querySelector('#viewport'), grid = document.querySelector('#gallery'), receipt = document.querySelector('#receipt');
+    const ratios = [4/3,3/4,1,16/9,2/3,3/2,5/4,9/16];
+    const colors = [['#30475d','#86b5c4'],['#655341','#d6af7b'],['#493c60','#bca2df'],['#31564c','#9cceae'],['#643f47','#e7a1a3'],['#3f4e64','#9cb1d1']];
+    let ids = Array.from({length:count},(_,i)=>i+1), loaded = new Set(), failed = new Set(), pending = new Set(), lastUserScroll = 0, extending = false;
+    const imageURLs = new Map();
+    function image(id) {
+      if(imageURLs.has(id))return imageURLs.get(id);
+      const ratio=ratios[(id-1+ratios.length*8)%ratios.length],w=720,h=Math.round(w/ratio),c=colors[(id-1+colors.length*8)%colors.length];
+      const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="'+c[1]+'"/><stop offset="1" stop-color="'+c[0]+'"/></linearGradient></defs><rect width="720" height="'+h+'" fill="url(#g)"/><circle cx="'+(100+(id*61)%530)+'" cy="'+Math.round(h*.32)+'" r="'+Math.max(24,Math.min(w,h)*.1)+'" fill="#fff3cf"/><path d="M0 '+Math.round(h*.7)+' '+Math.round(w*.25)+' '+Math.round(h*.38)+' '+Math.round(w*.48)+' '+Math.round(h*.73)+' '+Math.round(w*.76)+' '+Math.round(h*.42)+' 720 '+Math.round(h*.7)+' V'+h+' H0Z" fill="'+c[0]+'"/><text x="20" y="'+(h-18)+'" fill="white" font-family="sans-serif" font-size="32">IMAGE '+id+'</text></svg>';
+      const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));imageURLs.set(id,url);return url;
+    }
+    function make(id) {
+      const card=document.createElement('article'), label=document.createElement('div'), media=document.createElement('div'), img=document.createElement('img');
+      card.className='slot';card.dataset.id=String(id);card.setAttribute('role','listitem');card.setAttribute('aria-posinset',String(ids.indexOf(id)+1));if(finite)card.setAttribute('aria-setsize',String(ids.length));
+      label.className='label';label.textContent='Image '+String(id).padStart(2,'0');media.className='media';media.dataset.state='waiting';const c=colors[(id-1+colors.length*8)%colors.length];media.style.setProperty('--tone',c[0]);media.style.setProperty('--glow',c[1]);
+      img.alt='Generated gallery image '+String(id).padStart(2,'0');img.loading='lazy';img.decoding='async';img.dataset.id=String(id);
+      if(loaded.has(id)){img.src=image(id);media.dataset.state='loaded'}else if(failed.has(id)){img.src='/image/98?b6Failure=1';media.dataset.state='failed'}
+      media.append(img);card.append(label,media);return card;
+    }
+    function update(){receipt.textContent=loaded.size+'/'+ids.length+' loaded · '+(ids.length-loaded.size-failed.size)+' waiting · '+failed.size+' failed · nested scrollTop '+Math.round(view.scrollTop)+'px · user scroll '+Math.round(lastUserScroll)+'px'}
+    function load(card){
+      const id=Number(card.dataset.id);if(loaded.has(id)||failed.has(id)||pending.has(id))return;pending.add(id);card.querySelector('.media').dataset.state='loading';
+      setTimeout(()=>{if(!card.isConnected){pending.delete(id);return}const img=card.querySelector('img');img.onload=()=>{pending.delete(id);loaded.add(id);card.querySelector('.media').dataset.state='loaded';update()};img.onerror=()=>{pending.delete(id);failed.add(id);card.querySelector('.media').dataset.state='failed';update()};img.src=bad.has(id)?'/image/98?b6Failure=1':image(id)},delay);
+    }
+    function layoutVirtual(card,index){const row=Math.floor(index/4),col=index%4;card.style.left='calc('+col*25+'% + '+col*3+'px)';card.style.top=(row*224)+'px'}
+    function windowRange(){const rowHeight=224,first=Math.max(0,Math.floor(view.scrollTop/rowHeight)-2),last=Math.min(Math.ceil(ids.length/4),Math.ceil((view.scrollTop+view.clientHeight)/rowHeight)+2);return{first:Math.max(0,first*4),last:Math.min(ids.length,last*4)}}
+    let observer;function observe(){observer?.disconnect();observer=new IntersectionObserver(rs=>rs.forEach(r=>{if(r.isIntersecting)load(r.target)}),{root:view,rootMargin:'180px 0px'});for(const card of grid.children)observer.observe(card)}
+    function render(){
+      if(!recycle){const y=view.scrollTop,f=document.createDocumentFragment();for(const id of ids)f.append(make(id));grid.replaceChildren(f);view.scrollTop=y}
+      else{
+        grid.classList.add('virtual');grid.style.height=(Math.ceil(ids.length/4)*224)+'px';
+        const range=windowRange(),wanted=new Set(ids.slice(range.first,range.last).map(String)),existing=new Map([...grid.children].map(card=>[card.dataset.id,card]));
+        for(const [id,card] of existing)if(!wanted.has(id))card.remove();
+        for(let index=range.first;index<range.last;index++){const id=ids[index],key=String(id);let card=existing.get(key);if(!card){card=make(id);grid.append(card)}card.setAttribute('aria-posinset',String(index+1));if(finite)card.setAttribute('aria-setsize',String(ids.length));layoutVirtual(card,index)}
+      }
+      observe();if(!finite)observeSentinel();update()
+    }
+    let growthObserver;function observeSentinel(){growthObserver?.disconnect();if(finite)return;growthObserver=new IntersectionObserver(rs=>{if(!rs.some(r=>r.isIntersecting)||extending||ids.length>=unknownLimit)return;extending=true;setTimeout(()=>{const add=Array.from({length:Math.min(12,unknownLimit-ids.length)},(_,n)=>ids.length+n+1);ids.push(...add);if(recycle)render();else{const f=document.createDocumentFragment();for(const id of add)f.append(make(id));grid.append(f);observe();observeSentinel();update()}extending=false},delay)},{root:view,rootMargin:'220px 0px'});growthObserver.observe(document.querySelector('#sentinel'))}
+    if(recycle)view.addEventListener('scroll',()=>render(),{passive:true});
+    document.addEventListener('wheel',e=>{if(e.target.closest('#viewport'))lastUserScroll=view.scrollTop},{passive:true});
+    document.addEventListener('pointerdown',e=>{if(e.target.closest('#viewport'))lastUserScroll=view.scrollTop},{passive:true});
+    async function prepareMiddle(){const index=Math.floor(ids.length/2),id=ids[index];if(recycle){view.scrollTop=Math.max(0,Math.floor(index/4)*224-view.clientHeight/2);render()}else{const card=grid.querySelector('[data-id="'+id+'"]');card.scrollIntoView({block:'center'});load(card);update()}const card=grid.querySelector('[data-id="'+id+'"]');if(card){load(card);const img=card.querySelector('img');if(!img.naturalWidth&&!failed.has(id))await new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,delay+1500)})}update();return{id,index,scrollTop:view.scrollTop,position:Number(card?.getAttribute('aria-posinset')),loaded:loaded.has(id),rendered:!!card?.isConnected}}
+    document.querySelector('#target').onclick=prepareMiddle;
+    document.querySelector('#prepend').onclick=()=>{const first=ids[0],added=[first-3,first-2,first-1];ids=[...added,...ids];if(recycle){render()}else{for(const card of grid.children){card.setAttribute('aria-posinset',String(ids.indexOf(Number(card.dataset.id))+1));if(finite)card.setAttribute('aria-setsize',String(ids.length))}const f=document.createDocumentFragment();for(const id of added)f.append(make(id));grid.prepend(f);observe();update()}};
+    document.querySelector('#top').onclick=()=>{view.scrollTop=0;update()};document.querySelector('#bottom').onclick=()=>{view.scrollTop=view.scrollHeight;update()};document.querySelector('#reset').onclick=()=>location.reload();
+    const delayedPrepend=Math.max(0,Number(p.get('prependAfter'))||0);let prependTimer=0;
+    const modes=[];if(recycle)modes.push('virtual recycler');if(!finite)modes.push('unknown total, appends 12 slots near end');if(delay)modes.push(delay+'ms delay');if(bad.size)modes.push('failure ids: '+Array.from(bad).join(','));if(delayedPrepend)modes.push('prepend '+delayedPrepend+'ms after viewer opens');document.querySelector('#mode').textContent='Fixture: '+(finite?'finite, position metadata declares end':'unknown total, stable positions only')+' · '+(modes.join(' · ')||'no added delay');
+    if(delayedPrepend){const watcher=new MutationObserver(()=>{if(document.querySelector('#image-lens-viewer')&&!prependTimer){prependTimer=setTimeout(()=>document.querySelector('#prepend').click(),delayedPrepend);watcher.disconnect()}});watcher.observe(document.documentElement,{subtree:true,childList:true})}
+    window.__imageseecB6={finite,recycle,total:()=>ids.length,prepareMiddle,state:()=>({finite,recycle,total:ids.length,loaded:Array.from(loaded),waiting:ids.filter(x=>!loaded.has(x)&&!failed.has(x)),failed:Array.from(failed),rendered:Array.from(grid.children,c=>Number(c.dataset.id)),scrollTop:view.scrollTop,scrollHeight:view.scrollHeight}),positions:()=>Array.from(grid.children,c=>{const b=c.getBoundingClientRect();return{id:Number(c.dataset.id),pos:Number(c.getAttribute('aria-posinset')),setsize:Number(c.getAttribute('aria-setsize'))||null,x:b.x,y:b.y,width:b.width,height:b.height}})};
+    render();
+  })();
+  </script>
+</body>
+</html>

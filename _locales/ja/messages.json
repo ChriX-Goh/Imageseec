@@ -271,10 +271,10 @@
     "message": "自動"
   },
   "alignmentVertical": {
-    "message": "縦方向に整列"
+    "message": "列の幅に合わせる"
   },
   "alignmentHorizontal": {
-    "message": "横方向に整列"
+    "message": "行の高さに合わせる"
   },
   "overviewGap": {
     "message": "画像の間隔"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "読み取りに失敗しました。スクロールして再試行。"
+  },
+  "overviewWaitingTrigger": {
+    "message": "ページの画像の読み込みを待っています…"
+  },
+  "overviewThumbFailed": {
+    "message": "一部のサムネイルを読み込めません。スクロールまたはドラッグで再試行。"
+  },
+  "overviewDiscovering": {
+    "message": "画像を検索中…"
+  },
+  "overviewSourceFailed": {
+    "message": "ページの画像を読み込めません。スクロールまたはドラッグで再試行。"
   }
 }

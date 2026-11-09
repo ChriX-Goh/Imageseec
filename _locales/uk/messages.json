@@ -271,10 +271,10 @@
     "message": "Автоматично"
   },
   "alignmentVertical": {
-    "message": "По вертикалі"
+    "message": "За шириною стовпця"
   },
   "alignmentHorizontal": {
-    "message": "По горизонталі"
+    "message": "За висотою рядка"
   },
   "overviewGap": {
     "message": "Проміжок між зображеннями"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Не вдалося продовжити пошук. Прокрутіть, щоб повторити."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Очікування завантаження зображень сторінки…"
+  },
+  "overviewThumbFailed": {
+    "message": "Не вдалося завантажити деякі мініатюри. Прокрутіть або перетягніть для повтору."
+  },
+  "overviewDiscovering": {
+    "message": "Пошук інших зображень…"
+  },
+  "overviewSourceFailed": {
+    "message": "Не вдалося завантажити зображення сторінки. Прокрутіть або перетягніть для повтору."
   }
 }

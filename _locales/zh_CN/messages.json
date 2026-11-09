@@ -271,10 +271,10 @@
     "message": "自动"
   },
   "alignmentVertical": {
-    "message": "上下对齐"
+    "message": "按列宽"
   },
   "alignmentHorizontal": {
-    "message": "左右对齐"
+    "message": "按行高"
   },
   "overviewGap": {
     "message": "图片间距"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "扫描失败，滚动重试"
+  },
+  "overviewWaitingTrigger": {
+    "message": "正在等待网页触发图片加载…"
+  },
+  "overviewThumbFailed": {
+    "message": "部分缩略图加载失败；滚动或拖动可重试。"
+  },
+  "overviewDiscovering": {
+    "message": "正在查找更多图片…"
+  },
+  "overviewSourceFailed": {
+    "message": "网页图片加载失败；滚动或拖动可重试。"
   }
 }

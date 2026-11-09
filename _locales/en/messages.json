@@ -271,10 +271,10 @@
     "message": "Automatic"
   },
   "alignmentVertical": {
-    "message": "Vertical alignment"
+    "message": "By column width"
   },
   "alignmentHorizontal": {
-    "message": "Horizontal alignment"
+    "message": "By row height"
   },
   "overviewGap": {
     "message": "Image gap"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Unable to scan. Scroll to retry."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Waiting for page images…"
+  },
+  "overviewThumbFailed": {
+    "message": "Some thumbnails failed to load. Scroll or drag to retry."
+  },
+  "overviewDiscovering": {
+    "message": "Finding more images…"
+  },
+  "overviewSourceFailed": {
+    "message": "Page images failed to load. Scroll or drag to retry."
   }
 }

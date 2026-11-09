@@ -17,66 +17,54 @@
   }
   function holdPan(initialPan, anchor, delta, ratio) { return anchor - (anchor - initialPan) * ratio - delta * ratio; }
   function wheelMode(event) { return event.shiftKey ? 'fine' : event.altKey ? 'zoom' : 'navigate'; }
-  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12, sizePercent = 100) {
+  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12, sizePercent = 100, startOrdinal = 0) {
     const padding = clean ? 0 : 12, caption = clean ? 0 : 27;
-    const scale = Math.max(25, Math.min(300, sizePercent)) / 100;
-    const safe = ratios.map(r => Number.isFinite(r) && r > 0 ? r : 1);
-    const boxes = [];
-    const resolved = alignment === 'auto' ? horizontal ? 'horizontal' : 'vertical' : alignment;
-    if (resolved === (horizontal ? 'horizontal' : 'vertical')) {
-      const limit = horizontal ? height : width;
-      const trim = horizontal ? padding + caption : padding;
-      const base = (horizontal ? 180 : 210) + trim;
-      const target = (base - trim) * scale + trim;
-      const count = Math.max(1, Math.floor((limit + gap) / (target + gap)));
-      const nominalCount = Math.max(1, Math.floor((limit + gap) / (base + gap)));
-      const nominalCross = (limit - gap * (nominalCount - 1)) / nominalCount;
-      const fitCross = (limit - gap * (count - 1)) / count;
-      // Keep the default packing exactly, but do not stretch a lone track across a wide viewport.
-      const cross = Math.max(1, scale > 1 ? Math.min(fitCross, (nominalCross - trim) * scale + trim) : fitCross);
-      const inset = Math.max(0, (limit - cross * count - gap * (count - 1)) / 2);
-      const ends = Array(count).fill(0);
-      for (const ratio of safe) {
-        const lane = ends.indexOf(Math.min(...ends));
-        const w = horizontal ? Math.max(1, cross - padding - caption) * ratio + padding : cross;
-        const h = horizontal ? cross : Math.max(1, cross - padding) / ratio + padding + caption;
-        boxes.push({ x: horizontal ? ends[lane] : inset + lane * (cross + gap), y: horizontal ? inset + lane * (cross + gap) : ends[lane], width: w, height: h });
-        ends[lane] += (horizontal ? w : h) + gap;
-      }
-      const extent = Math.max(0, ...ends) - (safe.length ? gap : 0);
-      return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize: count };
+    const scale = Math.max(25, Math.min(300, Number(sizePercent) || 100)) / 100;
+    const count = Math.max(0, Math.floor(Number(ratios?.length) || 0));
+    const ordinalStart = Math.floor(Number(startOrdinal) || 0);
+    const resolved = alignment === 'auto' ? (horizontal ? 'horizontal' : 'vertical') : alignment;
+    const preferredImageWidth = resolved === 'horizontal' ? 180 * scale * 4 / 3 : 210 * scale;
+    const preferredImageHeight = resolved === 'vertical' ? 210 * scale * 3 / 4 : 180 * scale;
+    const crossLimit = horizontal ? height : width;
+    const preferredTrack = horizontal
+      ? preferredImageHeight + padding + caption
+      : preferredImageWidth + padding;
+    const bandSize = Math.max(1, Math.min(64, Math.floor((crossLimit + gap) / (preferredTrack + gap)) || 1));
+    const cross = Math.max(1, (crossLimit - gap * (bandSize - 1)) / bandSize);
+    const imageHeight = horizontal ? Math.max(1, cross - padding - caption) : Math.max(1, cross - padding) * 3 / 4;
+    // Every unloaded and loaded thumbnail keeps this same 4:3 geometry.
+    const cardWidth = horizontal ? imageHeight * 4 / 3 + padding : cross;
+    const cardHeight = horizontal ? cross : imageHeight + padding + caption;
+    const firstBand = Math.floor(ordinalStart / bandSize);
+    const lastBand = count ? Math.floor((ordinalStart + count - 1) / bandSize) : firstBand - 1;
+    const bands = [];
+    for (let absolute = firstBand; absolute <= lastBand; absolute++) {
+      const firstOrdinal = absolute * bandSize;
+      const lastOrdinal = firstOrdinal + bandSize - 1;
+      const firstIndex = Math.max(0, firstOrdinal - ordinalStart);
+      const lastIndex = Math.min(count - 1, lastOrdinal - ordinalStart);
+      const bandIndex = absolute - firstBand;
+      const x = horizontal ? bandIndex * (cardWidth + gap) : 0;
+      const y = horizontal ? 0 : bandIndex * (cardHeight + gap);
+      bands.push({
+        index: bandIndex, ordinal: absolute, ordinalStart: firstOrdinal, ordinalEnd: lastOrdinal,
+        startIndex: firstIndex, endIndex: lastIndex, x, y,
+        width: horizontal ? cardWidth : width, height: horizontal ? height : cardHeight
+      });
     }
-    let offset = 0; const bands = [];
-    for (let start = 0; start < safe.length;) {
-      let end = start, sum = 0;
-      const target = horizontal ? Math.min(210 * scale, width) : Math.min(180, Math.max(100, width / 3)) * scale;
-      const limit = horizontal ? height : width;
-      while (end < safe.length) {
-        const value = horizontal ? 1 / safe[end] : safe[end];
-        const n = end - start + 1;
-        const projected = (sum + value) * target + n * (horizontal ? padding + caption : padding) + (n - 1) * gap;
-        if (horizontal && end > start && projected > limit) break;
-        sum += value; end++;
-        if (projected >= limit) break;
-      }
-      const n = end - start;
-      bands.push(n);
-      const fit = Math.max(1, (limit - (n - 1) * gap - n * (horizontal ? padding + caption : padding)) / sum);
-      const size = Math.min(fit, target * (end === safe.length || horizontal ? 1 : 1.35));
-      let cross = 0;
-      for (let i = start; i < end; i++) {
-        const w = (horizontal ? size : size * safe[i]) + padding;
-        const h = (horizontal ? size / safe[i] : size) + padding + caption;
-        boxes.push({ x: horizontal ? offset : cross, y: horizontal ? cross : offset, width: w, height: h });
-        cross += (horizontal ? h : w) + gap;
-      }
-      offset += size + padding + (horizontal ? 0 : caption) + gap;
-      start = end;
+    const boxes = Array(count);
+    for (let index = 0; index < count; index++) {
+      const ordinal = ordinalStart + index;
+      const absoluteBand = Math.floor(ordinal / bandSize);
+      const bandIndex = absoluteBand - firstBand;
+      const lane = ((ordinal % bandSize) + bandSize) % bandSize;
+      const band = bands[bandIndex];
+      boxes[index] = horizontal
+        ? { index, ordinal, bandIndex, x: band.x, y: lane * (cross + gap), width: cardWidth, height: cross }
+        : { index, ordinal, bandIndex, x: lane * (cross + gap), y: band.y, width: cross, height: cardHeight };
     }
-    bands.sort((a, b) => a - b);
-    const middle = Math.floor(bands.length / 2);
-    const bandSize = bands.length ? bands.length % 2 ? bands[middle] : Math.round((bands[middle - 1] + bands[middle]) / 2) : 1;
-    return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap), bandSize };
+    const extent = count ? (bands.length - 1) * ((horizontal ? cardWidth : cardHeight) + gap) + (horizontal ? cardWidth : cardHeight) : 0;
+    return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize, bands };
   }
   function overviewCacheRange(total, firstVisible, lastVisible, before, after) {
     const count = Math.max(0, Math.floor(Number(total) || 0));
@@ -87,5 +75,20 @@
     const end = Math.min(count - 1, last + Math.max(0, Math.floor(Number(after) || 0)));
     return { start, end, before: first - start, after: end - last };
   }
-  lens.controls = { ticks, overviewTicks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange };
+  function overviewRetryIntent(intent, side, amount, now) {
+    side = Math.sign(Number(side));
+    amount = Math.min(24, Math.max(0, Number(amount) || 0));
+    if (!side || !amount || !Number.isFinite(now)) return false;
+    if (intent.side !== side || now - intent.lastAt > 500) {
+      intent.samples = []; intent.retried = false;
+    }
+    intent.side = side; intent.lastAt = now;
+    intent.samples = (intent.samples || []).filter(sample => now - sample.at <= 500);
+    intent.samples.push({ at: now, amount });
+    intent.distance = intent.samples.reduce((sum, sample) => sum + sample.amount, 0);
+    if (intent.retried || intent.distance < 72) return false;
+    intent.retried = true; intent.lastRetryAt = now;
+    return true;
+  }
+  lens.controls = { ticks, overviewTicks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange, overviewRetryIntent };
 })();

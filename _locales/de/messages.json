@@ -271,10 +271,10 @@
     "message": "Automatisch"
   },
   "alignmentVertical": {
-    "message": "Vertikal ausrichten"
+    "message": "Nach Spaltenbreite"
   },
   "alignmentHorizontal": {
-    "message": "Horizontal ausrichten"
+    "message": "Nach Zeilenhöhe"
   },
   "overviewGap": {
     "message": "Bildabstand"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Suche fehlgeschlagen. Zum Wiederholen scrollen."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Warten auf Bilder der Seite…"
+  },
+  "overviewThumbFailed": {
+    "message": "Einige Miniaturen konnten nicht geladen werden. Zum Wiederholen scrollen oder ziehen."
+  },
+  "overviewDiscovering": {
+    "message": "Weitere Bilder werden gesucht…"
+  },
+  "overviewSourceFailed": {
+    "message": "Bilder der Seite konnten nicht geladen werden. Zum Wiederholen scrollen oder ziehen."
   }
 }

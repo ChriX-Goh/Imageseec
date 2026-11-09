@@ -271,10 +271,10 @@
     "message": "Automatycznie"
   },
   "alignmentVertical": {
-    "message": "Wyrównanie pionowe"
+    "message": "Według szerokości kolumny"
   },
   "alignmentHorizontal": {
-    "message": "Wyrównanie poziome"
+    "message": "Według wysokości wiersza"
   },
   "overviewGap": {
     "message": "Odstęp między obrazami"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Nie udało się wyszukać. Przewiń, aby ponowić."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Oczekiwanie na obrazy strony…"
+  },
+  "overviewThumbFailed": {
+    "message": "Nie udało się wczytać niektórych miniatur. Przewiń lub przeciągnij, aby ponowić."
+  },
+  "overviewDiscovering": {
+    "message": "Wyszukiwanie kolejnych obrazów…"
+  },
+  "overviewSourceFailed": {
+    "message": "Nie udało się wczytać obrazów strony. Przewiń lub przeciągnij, aby ponowić."
   }
 }

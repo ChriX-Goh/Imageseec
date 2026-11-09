@@ -271,10 +271,10 @@
     "message": "自動"
   },
   "alignmentVertical": {
-    "message": "上下對齊"
+    "message": "按欄寬"
   },
   "alignmentHorizontal": {
-    "message": "左右對齊"
+    "message": "按列高"
   },
   "overviewGap": {
     "message": "圖片間距"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "掃描失敗，捲動重試"
+  },
+  "overviewWaitingTrigger": {
+    "message": "正在等候網頁觸發圖片載入…"
+  },
+  "overviewThumbFailed": {
+    "message": "部分縮圖載入失敗；捲動或拖曳即可重試。"
+  },
+  "overviewDiscovering": {
+    "message": "正在尋找更多圖片…"
+  },
+  "overviewSourceFailed": {
+    "message": "網頁圖片載入失敗；捲動或拖曳即可重試。"
   }
 }

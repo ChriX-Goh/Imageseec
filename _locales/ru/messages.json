@@ -271,10 +271,10 @@
     "message": "Автоматически"
   },
   "alignmentVertical": {
-    "message": "По вертикали"
+    "message": "По ширине столбца"
   },
   "alignmentHorizontal": {
-    "message": "По горизонтали"
+    "message": "По высоте строки"
   },
   "overviewGap": {
     "message": "Интервал между изображениями"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Не удалось продолжить поиск. Прокрутите, чтобы повторить."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Ожидание загрузки изображений страницы…"
+  },
+  "overviewThumbFailed": {
+    "message": "Не удалось загрузить некоторые миниатюры. Прокрутите или перетащите для повтора."
+  },
+  "overviewDiscovering": {
+    "message": "Поиск других изображений…"
+  },
+  "overviewSourceFailed": {
+    "message": "Не удалось загрузить изображения страницы. Прокрутите или перетащите для повтора."
   }
 }

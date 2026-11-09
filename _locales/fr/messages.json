@@ -271,10 +271,10 @@
     "message": "Automatique"
   },
   "alignmentVertical": {
-    "message": "Alignement vertical"
+    "message": "Selon la largeur des colonnes"
   },
   "alignmentHorizontal": {
-    "message": "Alignement horizontal"
+    "message": "Selon la hauteur des lignes"
   },
   "overviewGap": {
     "message": "Espacement des images"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Échec de la recherche. Faites défiler pour réessayer."
+  },
+  "overviewWaitingTrigger": {
+    "message": "En attente des images de la page…"
+  },
+  "overviewThumbFailed": {
+    "message": "Certaines vignettes n’ont pas été chargées. Faites défiler ou glissez pour réessayer."
+  },
+  "overviewDiscovering": {
+    "message": "Recherche d’autres images…"
+  },
+  "overviewSourceFailed": {
+    "message": "Les images de la page n’ont pas été chargées. Faites défiler ou glissez pour réessayer."
   }
 }

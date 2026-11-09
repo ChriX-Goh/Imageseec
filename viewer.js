@@ -60,23 +60,26 @@
     .overview { position: absolute; inset: 0; display: none; overflow-y: auto; overflow-x: hidden; overflow-anchor: none; overscroll-behavior: none; padding: 82px 24px 36px; scrollbar-width: thin; scrollbar-gutter: stable; }
     .overview.active { display: block; }
     .overview.horizontal { overflow-x: auto; overflow-y: hidden; }
-    .overview-grid { position: relative; margin: 0; }
+    .overview.dragging, .overview.dragging .overview-card { cursor: grabbing; }
+    .overview-content { display: flex; flex-direction: column; width: max-content; min-width: 100%; }
+    .overview.horizontal .overview-content { flex-direction: row; height: 100%; }
+    .overview-grid { position: relative; flex: none; margin: 0; }
     .overview-card { position: absolute; margin: 0; padding: 5px; border: 1px solid #ffffff1c; border-radius: 12px; background: #202229; cursor: pointer; text-align: left; overflow: hidden; }
     .overview-card:hover { border-color: #a9c0ff99; background: #2d3039; }
     .overview-card[aria-current="true"] { border-color: #b4c8ff; box-shadow: 0 0 16px #9fb9ff30; }
-    .overview-card img { display: block; width: 100%; height: calc(100% - 27px); object-fit: contain; border-radius: 8px; background: #15171b; pointer-events: none; }
+    .overview-card img { display: block; width: 100%; height: calc(100% - 27px); object-fit: contain; border-radius: 8px; pointer-events: none; color: transparent; opacity: 0; transition: opacity .18s ease; }
+    .overview-card[data-thumb-state="ready"] img { opacity: 1; background: #15171b; }
+    .overview-card::before { content: ''; position: absolute; inset: 5px 5px 32px; border-radius: 8px; pointer-events: none; background: radial-gradient(ellipse at 30% 22%, #8a9ab13a, transparent 70%), radial-gradient(ellipse at 80% 75%, #737caa42, #292d36 77%); transition: opacity .18s ease; }
+    .overview-card[data-thumb-state="ready"]::before { opacity: 0; }
     .overview-card span { display: block; height: 27px; padding: 5px 3px 1px; color: #b6bac5; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .overview.clean .overview-card { border: 0; border-radius: 0; padding: 0; background: transparent; box-shadow: none; }
     .overview.clean .overview-card img { height: 100%; border-radius: 0; background: transparent; }
+    .overview.clean .overview-card::before { inset: 0; border-radius: 0; }
     .overview.clean .overview-card span { display: none; }
     .overview.clean .overview-card[aria-current="true"] img { filter: brightness(.88); }
-    .overview-status { position: absolute; z-index: 1; left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 8px; padding: 7px 12px; max-width: 85%; border-radius: 14px; color: #e3e9f8; background: #222632ed; font-size: 12px; text-align: center; pointer-events: none; }
-    .overview-status[data-side="-1"] { top: 68px; }
-    .overview-status[data-side="1"] { bottom: 12px; }
-    .overview.horizontal ~ .overview-status { top: 50%; bottom: auto; translate: 0 -50%; max-width: min(20ch, 40%); }
-    .overview.horizontal ~ .overview-status[data-side="-1"] { left: 12px; }
-    .overview.horizontal ~ .overview-status[data-side="1"] { left: auto; right: 12px; }
-    .overview-status[hidden] { display: none; }
+    .overview-status { flex: 0 0 40px; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 0; padding: 0 8px; color: #cbd5eb; font-size: 12px; text-align: center; overflow: hidden; pointer-events: none; }
+    .overview.horizontal .overview-status { flex-basis: 80px; width: 80px; flex-direction: column; }
+    .overview-status[hidden] { display: flex; visibility: hidden; }
     .loading-flower { width: 19px; height: 19px; flex: none; fill: #b6cbff; stroke: none; animation: flower-turn 1s linear infinite; }
     .message .loading-flower { vertical-align: middle; margin-inline-end: 8px; }
     @keyframes flower-turn { to { transform: rotate(1turn); } }
@@ -283,11 +286,12 @@
     const scanScroller = pagePosition.elements[0]?.node || null;
     const scanHorizontal = Boolean(scanScroller && scanScroller.scrollWidth > scanScroller.clientWidth + 4 && scanScroller.scrollHeight <= scanScroller.clientHeight + 4);
     const sourcePosition = () => scanScroller ? scanHorizontal ? scanScroller.scrollLeft : scanScroller.scrollTop : window.scrollY;
-    const scanStates = Object.fromEntries([-1, 1].map(direction => [direction, { cursor: sourcePosition(), paused: false, ended: false, failed: false, lastAttempt: -Infinity }]));
+    const scanStates = Object.fromEntries([-1, 1].map(direction => [direction, {
+      cursor: sourcePosition(), phase: collection.scope ? 'idle' : 'ended',
+      paused: false, ended: !collection.scope, failed: false, lastAttempt: -Infinity,
+      noProgress: 0, triggerWaits: 0, resourceErrors: 0, totalAttempts: 0
+    }]));
     const sourceAnchors = new Map();
-    let reservedSlots = Boolean(collection.slots?.some(slot => slot.pending));
-    const initialSlotCount = collection.slots?.length || 0;
-    let slotsExpanded = false;
     const restorePageCoordinates = () => {
       window.scrollTo(pagePosition.x, pagePosition.y);
       for (const item of pagePosition.elements) if (item.node.isConnected) { item.node.scrollTop = item.top; item.node.scrollLeft = item.left; }
@@ -318,8 +322,8 @@
         <div class="compare-pane right"><img alt="" draggable="false" hidden><button class="pane-lock" data-pane="right" aria-pressed="false" aria-label="${h('lockPane')}" title="${h('lockPane')}">${icon('unlock')}</button></div>
         <button class="divider" aria-label="${h('resetDivider')}" title="${h('resetDivider')}"></button>
       </div>
-      <div class="overview-shell" hidden><div class="overview" aria-label="${h('overviewTitle')}" aria-hidden="true" tabindex="0"><div class="overview-grid"></div></div>
-        <div class="overview-status" data-side="-1" role="status" hidden></div><div class="overview-status" data-side="1" role="status" hidden></div></div>
+      <div class="overview-shell" hidden><div class="overview" aria-label="${h('overviewTitle')}" aria-hidden="true" tabindex="0"><div class="overview-content">
+        <div class="overview-status" data-side="-1" role="status" hidden></div><div class="overview-grid"></div><div class="overview-status" data-side="1" role="status" hidden></div></div></div></div>
       <div class="top-trigger" aria-hidden="true"></div>
       <header class="bar"><div class="brand">${icon('lens')}Imageseec</div><div class="counter"></div><div class="resolution"></div><div class="tools">
         <button class="compare-toggle" title="${h('splitView')}" aria-label="${h('splitView')}" aria-pressed="false">${icon('compare')}</button>
@@ -364,10 +368,16 @@
     let overviewOpen = false, overviewReturn = null, overviewRecent = null, overviewAnchor = null, fromOverview = false, overviewBandSize = 1;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const overviewCards = new Map();
+    let overviewItems = [], overviewBands = [], overviewStartOrdinal = 0, overviewGeometry = '', rebuildOverviewItems = false;
     let overviewPress = null, overviewCommitTimer = 0, overviewCommitStarted = 0, overviewDirty = false, pictureClick = 0;
+    let overviewGesture = null;
     let overviewLayoutAnchor = null;
-    let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, overviewCacheCheckTimer = 0, scanRevision = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
+    let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, overviewCacheCheckTimer = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
     let edgeSide = 0, edgePull = 0, edgeTimer = 0, edgeAnimation = null;
+    const overviewThumbJobs = new Map();
+    const overviewThumbQueue = [];
+    const overviewEdgeIntentState = { side: 0, distance: 0, lastAt: 0, lastRetryAt: -Infinity, retried: false, timer: 0 };
+    let overviewThumbActive = 0;
     const on = (node, type, handler, options = {}) => node.addEventListener(type, handler, { ...options, signal });
 
     function close(event) {
@@ -379,6 +389,9 @@
       closed = true; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       scanController?.abort(); scanRestore?.(); scanRestore = null;
       endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      clearTimeout(overviewEdgeIntentState.timer);
+      for (const job of overviewThumbJobs.values()) job.image.onload = job.image.onerror = null;
+      overviewThumbQueue.length = 0; overviewThumbJobs.clear();
       resetOverviewEdge();
       lens.feedbackController?.abort();
       globalThis.chrome?.storage?.onChanged?.removeListener(storageChanged);
@@ -554,6 +567,7 @@
       const value = Math.round(Math.max(25, Math.min(300, percent)));
       if (value === settings.overviewScale) return;
       settings.overviewScale = value;
+      rebuildOverviewItems = true;
       updateRuler();
       queueOverviewCommit();
       chrome.storage.local.set({ settings }).catch(() => {});
@@ -644,6 +658,7 @@
     }
     function savePreferences(next) {
       const languageChanged = settings.language !== next.language;
+      rebuildOverviewItems ||= overviewLayoutChanged(settings, next);
       settings = next; cacheNeighbors(); updateLock();
       viewer.classList.toggle('toolbar-auto', settings.toolbarAutoHide);
       dividerPosition = Math.max(settings.dividerMin / 100, Math.min(1 - settings.dividerMin / 100, dividerPosition));
@@ -768,20 +783,71 @@
       const offset = horizontal ? overview.scrollLeft : overview.scrollTop;
       return side < 0 ? offset : (horizontal ? overview.scrollWidth - overview.clientWidth : overview.scrollHeight - overview.clientHeight) - offset;
     }
+    function overviewSourceLoads(side, window = overviewCacheWindow()) {
+      if (!collection.scope?.isConnected) return false;
+      const pendingEntries = overviewItems.slice(side < 0 ? window.start : Math.min(overviewItems.length, window.last + 1), side < 0 ? window.first : window.end + 1)
+        .filter(item => item.entry).map(item => item.entry);
+      const candidates = pendingEntries.length ? pendingEntries.map(entry => entry.node).filter(node => node?.isConnected)
+        : [...collection.scope.querySelectorAll('img')];
+      const origin = scanScroller?.getBoundingClientRect(), cursor = sourcePosition();
+      const viewport = scanScroller ? scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight : innerHeight;
+      return candidates.some(image => {
+        if (image.tagName !== 'IMG' || image.complete || !(image.currentSrc || image.getAttribute('src')) || !lens.gallery.sources(image).length) return false;
+        const box = image.getBoundingClientRect();
+        const position = cursor + (scanHorizontal ? box.left - (origin?.left || 0) : box.top - (origin?.top || 0));
+        return side < 0 ? position <= cursor + viewport * .35 : position >= cursor - viewport * .35;
+      });
+    }
+    function overviewHasPendingSlots(side, window = overviewCacheWindow()) {
+      const start = side < 0 ? window.start : Math.min(overviewItems.length, window.last + 1);
+      const end = side < 0 ? Math.min(window.first, window.end + 1) : window.end + 1;
+      return overviewItems.slice(start, end).some(item => !item.entry && item.slotKey);
+    }
+    function overviewThumbnailFailures(window = overviewCacheWindow(), side = 0) {
+      const failed = [];
+      const start = side < 0 ? window.start : side > 0 ? Math.max(window.start, window.last + 1) : window.start;
+      const end = side < 0 ? Math.min(window.end, window.first - 1) : side > 0 ? window.end : window.end;
+      for (let index = start; index <= end; index++) {
+        const item = overviewItems[index], job = item && overviewThumbJobs.get(item.key);
+        if (job?.status === 'error') failed.push(index);
+      }
+      return failed;
+    }
+    function overviewThumbnailLoads(window = overviewCacheWindow(), side = 0) {
+      const start = side < 0 ? window.start : side > 0 ? Math.max(window.start, window.last + 1) : window.start;
+      const end = side < 0 ? Math.min(window.end, window.first - 1) : side > 0 ? window.end : window.end;
+      for (let index = start; index <= end; index++) {
+        const item = overviewItems[index], job = item && overviewThumbJobs.get(item.key);
+        if (job && ['loading', 'decoding'].includes(job.status)) return true;
+      }
+      return false;
+    }
     function updateOverviewStatus() {
+      if (!overviewOpen) return;
+      const window = overviewCacheWindow();
       for (const side of [-1, 1]) {
         const label = $(`.overview-status[data-side="${side}"]`);
         const state = scanStates[side];
         const loading = Boolean(scanController && !scanController.signal.aborted && scanningDirection === side);
-        const ended = state.ended || !collection.scope;
-        const key = loading ? 'overviewLoading' : ended ? (side < 0 ? 'overviewStart' : 'overviewEnd')
-          : state.failed ? 'overviewScanFailed' : state.paused ? 'overviewPaused' : '';
-        const visible = overviewOpen && key && overviewEdgeDistance(side) <= (loading ? 120 : 2);
-        label.hidden = !visible;
-        const text = key ? (ended && !loading ? t(key) : `${t(side < 0 ? 'overviewEarlier' : 'overviewLater')}: ${t(key)}`) : '';
-        if (label.textContent !== text || Boolean(label.querySelector('.loading-flower')) !== loading) {
+        const nearThumbnailError = overviewThumbnailFailures(window, side).length > 0;
+        const pending = overviewHasPendingSlots(side, window);
+        const sourceLoading = overviewSourceLoads(side, window);
+        const thumbnailLoading = overviewThumbnailLoads(window, side);
+        const key = state.ended ? (side < 0 ? 'overviewStart' : 'overviewEnd')
+          : loading && (sourceLoading || thumbnailLoading) ? 'overviewLoading'
+          : loading ? 'overviewDiscovering'
+          : nearThumbnailError ? 'overviewThumbFailed'
+          : state.resourceErrors ? 'overviewSourceFailed'
+          : state.failed ? 'overviewScanFailed'
+          : sourceLoading || thumbnailLoading ? 'overviewLoading'
+          : !state.paused && (pending || state.phase === 'waiting-trigger') ? 'overviewWaitingTrigger'
+          : state.paused ? 'overviewPaused' : '';
+        label.hidden = !key;
+        const text = key ? t(key) : '';
+        const showFlower = loading || (key === 'overviewLoading' && (sourceLoading || thumbnailLoading));
+        if (label.textContent !== text || Boolean(label.querySelector('.loading-flower')) !== showFlower) {
           label.replaceChildren();
-          if (loading) label.insertAdjacentHTML('afterbegin', flower);
+          if (showFlower) label.insertAdjacentHTML('afterbegin', flower);
           label.append(document.createTextNode(text));
         }
       }
@@ -803,32 +869,106 @@
     function pushOverviewEdge(side, amount) {
       const ended = scanStates[side].ended || !collection.scope;
       const loading = scanController && !scanController.signal.aborted && scanningDirection === side;
-      if (reducedMotion.matches || (!ended && !loading)) { updateOverviewStatus(); return; }
+      if (reducedMotion.matches || (!ended && !loading && !scanStates[side].paused && !scanStates[side].failed)) { updateOverviewStatus(); return; }
       edgeAnimation?.cancel(); edgeAnimation = null;
       if (edgeSide && edgeSide !== side) resetOverviewEdge();
       edgeSide = side;
       const horizontal = overview.classList.contains('horizontal');
       const limit = ended ? Math.min(64, (horizontal ? overview.clientWidth : overview.clientHeight) * .08) : 18;
       if (!limit) return;
-      edgePull = Math.min(limit, edgePull + Math.min(120, amount) * .22 * (1 - edgePull / limit));
+      edgePull = Math.min(limit, edgePull + Math.min(24, amount) * .28 * (1 - edgePull / limit));
       const displacement = -side * edgePull;
       overview.style.translate = horizontal ? `${displacement}px 0px` : `0px ${displacement}px`;
       clearTimeout(edgeTimer);
       if (ended) edgeTimer = setTimeout(() => resetOverviewEdge(true, true), 95);
       updateOverviewStatus();
     }
+    function overviewEdgeIntent(side, amount, kind = 'wheel') {
+      side = Math.sign(Number(side));
+      amount = Math.min(24, Math.max(0, Number(amount) || 0));
+      if (!side || !amount || !overviewOpen || closed) return false;
+      const state = scanStates[side];
+      const now = performance.now(), intent = overviewEdgeIntentState;
+      const ended = state.ended;
+      pushOverviewEdge(side, amount);
+      if (!lens.controls.overviewRetryIntent(intent, side, amount, now)) return false;
+      if (scanPromise) { state.paused = state.failed = false; return false; }
+      if (ended) {
+        state.ended = false; state.phase = 'idle';
+      }
+      state.paused = state.failed = false;
+      state.resourceErrors = 0;
+      updateOverviewThumbnails(true);
+      return scanMore(side, true, Math.max(6, Math.min(24, overviewBandSize * 2))) || false;
+    }
+    function scanSlotSignature() {
+      return (collection.slots || []).map(slot => {
+        const media = [slot.node, ...slot.node.querySelectorAll('img, [role="img"], [data-bg], [data-background], [data-background-image], [data-image], [data-image-src]')];
+        const sources = media.map(node => lens.gallery.sources(node).join(',')).join(';');
+        const order = slot.node.getAttribute('aria-posinset') || slot.node.getAttribute('aria-rowindex') || '';
+        const total = slot.node.getAttribute('aria-setsize') || collection.scope?.getAttribute('aria-setsize') || '';
+        return `${slot.key}:${order}:${total}:${slot.pending ? 1 : 0}:${sources}`;
+      }).join('|');
+    }
+    function explicitScanBoundary(direction) {
+      const slots = collection.slots || [];
+      if (slots.length < 2 || slots.some(slot => !slot.node?.isConnected || !slot.stable)) return false;
+      if (scanSourceFailureCount(0) > 0) return false;
+      const positions = slots.map(slot => Number(slot.node.getAttribute('aria-posinset') || slot.node.querySelector('[aria-posinset]')?.getAttribute('aria-posinset')));
+      const totals = slots.map(slot => Number(slot.node.getAttribute('aria-setsize') || slot.node.querySelector('[aria-setsize]')?.getAttribute('aria-setsize') || collection.scope?.getAttribute('aria-setsize')));
+      if (positions.some(value => !Number.isInteger(value) || value < 1) || totals.some(value => !Number.isInteger(value) || value < 2)) return false;
+      const total = totals[0];
+      if (totals.some(value => value !== total) || positions.length !== total || new Set(positions).size !== total) return false;
+      const sorted = [...positions].sort((a, b) => a - b);
+      if (sorted.some((value, index) => value !== index + 1)) return false;
+      const hasPending = slots.some(slot => slot.pending);
+      if (hasPending) return false;
+      const entrySlots = new Set(entries.filter(entry => entry.slotStable && entry.slotNode?.isConnected).map(entry => entry.slotKey));
+      if (slots.some(slot => !entrySlots.has(slot.key))) return false;
+      return direction < 0 ? Math.min(...positions) === 1 : Math.max(...positions) === total;
+    }
+    function scanSourceFailureCount(direction) {
+      const viewport = scanScroller ? scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight : innerHeight;
+      const origin = scanScroller?.getBoundingClientRect();
+      const cursor = sourcePosition();
+      let failures = 0;
+      for (const slot of collection.slots || []) {
+        const box = slot.node?.getBoundingClientRect();
+        if (!box) continue;
+        const position = cursor + (scanHorizontal ? box.left - (origin?.left || 0) : box.top - (origin?.top || 0));
+        if (direction && (direction < 0 ? position > cursor + viewport * .6 : position < cursor - viewport * .6)) continue;
+        failures += [...slot.node.querySelectorAll('img')].filter(image => {
+          const current = image.currentSrc || image.getAttribute('src') || '';
+          return Boolean(current) && image.complete && image.naturalWidth < 1 &&
+            !/^data:image\/(?:gif|svg\+xml)/i.test(current) && lens.gallery.sources(image).length > 0;
+        }).length;
+      }
+      return failures;
+    }
     function centralOverviewIndex() {
+      const item = centralOverviewItem();
+      const position = item ? entries.findIndex(entry => entry.key === item.entry?.key) : -1;
+      return position < 0 ? activeIndex() : position;
+    }
+    function centralOverviewItem() {
       const rect = overview.getBoundingClientRect();
       const grid = overviewGrid.getBoundingClientRect();
       const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-      const cards = [...overviewGrid.children].map(card => ({ card, box: overviewCardBox(card, grid) }))
-        .filter(({ box }) => box.right > rect.left && box.left < rect.right && box.bottom > rect.top && box.top < rect.bottom);
-      cards.sort((a, b) => Math.hypot(a.box.left + a.box.width / 2 - cx, a.box.top + a.box.height / 2 - cy) - Math.hypot(b.box.left + b.box.width / 2 - cx, b.box.top + b.box.height / 2 - cy));
-      const index = cards.length ? entries.findIndex(entry => entry.key === cards[0].card.dataset.key) : -1;
-      return index >= 0 ? index : activeIndex();
+      let best = null, bestDistance = Infinity, nearest = null, nearestDistance = Infinity;
+      for (const card of overviewGrid.children) {
+        const item = overviewItems[Number(card.dataset.index)];
+        if (!item?.entry) continue;
+        const b = overviewCardBox(card, grid);
+        const distance = (b.left + b.width / 2 - cx) ** 2 + (b.top + b.height / 2 - cy) ** 2;
+        if (distance < nearestDistance) { nearest = item; nearestDistance = distance; }
+        if (distance < bestDistance && b.right > rect.left && b.left < rect.right && b.bottom > rect.top && b.top < rect.bottom) {
+          best = item; bestDistance = distance;
+        }
+      }
+      return best || nearest;
     }
     function captureOverviewAnchor() {
-      const card = overviewCards.get(entries[centralOverviewIndex()]?.key);
+      const card = overviewCards.get(centralOverviewItem()?.key);
       if (!card) return overviewAnchor;
       const box = overviewCardBox(card), rect = overview.getBoundingClientRect();
       if (!rect.width || !rect.height) return overviewAnchor;
@@ -853,62 +993,95 @@
       if (overviewPress) return;
       overviewCommitStarted ||= performance.now();
       clearTimeout(overviewCommitTimer);
-      overviewCommitTimer = setTimeout(() => renderOverview(), Math.max(0, Math.min(80, 120 - (performance.now() - overviewCommitStarted))));
+      overviewCommitTimer = setTimeout(() => renderOverview(), Math.max(0, Math.min(16, 80 - (performance.now() - overviewCommitStarted))));
     }
-    function renderOverview(anchor, animate = true) {
+    function overviewLayoutChanged(before, after) {
+      return ['overviewDirection', 'overviewClean', 'overviewAlignment', 'overviewGap', 'overviewScale'].some(key => before[key] !== after[key]);
+    }
+    function collectOverviewItems(rebuild) {
+      const knownEntries = new Map(overviewItems.filter(item => item.entry).map(item => [item.entry.key, item]));
+      const reserved = new Map(overviewItems.filter(item => !item.entry && item.slotKey).map(item => [item.slotKey, item]));
+      const activeSlots = collection.slots || [];
+      const slotsByKey = new Map(activeSlots.map(slot => [slot.key, slot]));
+      const claimedSlots = new Set();
+      const candidates = entries.map(entry => {
+        const slot = slotsByKey.get(entry.slotKey);
+        const canFill = slot && slot.node === entry.slotNode && entry.node?.isConnected && !claimedSlots.has(slot.key);
+        if (canFill) claimedSlots.add(slot.key);
+        const previous = knownEntries.get(entry.key) || (canFill ? reserved.get(slot.key) : null);
+        return { key: previous?.key || entry.key, entry, thumb: entry.thumb,
+          slotKey: entry.slotKey, slotNode: entry.slotNode };
+      });
+      const entryAtSlot = new Map(candidates.filter(item => item.slotKey && slotsByKey.get(item.slotKey)?.node === item.slotNode &&
+        item.entry.node?.isConnected).map(item => [item.slotKey, item]));
+      let next = null;
+      const nextItems = activeSlots.map(() => null);
+      for (let i = activeSlots.length - 1; i >= 0; i--) {
+        nextItems[i] = next; next = entryAtSlot.get(activeSlots[i].key) || next;
+      }
+      const before = new Map(), after = new Map();
+      let previous = null;
+      activeSlots.forEach((slot, i) => {
+        const item = entryAtSlot.get(slot.key);
+        if (item) { previous = item; return; }
+        if (!slot.pending || (!previous && !nextItems[i])) return;
+        const list = previous ? after : before, key = (previous || nextItems[i]).key;
+        if (!list.has(key)) list.set(key, []);
+        list.get(key).push({ key: reserved.get(slot.key)?.key || `reserved:${slot.key}`,
+          entry: null, thumb: '', slotKey: slot.key, slotNode: slot.node });
+      });
+      const desired = candidates.flatMap(item => [...(before.get(item.key) || []), item, ...(after.get(item.key) || [])]);
+      if (rebuild || !overviewItems.length) { overviewStartOrdinal = 0; return desired; }
+      const desiredByKey = new Map(desired.map(item => [item.key, item]));
+      const current = new Set(overviewItems.map(item => item.key));
+      const first = desired.findIndex(item => current.has(item.key));
+      const last = desired.findLastIndex(item => current.has(item.key));
+      if (first < 0) return overviewItems;
+      overviewStartOrdinal -= first;
+      return [...desired.slice(0, first),
+        ...overviewItems.map(item => desiredByKey.get(item.key) || item),
+        ...desired.slice(last + 1)];
+    }
+    function renderOverview(anchor, rebuild = false) {
       if (!overviewOpen) return;
       if (overviewPress) { overviewDirty = true; return; }
       clearTimeout(overviewCommitTimer);
       overviewCommitTimer = overviewCommitStarted = 0;
       overviewDirty = false;
-      // Keep the same reference through successive late images. A real scroll picks a new reference.
       anchor ??= overviewLayoutAnchor ?? (overviewGrid.children.length ? captureOverviewAnchor() : overviewAnchor);
-      overviewLayoutAnchor = anchor;
-      const previous = new Map();
-      if (animate && !reducedMotion.matches) {
-        const view = overview.getBoundingClientRect();
-        const grid = overviewGrid.getBoundingClientRect();
-        for (const [key, card] of overviewCards) {
-          const box = overviewCardBox(card, grid);
-          if (box.bottom >= view.top - 180 && box.top <= view.bottom + 180 && box.right >= view.left - 180 && box.left <= view.right + 180) {
-            previous.set(key, card.getBoundingClientRect());
-          }
-        }
-      }
+      overviewLayoutAnchor = null;
+      if (rebuild || rebuildOverviewItems) overviewGeometry = '';
+      overviewItems = collectOverviewItems(rebuild || rebuildOverviewItems);
+      rebuildOverviewItems = false;
       const currentKeys = new Set(compareEnabled ? [entries[compareLeft]?.key, entries[compareRight]?.key] : [entries[index]?.key]);
-      const live = new Set(entries.map(entry => entry.key));
+      const live = new Set(overviewItems.map(item => item.key));
       for (const [key, card] of overviewCards) if (!live.has(key)) { card.remove(); overviewCards.delete(key); }
       let cursor = overviewGrid.firstElementChild;
-      entries.forEach((entry, n) => {
-        let card = overviewCards.get(entry.key);
+      overviewItems.forEach((item, n) => {
+        const { key, entry, thumb } = item;
+        let card = overviewCards.get(key);
         if (!card) {
           card = document.createElement('button'); card.type = 'button'; card.className = 'overview-card';
           const image = document.createElement('img'); image.alt = ''; image.loading = 'lazy'; image.decoding = 'async'; image.draggable = false;
           const label = document.createElement('span'); card.append(image, label);
-          overviewCards.set(entry.key, card);
+          overviewCards.set(key, card);
         }
-        card.dataset.key = entry.key; card.dataset.index = String(n);
-        card.setAttribute('aria-label', t('viewImage', n + 1) + (entry.title ? `: ${entry.title}` : ''));
-        card.setAttribute('aria-current', String(currentKeys.has(entry.key)));
+        if (card.dataset.index !== String(n)) card.dataset.index = String(n);
+        if (card.dataset.key !== key) card.dataset.key = key;
+        const label = entry ? t('viewImage', n + 1) + (entry.title ? `: ${entry.title}` : '') : t('overviewWaitingTrigger');
+        if (card.getAttribute('aria-label') !== label) card.setAttribute('aria-label', label);
+        const current = String(currentKeys.has(entry?.key)), disabled = String(!entry);
+        if (card.getAttribute('aria-current') !== current) card.setAttribute('aria-current', current);
+        if (card.getAttribute('aria-disabled') !== disabled) card.setAttribute('aria-disabled', disabled);
+        if (card.tabIndex !== (entry ? 0 : -1)) card.tabIndex = entry ? 0 : -1;
         const image = card.querySelector('img');
-        image.dataset.src = entry.thumb;
-        card.querySelector('span').textContent = t('imageCount', n + 1, entries.length);
+        if (image.dataset.src !== thumb) image.dataset.src = thumb;
+        const caption = card.querySelector('span'), countLabel = t('imageCount', n + 1, overviewItems.length);
+        if (caption.textContent !== countLabel) caption.textContent = countLabel;
         if (card !== cursor) overviewGrid.insertBefore(card, cursor);
         cursor = card.nextElementSibling;
       });
       layoutOverview(anchor);
-      const laidOutGrid = overviewGrid.getBoundingClientRect();
-      for (const [key, from] of previous) {
-        const card = overviewCards.get(key);
-        if (!card) continue;
-        const to = overviewCardBox(card, laidOutGrid);
-        if (Math.max(Math.abs(from.left - to.left), Math.abs(from.top - to.top), Math.abs(from.width - to.width), Math.abs(from.height - to.height)) < 1) continue;
-        card.getAnimations().forEach(animation => animation.cancel());
-        card.animate([
-          { translate: `${from.left - to.left}px ${from.top - to.top}px`, width: `${from.width}px`, height: `${from.height}px` },
-          { translate: '0px 0px', width: `${to.width}px`, height: `${to.height}px` }
-        ], { duration: 240, easing: 'cubic-bezier(.2,.7,.25,1)' });
-      }
       updateOverviewThumbnails();
       $('.counter').textContent = `${entries.length}`;
       if (edgeSide && overviewEdgeDistance(edgeSide) > 2) resetOverviewEdge(true);
@@ -923,24 +1096,41 @@
       const style = getComputedStyle(overview);
       const width = Math.max(1, overview.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
       const height = Math.max(1, overview.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
-      const layout = lens.controls.overviewLayout(entries.map(e => Number(e.aspectRatio)), width, height, horizontal, settings.overviewClean, settings.overviewAlignment, settings.overviewGap, settings.overviewScale);
+      const geometry = JSON.stringify([width, height, horizontal, settings.overviewClean, settings.overviewAlignment,
+        settings.overviewGap, settings.overviewScale, overviewStartOrdinal, overviewItems.length]);
+      if (overviewGeometry === geometry && [...overviewGrid.children].every(card => card.style.width)) return;
+      overviewGeometry = geometry;
+      const layout = lens.controls.overviewLayout(overviewItems, width, height, horizontal, settings.overviewClean, settings.overviewAlignment, settings.overviewGap, settings.overviewScale, overviewStartOrdinal);
       overviewBandSize = layout.bandSize || 1;
+      overviewBands = layout.bands;
       [...overviewGrid.children].forEach((card, n) => {
         const box = layout.boxes[n];
-        Object.assign(card.style, { left: `${box.x}px`, top: `${box.y}px`, width: `${box.width}px`, height: `${box.height}px` });
+        card.dataset.band = String(box.bandIndex);
+        const bounds = { left: box.x, top: box.y, width: box.width, height: box.height };
+        for (const [name, value] of Object.entries(bounds)) if (card.style[name] !== `${value}px`) card.style[name] = `${value}px`;
       });
       overviewGrid.style.width = `${layout.width}px`; overviewGrid.style.height = `${layout.height}px`;
       restoreOverviewAnchor(anchor);
     }
     function overviewVisibleRange(rect = overview.getBoundingClientRect()) {
       const grid = overviewGrid.getBoundingClientRect();
-      const visible = [...overviewGrid.children].filter(card => {
-        const box = overviewCardBox(card, grid);
-        return box.right > rect.left && box.left < rect.right && box.bottom > rect.top && box.top < rect.bottom;
-      }).map(card => Number(card.dataset.index)).filter(Number.isInteger);
-      if (visible.length) return { first: Math.min(...visible), last: Math.max(...visible) };
-      const fallback = Math.max(0, Math.min(entries.length - 1, activeIndex()));
-      return { first: fallback, last: fallback };
+      const horizontal = overview.classList.contains('horizontal');
+      const start = horizontal ? rect.left - grid.left : rect.top - grid.top;
+      const end = horizontal ? rect.right - grid.left : rect.bottom - grid.top;
+      let low = 0, high = overviewBands.length;
+      while (low < high) {
+        const middle = Math.floor((low + high) / 2), band = overviewBands[middle];
+        if ((horizontal ? band.x + band.width : band.y + band.height) <= start) low = middle + 1;
+        else high = middle;
+      }
+      let first = -1, last = -1;
+      for (let i = low; i < overviewBands.length; i++) {
+        const band = overviewBands[i];
+        if ((horizontal ? band.x : band.y) >= end) break;
+        if (first < 0) first = band.startIndex;
+        last = band.endIndex;
+      }
+      return { first, last };
     }
     function overviewCacheCount(side) {
       const mode = settings[`overviewCache${side}Mode`];
@@ -948,68 +1138,188 @@
     }
     function overviewCacheWindow(rect = overview.getBoundingClientRect()) {
       const visible = overviewVisibleRange(rect);
+      if (visible.first < 0) {
+        const central = centralOverviewItem();
+        const centerIndex = central ? overviewItems.findIndex(item => item.key === central.key) : -1;
+        const activeKey = entries[activeIndex()]?.key;
+        const active = overviewItems.findIndex(item => item.entry?.key === activeKey);
+        visible.first = visible.last = centerIndex >= 0 ? centerIndex : Math.max(0, active);
+      }
       const countBefore = overviewCacheCount('Before'), countAfter = overviewCacheCount('After');
-      return { ...visible, ...lens.controls.overviewCacheRange(entries.length, visible.first, visible.last, countBefore, countAfter), countBefore, countAfter };
+      return { ...visible, ...lens.controls.overviewCacheRange(overviewItems.length, visible.first, visible.last, countBefore, countAfter), countBefore, countAfter };
     }
-    function updateOverviewThumbnails() {
-      if (!overviewOpen || (overviewPress && overviewDirty)) return;
-      const cards = [...overviewGrid.children], window = overviewCacheWindow();
-      for (const card of cards) {
-        const image = card.querySelector('img'), source = image.dataset.src;
-        const index = Number(card.dataset.index), shouldLoad = index >= window.start && index <= window.end;
-        image.loading = shouldLoad ? 'eager' : 'lazy';
-        if (!shouldLoad || !source) { image.onload = null; if (image.hasAttribute('src')) image.removeAttribute('src'); continue; }
-        if (image.getAttribute('src') !== source) {
-          const key = card.dataset.key;
-          const loaded = () => {
-            if (closed || !image.naturalWidth || !image.naturalHeight || image.currentSrc !== source || image.dataset.src !== source) return;
-            const current = entries.find(item => item.key === key);
-            if (!current || current.thumb !== source) return;
-            const ratio = image.naturalWidth / image.naturalHeight;
-            const changed = Math.abs(current.aspectRatio - ratio) > .001;
-            current.aspectRatio = ratio; current.dimensions = [image.naturalWidth, image.naturalHeight];
-            if (changed) queueOverviewCommit();
-          };
-          image.onload = loaded;
-          image.src = source;
-          if (image.complete) loaded();
-        }
+    function dropOverviewThumbnail(job, removeSource = true) {
+      if (!job) return;
+      job.cancelled = true;
+      job.image.onload = job.image.onerror = null;
+      if (job.active) { overviewThumbActive = Math.max(0, overviewThumbActive - 1); job.active = false; }
+      if (removeSource && job.image.getAttribute('src') === job.source) job.image.removeAttribute('src');
+      if (overviewThumbJobs.get(job.key) === job) overviewThumbJobs.delete(job.key);
+    }
+    function markOverviewThumbnailReady(job) {
+      if (job.cancelled || job.status !== 'decoding' || overviewThumbJobs.get(job.key) !== job || job.image.dataset.src !== job.source ||
+          job.image.naturalWidth < 1 || job.image.naturalHeight < 1) return;
+      job.status = 'ready';
+      if (job.active) { job.active = false; overviewThumbActive = Math.max(0, overviewThumbActive - 1); }
+      const item = overviewItems.find(candidate => candidate.key === job.key && candidate.thumb === job.source);
+      const card = item && overviewCards.get(job.key);
+      if (card) card.dataset.thumbState = 'ready';
+      updateOverviewStatus();
+      scheduleOverviewCacheCheck(180);
+    }
+    function failOverviewThumbnail(job) {
+      if (job.cancelled || job.status === 'error' || overviewThumbJobs.get(job.key) !== job) return;
+      job.status = 'error'; job.attempts = (job.attempts || 0) + 1;
+      job.retryAt = performance.now() + Math.min(30000, 1200 * 2 ** Math.min(4, job.attempts - 1));
+      job.image.onload = job.image.onerror = null;
+      if (job.active) { overviewThumbActive = Math.max(0, overviewThumbActive - 1); job.active = false; }
+      if (job.image.getAttribute('src') === job.source) job.image.removeAttribute('src');
+      const card = overviewCards.get(job.key);
+      if (card) { card.dataset.thumbState = 'error'; card.dataset.thumbAttemptCount = String(job.attempts); }
+      updateOverviewStatus();
+      scheduleOverviewCacheCheck(1500);
+    }
+    function startOverviewThumbnail(job) {
+      if (closed || job.cancelled || overviewThumbJobs.get(job.key) !== job) return;
+      const image = job.image;
+      job.status = 'loading'; job.active = true; overviewThumbActive++;
+      const loaded = () => {
+        if (job.cancelled || job.status !== 'loading' || overviewThumbJobs.get(job.key) !== job) return;
+        if (image.naturalWidth < 1 || image.naturalHeight < 1 || image.dataset.src !== job.source) { failOverviewThumbnail(job); return; }
+        if (job.status !== 'loading') return;
+        job.status = 'decoding';
+        Promise.resolve(typeof image.decode === 'function' ? image.decode() : undefined)
+          .then(() => markOverviewThumbnailReady(job), () => failOverviewThumbnail(job));
+        updateOverviewStatus();
+      };
+      image.onload = loaded;
+      image.onerror = () => failOverviewThumbnail(job);
+      if (image.getAttribute('src') !== job.source) image.src = job.source;
+      if (image.complete) queueMicrotask(() => image.naturalWidth > 0 ? loaded() : failOverviewThumbnail(job));
+      updateOverviewStatus();
+    }
+    function pumpOverviewThumbnails() {
+      while (overviewThumbActive < 6 && overviewThumbQueue.length) {
+        const job = overviewThumbQueue.shift();
+        if (job.cancelled || overviewThumbJobs.get(job.key) !== job || job.status !== 'queued') continue;
+        startOverviewThumbnail(job);
       }
     }
-    function scheduleOverviewCacheCheck() {
+    function queueOverviewThumbnail(item, card, force) {
+      const image = card.querySelector('img'), source = item.thumb || '';
+      image.dataset.src = source;
+      if (!source) { card.dataset.thumbState = 'waiting'; return; }
+      let job = overviewThumbJobs.get(item.key);
+      if (job && job.source !== source) {
+        const attempts = 0, canceledAttempts = 0;
+        card.dataset.thumbAttemptCount = '0'; card.dataset.thumbCancelCount = '0';
+        dropOverviewThumbnail(job); job = null;
+        job = { key: item.key, source, image, status: 'queued', attempts, canceledAttempts, retryAt: 0, cancelled: false, active: false };
+        overviewThumbJobs.set(item.key, job);
+      }
+      if (!job) {
+        job = { key: item.key, source, image, status: 'queued', attempts: Number(card.dataset.thumbAttemptCount) || 0, canceledAttempts: Number(card.dataset.thumbCancelCount) || 0,
+          retryAt: 0, cancelled: false, active: false };
+        overviewThumbJobs.set(item.key, job);
+      }
+      job.image = image; job.cancelled = false;
+      if (job.status === 'ready' && image.naturalWidth > 0 && image.dataset.src === source && image.getAttribute('src') === source) {
+        card.dataset.thumbState = 'ready'; return;
+      }
+      if (job.status === 'error') {
+        if (!force && performance.now() < job.retryAt) { card.dataset.thumbState = 'error'; return; }
+        if (!force && job.attempts >= 3) { card.dataset.thumbState = 'error'; return; }
+        job.status = 'queued'; job.cancelled = false;
+      }
+      if (job.status === 'canceled') {
+        if (!force && (job.canceledAttempts || 0) >= 4) { card.dataset.thumbState = 'error'; return; }
+        job.status = 'queued'; job.cancelled = false;
+      }
+      if (job.status === 'idle') job.status = 'queued';
+      if (job.status === 'queued' && !overviewThumbQueue.includes(job)) overviewThumbQueue.push(job);
+      card.dataset.thumbState = job.status;
+    }
+    function updateOverviewThumbnails(force = false) {
+      if (!overviewOpen || (overviewPress && overviewDirty)) return;
+      const cards = [...overviewGrid.children], window = overviewCacheWindow(), visible = { first: window.first, last: window.last };
+      const queued = [];
+      const desiredKeys = new Set();
+      for (const card of cards) {
+        const index = Number(card.dataset.index), item = overviewItems[index];
+        const image = card.querySelector('img'), source = item?.thumb || '';
+        const shouldLoad = Boolean(item && index >= window.start && index <= window.end);
+        image.loading = shouldLoad ? 'eager' : 'lazy';
+        if (shouldLoad && item) desiredKeys.add(item.key);
+        const job = overviewThumbJobs.get(item?.key);
+        if (!shouldLoad || !source) {
+          if (job) {
+            if (job.active) {
+              job.cancelled = true; job.status = 'canceled'; job.canceledAttempts = (job.canceledAttempts || 0) + 1;
+              card.dataset.thumbCancelCount = String(job.canceledAttempts);
+              job.image.onload = job.image.onerror = null;
+              if (job.active) { overviewThumbActive = Math.max(0, overviewThumbActive - 1); job.active = false; }
+              if (job.image.getAttribute('src') === job.source) job.image.removeAttribute('src');
+            }
+            dropOverviewThumbnail(job);
+          }
+          if (image.hasAttribute('src')) image.removeAttribute('src');
+          card.dataset.thumbState = item && !source ? 'waiting' : 'idle';
+          continue;
+        }
+        queueOverviewThumbnail(item, card, force);
+        const currentJob = overviewThumbJobs.get(item.key);
+        if (currentJob?.status === 'queued') queued.push({ job: currentJob, visible: index >= visible.first && index <= visible.last,
+          distance: index < visible.first ? visible.first - index : index > visible.last ? index - visible.last : 0 });
+      }
+      for (const [key, job] of overviewThumbJobs) if (!desiredKeys.has(key)) dropOverviewThumbnail(job);
+      for (let index = overviewThumbQueue.length - 1; index >= 0; index--) {
+        const job = overviewThumbQueue[index];
+        if (!desiredKeys.has(job.key) || overviewThumbJobs.get(job.key) !== job) overviewThumbQueue.splice(index, 1);
+      }
+      queued.sort((a, b) => Number(b.visible) - Number(a.visible) || a.distance - b.distance);
+      overviewThumbQueue.sort((a, b) => {
+        const left = queued.findIndex(entry => entry.job === a), right = queued.findIndex(entry => entry.job === b);
+        return (left < 0 ? Number.MAX_SAFE_INTEGER : left) - (right < 0 ? Number.MAX_SAFE_INTEGER : right);
+      });
+      pumpOverviewThumbnails();
+      updateOverviewStatus();
+    }
+    function scheduleOverviewCacheCheck(delay = 650) {
       if (overviewCacheCheckTimer || closed) return;
-      overviewCacheCheckTimer = setTimeout(() => { overviewCacheCheckTimer = 0; checkOverviewCache(); }, 650);
+      overviewCacheCheckTimer = setTimeout(() => { overviewCacheCheckTimer = 0; checkOverviewCache(); }, delay);
     }
     function checkOverviewCache(force = false) {
-      if (!overviewOpen || scanPromise || !collection.scope) return;
+      if (!overviewOpen || closed) return;
+      updateOverviewThumbnails(false);
       const window = overviewCacheWindow();
-      const missing = {
-        [-1]: Math.max(0, window.countBefore - window.before),
-        [1]: Math.max(0, window.countAfter - window.after)
-      };
-      const horizontal = settings.overviewDirection === 'horizontal';
-      const offset = horizontal ? overview.scrollLeft : overview.scrollTop;
-      const viewport = horizontal ? overview.clientWidth : overview.clientHeight;
-      const extent = horizontal ? overview.scrollWidth : overview.scrollHeight;
-      const edgeDistance = Math.max(120, viewport * .35);
-      const nearEdge = {
-        [-1]: offset <= edgeDistance,
-        [1]: extent - offset - viewport <= edgeDistance
-      };
+      if (!collection.scope || !overviewItems.length) return;
+      if (scanPromise) { scheduleOverviewCacheCheck(500); return; }
+      const band = Math.max(1, overviewBandSize);
+      const pendingBefore = overviewItems.slice(window.start, Math.max(window.start, window.first)).some(item => !item.entry && item.slotKey);
+      const pendingAfter = overviewItems.slice(Math.min(overviewItems.length, window.last + 1), window.end + 1).some(item => !item.entry && item.slotKey);
+      const pendingVisible = overviewItems.slice(window.first, window.last + 1).some(item => !item.entry && item.slotKey);
+      const shortBefore = window.before < window.countBefore || window.start < band;
+      const shortAfter = window.after < window.countAfter || overviewItems.length - 1 - window.end < band;
+      const wantsScan = { [-1]: shortBefore || pendingBefore || pendingVisible, [1]: shortAfter || pendingAfter || pendingVisible };
+      if (overviewEdgeIntentState.side && overviewEdgeDistance(overviewEdgeIntentState.side) > 2) {
+        overviewEdgeIntentState.side = 0; overviewEdgeIntentState.distance = 0; overviewEdgeIntentState.retried = false;
+      }
       const directions = overviewDirection < 0 ? [-1, 1] : [1, -1];
       for (const direction of directions) {
         const state = scanStates[direction];
-        if ((!missing[direction] && !nearEdge[direction]) || state.ended || (state.paused && !force) || (state.failed && !force)) continue;
-        if (performance.now() - state.lastAttempt < 600) { scheduleOverviewCacheCheck(); return; }
-        const scan = scanMore(direction, force, Math.min(6, missing[direction] || 6));
+        if (!wantsScan[direction] || state.ended || ((state.paused || state.failed) && !force)) continue;
+        if (performance.now() - state.lastAttempt < 700) { scheduleOverviewCacheCheck(700); return; }
+        const missing = direction < 0 ? window.countBefore - window.before : window.countAfter - window.after;
+        const scan = scanMore(direction, force, Math.max(6, Math.min(24, Math.max(missing, band * 2))));
         if (scan) scan.finally(() => { if (!closed && overviewOpen) scheduleOverviewCacheCheck(); });
         return;
       }
     }
     function scanDelay(ms, signal) {
       return new Promise(resolve => {
+        let settled = false;
         const timer = setTimeout(done, ms);
-        function done() { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); }
+        function done() { if (settled) return; settled = true; clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); }
         signal.addEventListener('abort', done, { once: true });
       });
     }
@@ -1028,73 +1338,119 @@
       const scopeBox = collection.scope.getBoundingClientRect();
       const end = slots.length ? coordinate(last) + (scanHorizontal ? lastBox.width : lastBox.height) : coordinate(collection.scope) + (scanHorizontal ? scopeBox.width : scopeBox.height);
       const high = Math.min(Math.max(0, maximum), Math.max(low, end - viewport * .25));
-      let next = state.cursor + direction * Math.max(200, viewport * .75);
+      const beforePosition = sourcePosition();
+      let next = (Number.isFinite(state.cursor) ? state.cursor : beforePosition) + direction * Math.max(200, viewport * .6);
       if (pending.length) {
         const ahead = pending.filter(slot => direction > 0 ? coordinate(slot.node) - viewport * .2 >= state.cursor - 2 : coordinate(slot.node) - viewport * .2 <= state.cursor + 2);
         const slot = direction > 0 ? ahead[0] || pending[0] : ahead.at(-1) || pending.at(-1);
         const desired = coordinate(slot.node) - viewport * .2;
-        // Reserved space provides a safe target beyond already loaded pictures.
-        if (ahead.length) next = desired;
+        if (ahead.length && Math.abs(desired - beforePosition) > viewport * .12) next = desired;
       }
       next = Math.max(low, Math.min(high, next));
       const edge = direction > 0 ? next >= high - 2 : next <= low + 2;
       scanRestore = restorePageCoordinates;
       try {
+        const beforeCount = entries.length, beforeSignature = scanSlotSignature();
+        state.phase = pending.length ? 'waiting-trigger' : 'scanning';
+        state.resourceErrors = 0;
+        let observedChanges = 0;
+        const localObserver = new MutationObserver(records => {
+          if (records.some(record => collection.scope?.contains(record.target) || record.target === scopeParent)) observedChanges++;
+        });
+        localObserver.observe(collection.scope, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
         if (scanScroller) scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = next;
         else window.scrollTo(pagePosition.x, next);
-        state.cursor = sourcePosition();
-        let revision = scanRevision, stableSince = performance.now();
-        const started = performance.now(), before = entries.length;
-        do {
-          await scanDelay(140, signal);
-          if (signal.aborted || closed) break;
-          if (revision !== scanRevision) { revision = scanRevision; stableSince = performance.now(); }
-          if (performance.now() - started >= 650 && performance.now() - stableSince >= 280) {
-            refresh(direction);
-            if (entries.length > before || (!pending.length && !edge)) break;
+        state.cursor = next;
+        const started = performance.now(), timeout = pending.length || edge ? 4200 : 1800;
+        let stableSince = started, signature = beforeSignature;
+        try {
+          while (!signal.aborted && !closed && performance.now() - started < timeout) {
+            await scanDelay(120, signal);
+            if (signal.aborted || closed) break;
+            const nextSignature = scanSlotSignature();
+            const mutated = observedChanges > 0 || nextSignature !== signature;
+            if (mutated) { signature = nextSignature; stableSince = performance.now(); observedChanges = 0; }
+            const elapsed = performance.now() - started;
+            if (elapsed >= 420 && (mutated || performance.now() - stableSince >= 180)) refresh(direction);
+            const slotsNow = collection.slots || [];
+            const pendingNow = slotsNow.some(slot => slot.pending);
+            const currentSignature = scanSlotSignature();
+            const progressed = entries.length > beforeCount || currentSignature !== beforeSignature;
+            const settled = performance.now() - stableSince >= 420;
+            if (progressed && settled && !pendingNow) break;
+            if (!progressed && !pendingNow && !edge && elapsed >= 720) break;
           }
-        } while (performance.now() - started < (pending.length || edge ? 3500 : 1200));
+        } finally { localObserver.disconnect(); }
         if (!signal.aborted && !closed) { refresh(direction); rememberSourceAnchors(); }
-        return { edge, pending: collection.slots?.some(slot => slot.pending) };
+        const pendingAfter = (collection.slots || []).some(slot => slot.pending);
+        const signatureAfter = scanSlotSignature();
+        const sourceErrors = scanSourceFailureCount(direction);
+        return { edge, pending: pendingAfter, added: entries.length > beforeCount,
+          signatureChanged: signatureAfter !== beforeSignature, sourceErrors,
+          stalled: entries.length === beforeCount && signatureAfter === beforeSignature,
+          moved: Math.abs(sourcePosition() - beforePosition) > 2 };
       } finally {
+        // The page's location is restored after each isolated scan segment.
         if (scanRestore) { scanRestore(); scanRestore = null; }
       }
     }
     async function scanMore(direction = 1, force = false, targetCount = 6) {
       const state = scanStates[direction];
       if (scanPromise || closed || !collection.scope || state.ended || (!force && state.paused) || performance.now() - state.lastAttempt < 600) return scanPromise;
-      state.paused = state.ended = state.failed = false; state.lastAttempt = performance.now(); scanningDirection = direction;
+      state.paused = state.ended = state.failed = false; state.phase = 'scanning'; state.lastAttempt = performance.now(); scanningDirection = direction;
       scanController = new AbortController();
       const signal = scanController.signal;
       if (overviewOpen) updateOverviewStatus();
-      const initialCount = entries.length;
-      const target = Math.max(1, Math.min(6, Math.floor(Number(targetCount) || 6)));
+      const initialCount = entries.length, initialSignature = scanSlotSignature();
+      const target = Math.max(1, Math.min(24, Math.floor(Number(targetCount) || 6)));
       scanPromise = (async () => {
         try {
-          const deadline = performance.now() + 16000;
-          let edgeStalls = 0;
+          const deadline = performance.now() + 19000;
+          let edgeStalls = 0, pendingWaits = 0, previousCount = initialCount, previousSignature = initialSignature;
           for (let attempt = 0; attempt < 12 && performance.now() < deadline; attempt++) {
             if (signal.aborted || closed) break;
-            const before = entries.length;
             const result = await scanSegment(signal, direction);
             if (signal.aborted || closed) break;
-            edgeStalls = result?.edge && entries.length === before ? edgeStalls + 1 : 0;
-            if (edgeStalls >= 2) {
-              state.ended = reservedSlots && !slotsExpanded && !result.pending;
-              break;
+            const currentCount = entries.length, currentSignature = scanSlotSignature();
+            const progress = currentCount > previousCount || currentSignature !== previousSignature;
+            edgeStalls = result?.edge && !progress ? edgeStalls + 1 : 0;
+            pendingWaits = (result?.pending || result?.edge) && !progress ? pendingWaits + 1 : 0;
+            state.resourceErrors = Math.max(state.resourceErrors, result?.sourceErrors || 0);
+            if (explicitScanBoundary(direction)) { state.ended = true; state.phase = 'ended'; break; }
+            if (currentCount - initialCount >= target) { state.phase = 'idle'; break; }
+            if (progress) { edgeStalls = 0; pendingWaits = 0; state.noProgress = 0; state.phase = 'scanning'; }
+            else state.noProgress++;
+            if ((result?.pending || (result?.edge && !progress)) && pendingWaits < 3 && performance.now() < deadline) {
+              state.phase = 'waiting-trigger';
+              await scanDelay(500 + pendingWaits * 350, signal);
+              if (signal.aborted) break;
+              refresh(direction);
+              previousCount = entries.length; previousSignature = scanSlotSignature();
+              continue;
             }
-            if (entries.length - initialCount >= target) break;
+            if (edgeStalls >= 2 || pendingWaits >= 3 || (result?.stalled && !result?.edge)) break;
+            previousCount = entries.length; previousSignature = scanSlotSignature();
           }
-          if (!signal.aborted && entries.length === initialCount) state.paused = !state.ended;
+          const signatureChanged = scanSlotSignature() !== initialSignature;
+          if (!signal.aborted && !state.ended) {
+            const sourceErrors = scanSourceFailureCount(direction);
+            if (sourceErrors) state.resourceErrors = Math.max(state.resourceErrors, sourceErrors);
+            if (state.resourceErrors) { state.failed = true; state.paused = true; state.phase = 'failed'; }
+            else if (entries.length === initialCount && !signatureChanged) { state.paused = true; state.phase = 'paused'; }
+            else { state.paused = false; state.phase = 'idle'; }
+          }
         } catch (error) {
-          if (!signal.aborted) { state.failed = true; state.paused = true; }
+          if (!signal.aborted) { state.failed = true; state.paused = true; state.phase = 'failed'; }
         }
       })().finally(() => {
         scanPromise = null; scanController = null;
         updateNavigationButtons();
         if (!closed && overviewOpen) {
-          if (edgeSide === direction) resetOverviewEdge(true);
-          updateOverviewStatus(); queueOverviewCommit();
+          if (edgeSide === direction && !state.ended) resetOverviewEdge(true);
+          updateOverviewStatus(); queueOverviewCommit(); updateOverviewThumbnails();
+          const window = overviewCacheWindow();
+          const short = direction < 0 ? window.before < window.countBefore : window.after < window.countAfter;
+          if (short && !state.ended && !state.paused && !state.failed) scheduleOverviewCacheCheck(220);
         }
       });
       return scanPromise;
@@ -1123,8 +1479,8 @@
       updateOverviewButton();
       compare.classList.toggle('active', false); stage.hidden = true; compare.setAttribute('aria-hidden', 'true');
       showStrip(false); $('.counter').textContent = `${entries.length}`;
-      renderOverview(overviewAnchor, false); overview.focus({ preventScroll: true });
-      const card = overviewCards.get(key);
+      renderOverview(overviewAnchor, true); overview.focus({ preventScroll: true });
+      const card = overviewCards.get(overviewItems.find(item => item.entry?.key === key)?.key);
       if (card) {
         const box = overviewCardBox(card), viewport = overview.getBoundingClientRect();
         const horizontal = settings.overviewDirection === 'horizontal';
@@ -1290,7 +1646,8 @@
       const selected = Math.max(0, Math.min(entries.length - 1, activeIndex()));
       if (overviewOpen) {
         const focusedCard = shadow.activeElement?.closest?.('.overview-card');
-        const selected = focusedCard ? entries.findIndex(entry => entry.key === focusedCard.dataset.key) : -1;
+        const selectedKey = focusedCard && overviewItems[Number(focusedCard.dataset.index)]?.entry?.key;
+        const selected = selectedKey ? entries.findIndex(entry => entry.key === selectedKey) : -1;
         exitOverview(true, selected >= 0 ? selected : centralOverviewIndex(), enabled); return;
       }
       compareEnabled = enabled; settings.compareEnabled = enabled;
@@ -1323,8 +1680,6 @@
       const newer = lens.gallery.collect(current.thumb, current.node, collection.scope);
       if (newer.scope) { collection.scope = newer.scope; scopeParent = newer.scope.parentElement; }
       collection.slots = newer.slots || [];
-      slotsExpanded ||= collection.slots.length > initialSlotCount;
-      reservedSlots ||= collection.slots.some(slot => slot.pending);
       // Retain already discovered entries when a virtual list recycles its DOM.
       const before = entries.length;
       entries = lens.gallery.mergeEntries(entries, newer.entries, direction);
@@ -1344,7 +1699,8 @@
           $('.sr').textContent = t('imageCount', index + 1, entries.length);
         }
         updateNavigationButtons();
-        cacheNeighbors(); if (strip.classList.contains('visible')) renderStrip();
+        if (!overviewOpen) cacheNeighbors();
+        if (strip.classList.contains('visible')) renderStrip();
         if (overviewOpen) queueOverviewCommit();
       }
       if (overviewOpen && refreshed && !changed) queueOverviewCommit();
@@ -1353,7 +1709,9 @@
       if (area !== 'local' || !changes.settings) return;
       const previouslyLocked = settings.zoomLocked;
       const previousLanguage = settings.language;
-      settings = lens.settings.normalize(changes.settings.newValue); cacheNeighbors();
+      const next = lens.settings.normalize(changes.settings.newValue);
+      rebuildOverviewItems ||= overviewLayoutChanged(settings, next);
+      settings = next; cacheNeighbors();
       viewer.classList.toggle('toolbar-auto', settings.toolbarAutoHide);
       if (settings.compareEnabled !== compareEnabled) setCompare(settings.compareEnabled, false);
       dividerPosition = Math.max(settings.dividerMin / 100, Math.min(1 - settings.dividerMin / 100, dividerPosition));
@@ -1365,11 +1723,19 @@
       if (strip.classList.contains('visible')) renderStrip();
       if (overviewOpen) { updateRuler(); queueOverviewCommit(); }
     }
+    let observedGallerySignature = scanSlotSignature();
     const observer = new MutationObserver(records => {
       if (!records.some(record => !host.contains(record.target) && (collection.scope?.contains(record.target) || record.target === scopeParent))) return;
-      scanRevision++;
-      if (!scanPromise) for (const state of Object.values(scanStates)) state.paused = state.ended = state.failed = false;
-      clearTimeout(scanTimer); scanTimer = setTimeout(() => { refresh(); if (!closed && overviewOpen) checkOverviewCache(); }, 300);
+      clearTimeout(scanTimer); scanTimer = setTimeout(() => {
+        if (closed) return;
+        const previous = observedGallerySignature || scanSlotSignature();
+        refresh();
+        observedGallerySignature = scanSlotSignature();
+        if (previous !== observedGallerySignature && !scanPromise) {
+          for (const state of Object.values(scanStates)) state.paused = state.ended = state.failed = false;
+        }
+        if (overviewOpen) checkOverviewCache();
+      }, 300);
     });
     observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
     globalThis.chrome?.storage?.onChanged?.addListener(storageChanged);
@@ -1377,14 +1743,45 @@
     on($('.prev'), 'click', () => navigate(-1)); on($('.next'), 'click', () => navigate(1));
     on($('.compare-toggle'), 'click', () => setCompare(!compareEnabled));
     on($('.overview-toggle'), 'click', () => overviewOpen ? exitOverview(false) : enterOverview());
-    on(overviewGrid, 'pointerdown', event => {
+    on(overview, 'pointerdown', event => {
       if (!event.isPrimary || event.button !== 0) return;
       const card = event.target.closest('.overview-card');
-      if (card) {
-        const animations = [...card.getAnimations(), ...(edgeAnimation ? [edgeAnimation] : [])].filter(animation => animation.playState === 'running');
-        animations.forEach(animation => animation.pause());
-        overviewPress = { pointer: event.pointerId, key: card.dataset.key, animations };
+      const animations = [...(card?.getAnimations() || []), ...(edgeAnimation ? [edgeAnimation] : [])].filter(animation => animation.playState === 'running');
+      animations.forEach(animation => animation.pause());
+      overviewPress = {
+        pointer: event.pointerId, key: card?.dataset.key || null, animations,
+        startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY,
+        axis: settings.overviewDirection === 'horizontal' ? 'x' : 'y', dragging: false,
+        mousePan: event.pointerType === 'mouse'
+      };
+      overviewGesture = overviewPress.mousePan ? overviewPress : null;
+      if (overviewPress.mousePan) {
+        try { (card || overview).setPointerCapture(event.pointerId); } catch { /* The pointer may already have been cancelled. */ }
       }
+    });
+    on(overview, 'pointermove', event => {
+      const press = overviewGesture;
+      if (!press?.mousePan || event.pointerId !== press.pointer || !event.isPrimary) return;
+      const dx = event.clientX - press.startX, dy = event.clientY - press.startY;
+      const axisDistance = press.axis === 'x' ? Math.abs(dx) : Math.abs(dy);
+      if (!press.dragging && axisDistance < 6) return;
+      if (!press.dragging) {
+        press.dragging = true;
+        overview.classList.add('dragging');
+      }
+      const delta = press.axis === 'x' ? event.clientX - press.lastX : event.clientY - press.lastY;
+      press.lastX = event.clientX; press.lastY = event.clientY;
+      event.preventDefault();
+      if (!delta) return;
+      const property = press.axis === 'x' ? 'scrollLeft' : 'scrollTop';
+      const before = overview[property];
+      overview[property] += -delta;
+      const moved = overview[property] - before;
+      overviewLayoutAnchor = null;
+      updateOverviewThumbnails();
+      const unconsumed = -delta - moved;
+      if (Math.abs(unconsumed) > .5) overviewEdgeIntent(Math.sign(unconsumed), Math.abs(unconsumed), 'drag');
+      else checkOverviewCache(false);
     });
     const releaseOverviewPress = event => {
       const press = overviewPress;
@@ -1392,20 +1789,29 @@
       setTimeout(() => {
         if (overviewPress !== press) return;
         overviewPress = null;
+        overviewGesture = null;
+        if (press.dragging) overview.classList.remove('dragging');
         press.animations.forEach(animation => { if (animation.playState === 'paused') animation.play(); });
         if (edgeSide && (!scanController || scanningDirection !== edgeSide || overviewEdgeDistance(edgeSide) > 2)) {
           resetOverviewEdge(true, scanStates[edgeSide].ended || !collection.scope);
         }
         if (overviewDirty) queueOverviewCommit();
+        if (press.dragging) checkOverviewCache(false);
       }, 0);
     };
     on(window, 'pointerup', releaseOverviewPress, { capture: true });
     on(window, 'pointercancel', releaseOverviewPress, { capture: true });
     on(window, 'blur', releaseOverviewPress);
+    on(window, 'lostpointercapture', releaseOverviewPress, { capture: true });
+    on(overview, 'lostpointercapture', releaseOverviewPress);
     on(overviewGrid, 'click', event => {
+      if (event.detail && overviewPress?.dragging) {
+        event.preventDefault(); event.stopImmediatePropagation(); return;
+      }
       const key = event.target.closest('.overview-card')?.dataset.key;
       if (!key || (event.detail && overviewPress && key !== overviewPress.key)) return;
-      const selected = entries.findIndex(entry => entry.key === key);
+      const item = overviewItems[Number(event.target.closest('.overview-card').dataset.index)];
+      const selected = item?.entry ? entries.findIndex(entry => entry.key === item.entry.key) : -1;
       if (selected >= 0) exitOverview(true, selected);
     });
     on(overview, 'scroll', () => {
@@ -1419,7 +1825,7 @@
       overviewScrollFrame = requestAnimationFrame(() => {
         overviewScrollFrame = 0;
         if (edgeSide && overviewEdgeDistance(edgeSide) > 2) resetOverviewEdge(true);
-        updateOverviewThumbnails(); checkOverviewCache(true); updateOverviewStatus();
+        updateOverviewThumbnails(); checkOverviewCache(false); updateOverviewStatus();
       });
     }, { passive: true });
     on(overview, 'wheel', event => {
@@ -1431,17 +1837,21 @@
         event.preventDefault(); event.stopPropagation();
         setOverviewSize(settings.overviewScale + (delta < 0 ? 1 : -1) * (event.shiftKey ? 1 : settings.zoomStep)); return;
       }
-      overviewDirection = delta < 0 ? -1 : 1;
-      if (edgeSide && overviewDirection !== edgeSide) resetOverviewEdge();
       const amount = delta * (event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? (horizontal ? overview.clientWidth : overview.clientHeight) : 1);
-      const atEdge = overviewEdgeDistance(overviewDirection) <= 1;
-      if (!atEdge && edgeAnimation) resetOverviewEdge();
-      if (horizontal || atEdge) {
-        event.preventDefault(); event.stopPropagation();
-        if (!atEdge) overview.scrollLeft += amount;
+      const side = delta < 0 ? -1 : 1, property = horizontal ? 'scrollLeft' : 'scrollTop';
+      if (overviewEdgeIntentState.side && side !== overviewEdgeIntentState.side) {
+        overviewEdgeIntentState.side = 0; overviewEdgeIntentState.samples = []; overviewEdgeIntentState.retried = false;
       }
-      checkOverviewCache(true);
-      if (atEdge) pushOverviewEdge(overviewDirection, Math.abs(amount));
+      overviewDirection = side;
+      if (edgeSide && side !== edgeSide) resetOverviewEdge();
+      if (edgeAnimation) resetOverviewEdge();
+      const before = overview[property], maximum = Math.max(0, overview[horizontal ? 'scrollWidth' : 'scrollHeight'] - overview[horizontal ? 'clientWidth' : 'clientHeight']);
+      const attempted = before + amount, next = Math.max(0, Math.min(maximum, attempted)), unconsumed = attempted - next;
+      if (horizontal || Math.abs(unconsumed) > .5) {
+        event.preventDefault(); event.stopPropagation(); overview[property] = next;
+      }
+      if (Math.abs(unconsumed) > .5) overviewEdgeIntent(Math.sign(unconsumed), Math.abs(unconsumed), 'wheel');
+      else checkOverviewCache(false);
     }, { passive: false });
     for (let side = 0; side < comparePanes.length; side++) {
       const pane = comparePanes[side];
@@ -1674,17 +2084,12 @@
     });
     on(strip, 'pointerleave', () => showStrip(false));
     on(viewer, 'pointerleave', () => { showStrip(false); viewer.classList.remove('top-open'); });
-    function back() {
-      if (overviewOpen) exitOverview(false, -1, null, true);
-      else if (fromOverview && overviewReturn) enterOverview();
-      else close();
-    }
-    on(dialog, 'cancel', event => { event.preventDefault(); back(); });
+    on(dialog, 'cancel', event => { event.preventDefault(); close(); });
     on(window, 'keydown', event => {
       if (closed) return;
       const typing = event.composedPath().some(n => n instanceof HTMLElement && (/^(INPUT|TEXTAREA|SELECT)$/.test(n.tagName) || n.isContentEditable));
       if (event.isComposing) return;
-      if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); back(); return; }
+      if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close(); return; }
       if (typing) return;
       if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.repeat && ['g', 'G', '1', '2'].includes(event.key)) {
         event.preventDefault(); event.stopImmediatePropagation();
@@ -1697,13 +2102,14 @@
         const horizontal = settings.overviewDirection === 'horizontal', axis = horizontal ? 'left' : 'top';
         overviewDirection = ['ArrowUp', 'ArrowLeft', 'Home'].includes(event.key) ? -1 : 1;
         if (edgeSide && overviewDirection !== edgeSide) resetOverviewEdge();
+        if (edgeAnimation) resetOverviewEdge();
         if (overviewEdgeDistance(overviewDirection) <= 1) {
-          checkOverviewCache(true); pushOverviewEdge(overviewDirection, 100); return;
+          overviewEdgeIntent(overviewDirection, Math.max(120, (horizontal ? overview.clientWidth : overview.clientHeight) * .35), 'keyboard'); return;
         }
         if (event.key === 'Home') overview.scrollTo({ [axis]: 0, behavior: 'smooth' });
         else if (event.key === 'End') overview.scrollTo({ [axis]: horizontal ? overview.scrollWidth : overview.scrollHeight, behavior: 'smooth' });
         else overview.scrollBy({ [axis]: (['ArrowDown', 'ArrowRight'].includes(event.key) ? 1 : -1) * Math.max(120, (horizontal ? overview.clientWidth : overview.clientHeight) * .35), behavior: 'smooth' });
-        requestAnimationFrame(() => checkOverviewCache(true)); return;
+        requestAnimationFrame(() => checkOverviewCache(false)); return;
       }
       if (overviewOpen) {
         if (!event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'f') {

@@ -9,6 +9,7 @@ Number changed source deliveries sequentially: **2.0 b1**, **2.0 b2**, and so on
 | 2.0 b3 | 2.0.0.3 | 2026-11-07 | Identity-safe discovery, bidirectional lazy scan, alignment/gap, G/1/2, nested return and current-image exit | Developer QA in progress; no store submission |
 | 2.0 b4 | 2.0.0.4 | 2026-11-08 | Active-image and overview-center return; stable root scroll lock; pointer-follow divider handle; independent automatic/custom overview thumbnail caches | Developer QA partial; owner final acceptance pending; no store submission |
 | 2.0 b5 | 2.0.0.5 | 2026-11-09 | Stable thumbnail selection and delayed layout, independent 25–300% thumbnail size, toolbar controls, directional loading and return feedback | Developer fixture checks pass; live-site matrix incomplete; no store submission |
+| 2.0 b6 | 2.0.0.6 | 2026-11-09 | Fixed 4:3 overview slots, decoded two-band buffers, proactive lazy discovery, persistent finite boundaries, mouse dragging and direct source exit | Source-only beta; generated-fixture QA recorded separately from pending live-site acceptance; no ZIP or store submission |
 
 ## b1
 
@@ -22,7 +23,7 @@ Validation: 45 automated checks pass; options syntax, public-source audit, ZIP i
 
 Package: `Imageseec-v2.0-b2.zip`, 32 files, 80,858 bytes. SHA-256: `a072f18fd08f2311581e40d342e4177524f96e93d46b878e3bec4517c0c552b7`. Installed isolated Chromium settings display **2.0 b2**. All 46 automated checks pass. The release remains pending final site acceptance and owner approval.
 
-Future changed deliveries must increment both the visible beta number and Chrome numeric version, update this record and produce a new package filename. The store workflow remains gated by [owner acceptance](RELEASE.md).
+Future changed source deliveries must increment both the visible beta number and Chrome numeric version and update this record. Packaging belongs to the later release phase and requires a frozen source revision. The store workflow remains gated by [owner acceptance](RELEASE.md).
 
 ## b3
 
@@ -43,3 +44,9 @@ Package: `Imageseec-v2.0-b4.zip`, 32 files, 91,033 bytes. SHA-256: `892eb1fba388
 Package: `Imageseec-v2.0-b5.zip`, 32 files, 98,071 bytes. SHA-256: `db3dde68cb158a0c6dd91e0313ffff3a0c2d0d9e92cadb426b2583cd6327397d`.
 
 57 unit checks and the 80-image installed development-extension fixture pass. Native browser input completed 101/101 thumbnail selections during repeated source refresh. The ZIP was checked for integrity and equality with the checkout. The installed fixture used the unpacked development extension in the in-app browser; a separate ZIP installation and the 20-site compatibility matrix are still pending. No owner acceptance or store submission.
+
+## b6
+
+Source-only beta on `beta/2.0-b6`. No ZIP was created, uploaded or submitted for review.
+
+The 80-image delayed-source comparison exposed the b5 ratio-driven reflow. Fixed slots retained order and geometry through decode and reversing scroll. The unpacked development extension was exercised in the Codex in-app browser: actual vertical/horizontal mouse dragging, decoded buffers of 12 before and 12 after in six-column layout, proactive slow unknown-total discovery while overview scroll stayed at zero, and nested virtual source restoration. B6 results and remaining acceptance work are listed in [verification status](STATUS.zh-CN.md). Older real-site results do not count as b6 passes.

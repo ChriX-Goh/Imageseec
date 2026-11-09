@@ -1,5 +1,11 @@
 # Verification record
 
+## Current source: 2.0 b6
+
+Earlier sections are historical; none of their real-site counts establish b6 acceptance. Current status is maintained in [the b6 brief](../docs/STATUS.zh-CN.md). This delivery contains source and graph updates only, with no ZIP and no store action.
+
+61 unit checks pass. The Codex in-app browser's unpacked development extension passes 29 installed handler checks; real mouse input separately covers vertical/horizontal overview dragging and direct Escape exit. An 80-image fixed-grid fixture kept positions through delayed decoding; prepend anchor drift was approximately 0.16px. Six-column view loaded and decoded 12 thumbnails on each side outside the viewport. Slow unknown-total discovery grew ahead without scrolling the overview to its end; nested virtual return remounted the selected source within the 15% tolerance. The final-source 20-site/15-pattern matrix is still incomplete. Private site records and screenshots remain excluded from Git.
+
 ## 2.0 implementation checks
 
 - Automated unit checks cover all 11 localized catalogs, the 2.0 settings bounds, common `data-srcset` and CSS background URLs, mixed-tag repeated cards, nested gallery rows, detail-link image URL parameters, source de-duplication, and extension entry routes. Current result: 45 passing. The first numbered beta is 2.0 b1 (Chrome version 2.0.0.1); older evidence predates this numbering.

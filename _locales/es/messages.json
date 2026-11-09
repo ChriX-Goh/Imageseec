@@ -271,10 +271,10 @@
     "message": "Automática"
   },
   "alignmentVertical": {
-    "message": "Alineación vertical"
+    "message": "Según el ancho de columna"
   },
   "alignmentHorizontal": {
-    "message": "Alineación horizontal"
+    "message": "Según la altura de fila"
   },
   "overviewGap": {
     "message": "Espacio entre imágenes"
@@ -284,5 +284,17 @@
   },
   "overviewScanFailed": {
     "message": "Error al buscar. Desplázate para reintentar."
+  },
+  "overviewWaitingTrigger": {
+    "message": "Esperando las imágenes de la página…"
+  },
+  "overviewThumbFailed": {
+    "message": "No se pudieron cargar algunas miniaturas. Desplázate o arrastra para reintentar."
+  },
+  "overviewDiscovering": {
+    "message": "Buscando más imágenes…"
+  },
+  "overviewSourceFailed": {
+    "message": "No se pudieron cargar las imágenes de la página. Desplázate o arrastra para reintentar."
   }
 }

@@ -12,8 +12,8 @@
     modal:r.querySelector('dialog').matches(':modal'),rootOverflow:getComputedStyle(document.documentElement).overflow,
     rootGutter:getComputedStyle(document.documentElement).scrollbarGutter,viewport:{width:innerWidth,clientWidth:document.documentElement.clientWidth},
     width:o.scrollWidth,viewWidth:o.clientWidth,height:o.scrollHeight,viewHeight:o.clientHeight,
-    preloadedBefore:cards.filter(c=>Number(c.dataset.index)<first&&c.querySelector('img').hasAttribute('src')).length,
-    preloadedAfter:cards.filter(c=>Number(c.dataset.index)>last&&c.querySelector('img').hasAttribute('src')).length,
+    preloadedBefore:cards.filter(c=>Number(c.dataset.index)<first&&c.dataset.thumbState==='ready'&&c.querySelector('img').naturalWidth>0).length,
+    preloadedAfter:cards.filter(c=>Number(c.dataset.index)>last&&c.dataset.thumbState==='ready'&&c.querySelector('img').naturalWidth>0).length,
     visibleCount:visible.length,visibleFirst:first,visibleLast:last,overviewCacheBeforeMode:r.querySelector('[name="overviewCacheBeforeMode"]').value,
     overviewCacheBefore:Number(r.querySelector('[name="overviewCacheBefore"]').value),overviewCacheAfterMode:r.querySelector('[name="overviewCacheAfterMode"]').value,
     overviewCacheAfter:Number(r.querySelector('[name="overviewCacheAfter"]').value),
@@ -21,6 +21,15 @@
   const ready=async()=>{let until=performance.now()+8000;while(performance.now()<until){const r=root();if(!r)return false;if(r.querySelector('.resolution').textContent)return true;if(!r.querySelector('.message').hidden&&r.querySelector('.message').textContent.includes('Could not'))return false;await delay(60);}return false;};
   const click=async s=>{root().querySelector(s).click();await ready();};
   const key=async key=>{window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));await ready();await frame();};
+  const openSource=async image=>{
+    if(!image?.isConnected)return false;
+    image.scrollIntoView({block:'center',inline:'nearest'});
+    const box=image.getBoundingClientRect(),clientX=box.left+box.width/2,clientY=box.top+box.height/2;
+    const init={bubbles:true,composed:true,cancelable:true,button:0,ctrlKey:true,clientX,clientY};
+    image.dispatchEvent(new MouseEvent('mousedown',init));image.dispatchEvent(new MouseEvent('click',init));
+    const until=performance.now()+8000;while(!root()&&performance.now()<until)await delay(50);
+    return root()?ready():false;
+  };
   const set=async next=>{const r=root(),form=r.querySelector('.settings');form.hidden=false;for(const [name,value] of Object.entries(next)){const input=form.querySelector(`[name="${name}"]`);if(!input)throw new Error(`Missing setting ${name}`);if(input.type==='checkbox')input.checked=Boolean(value);else input.value=String(value);input.dispatchEvent(new Event('input',{bubbles:true,composed:true}));await delay(30);}form.hidden=true;r.querySelector('.viewer').focus({preventScroll:true});await delay(380);};
   if(!await ready())return {checks:[{name:'images load',pass:false}],error:'Initial pair load failed'};
   if(root().querySelector('.compare-toggle').getAttribute('aria-pressed')!=='true')await click('.compare-toggle');
@@ -56,28 +65,42 @@
   record('overview opens with active image at vertical center',activeCenterDelta!==null&&activeCenterDelta<=innerHeight*.15,{expectedCenter,centerDelta:activeCenterDelta,tolerance:innerHeight*.15,centerIndex:vertical.centerIndex,initialScrollTop:vertical.top});
   // offsetLeft/Top round fractional layout coordinates; a 1px tie is not reordering.
   const ordered=(cards,h)=>cards.every((b,n)=>!n||(h?b.x>=cards[n-1].x-1:b.y>=cards[n-1].y-1));
-  record('vertical masonry order and single axis',!vertical.horizontal&&ordered(vertical.cards,false)&&vertical.width<=vertical.viewWidth+1,{count:vertical.total,width:vertical.width,view:vertical.viewWidth});
+  record('vertical fixed-slot order and single axis',!vertical.horizontal&&ordered(vertical.cards,false)&&vertical.width<=vertical.viewWidth+1,{count:vertical.total,width:vertical.width,view:vertical.viewWidth});
   record('overview dedup and bidirectional preload',vertical.total>=total&&vertical.total===vertical.unique&&vertical.visibleCount>0&&vertical.preloadedBefore>0&&vertical.preloadedAfter>0,{total:vertical.total,before:vertical.preloadedBefore,after:vertical.preloadedAfter,visible:vertical.visibleCount});
   await key('ArrowDown');await delay(240);record('vertical scroll geometry',read().height>=read().viewHeight&&read().viewHeight>0,{height:read().height,viewport:read().viewHeight,trustedKeyboardCheckedSeparately:true});
   await set({overviewDirection:'horizontal',overviewClean:true});let horizontal=read();
-  record('horizontal masonry order and single axis',horizontal.horizontal&&ordered(horizontal.cards,true)&&horizontal.height<=horizontal.viewHeight+1,{count:horizontal.total,height:horizontal.height,view:horizontal.viewHeight});
+  record('horizontal fixed-slot order and single axis',horizontal.horizontal&&ordered(horizontal.cards,true)&&horizontal.height<=horizontal.viewHeight+1,{count:horizontal.total,height:horizontal.height,view:horizontal.viewHeight});
   record('borderless without captions',horizontal.cards.every(c=>c.border==='0px'&&c.caption==='none'),horizontal.cards.slice(0,1));
   const o=r.querySelector('.overview');o.dispatchEvent(new WheelEvent('wheel',{deltaY:220,bubbles:true,composed:true,cancelable:true}));await delay(150);
   record('horizontal wheel and preload',horizontal.width<=horizontal.viewWidth||read().left>0&&read().top===0, {left:read().left,top:read().top,before:read().preloadedBefore,after:read().preloadedAfter});
   await set({overviewCacheBeforeMode:'custom',overviewCacheBefore:0,overviewCacheAfterMode:'custom',overviewCacheAfter:35});
+  // Readiness means load + decode, rather than merely assigning src. Wait for
+  // the bounded concurrency queue before comparing the requested buffer size.
+  const cacheDeadline=performance.now()+8000;
+  while(performance.now()<cacheDeadline){const current=read(),expected=Math.min(35,Math.max(0,current.total-current.visibleLast-1));if(current.preloadedAfter===expected)break;await delay(60);}
   const custom=read(),expectedAfter=Math.min(35,Math.max(0,custom.total-custom.visibleLast-1));record('independent custom overview cache',custom.overviewCacheBeforeMode==='custom'&&custom.overviewCacheBefore===0&&custom.overviewCacheAfterMode==='custom'&&custom.overviewCacheAfter===35&&custom.preloadedBefore===0&&custom.preloadedAfter===expectedAfter,{before:custom.preloadedBefore,after:custom.preloadedAfter,expectedAfter,requestedAfter:custom.overviewCacheAfter});
   await set({overviewCacheBeforeMode:'auto',overviewCacheAfterMode:'auto',cacheBefore:0,cacheAfter:0});
   const automatic=read();record('auto overview cache independent of original cache',automatic.overviewCacheBeforeMode==='auto'&&automatic.overviewCacheAfterMode==='auto'&&automatic.preloadedAfter>0,{before:automatic.preloadedBefore,after:automatic.preloadedAfter,originalCache:[0,0]});
+  await key('g');record('G returns from overview to image view',!read().overview,read().pair);
+  await key('g');record('G reopens overview',read().overview,read().total);
   const chosen=Math.min(4,read().total-2);await click(`.overview-card[data-index="${chosen}"]`);record('overview selection pair',read().pair.startsWith(`${chosen+1} | ${chosen+2} / `),read().pair);
-  await key('Escape');record('selected image Escape returns to overview',read().overview,read().pair);await key('Escape');await key('g');const restoredKeys=[...root().querySelectorAll('.overview-card[aria-current="true"]')].map(c=>c.dataset.key);await key('Escape');record('overview Escape restores parent',!read().overview&&parentKeys.length===restoredKeys.length&&parentKeys.every((k,n)=>k===restoredKeys[n]),{pair:read().pair,parentKeys,restoredKeys});
   await set({overviewDirection:'vertical',overviewAlignment:'auto',overviewGap:12,overviewClean:false,overviewCacheBeforeMode:'auto',overviewCacheAfterMode:'auto',overviewCacheBefore:12,overviewCacheAfter:12,cacheBefore:2,cacheAfter:2,doubleClickExit:true});
   const end=read(),targetSource=end.panes[0]?.src||r.querySelector('.photo')?.getAttribute('src'),absolute=value=>{try{return new URL(value,location.href).href;}catch{return value;}},wanted=absolute(targetSource||''),sourceImage=[...document.images].find(image=>[image.currentSrc,image.src,image.getAttribute('data-full'),image.getAttribute('data-src')].some(value=>value&&absolute(value)===wanted)),sourceNode=sourceImage||null;
   let sourceScroller=sourceNode?.parentElement;
   while(sourceScroller&&sourceScroller!==document.documentElement&&!(sourceScroller.scrollHeight>sourceScroller.clientHeight+4&&/auto|scroll|overlay|hidden/.test(getComputedStyle(sourceScroller).overflowY)))sourceScroller=sourceScroller.parentElement;
-  r.querySelector('.close').click();await delay(250);const returnedBox=sourceNode?.isConnected?sourceNode.getBoundingClientRect():null,returnedCenter=returnedBox?(returnedBox.top+returnedBox.bottom)/2:null;
+  await key('Escape');await delay(250);
+  const returnedBox=sourceNode?.isConnected?sourceNode.getBoundingClientRect():null,returnedCenter=returnedBox?(returnedBox.top+returnedBox.bottom)/2:null;
   const nested=sourceScroller&&sourceScroller!==document.documentElement,viewportHeight=nested?sourceScroller.clientHeight:innerHeight,viewportCenterY=(nested?sourceScroller.getBoundingClientRect().top+sourceScroller.clientTop:0)+viewportHeight/2;
   const centerDelta=returnedCenter===null?null:Math.abs(returnedCenter-viewportCenterY);
-  record('viewer close recenters active source image',!root()&&centerDelta!==null&&centerDelta<=viewportHeight*.15,{position:[scrollX,scrollY],targetFound:Boolean(sourceNode),targetCenterY:returnedCenter,viewportCenterY,centerDelta,tolerance:viewportHeight*.15,targetCheckedWithTrustedInputSeparately:true});
-  record('viewer closes and restores source position',!root(),{position:[scrollX,scrollY]});
+  record('Escape from selected image exits to its source',!root()&&centerDelta!==null&&centerDelta<=viewportHeight*.15,{position:[scrollX,scrollY],targetFound:Boolean(sourceNode),targetCenterY:returnedCenter,viewportCenterY,centerDelta,tolerance:viewportHeight*.15,targetCheckedWithTrustedInputSeparately:true});
+  if(document.querySelector('#open-viewer')&&await openSource(sourceNode)){
+    await key('g');const overviewEscapeKey=root().querySelector('.overview');await key('Escape');await delay(160);
+    record('Escape from overview exits directly to source',!root(),{overviewWasOpen:Boolean(overviewEscapeKey)});
+    if(await openSource(sourceNode)){
+      await key('g');root().querySelector('.close').click();await delay(160);
+      record('close button exits directly from overview',!root(),{overviewWasOpen:true});
+    }
+  }
+  record('viewer exits and restores source page',!root(),{position:[scrollX,scrollY]});
   return {total,checks,passed:checks.every(c=>c.pass),endPair:end.pair,closed:!root(),documentPosition:{x:scrollX,y:scrollY},sourceDimensions:[...document.querySelectorAll('img')].length};
 });
