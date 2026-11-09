@@ -153,7 +153,8 @@
   function repeatedMediaCards(parent) {
     const cards = [...(parent.children || [])].filter(cardHasMedia);
     if (cards.length < 2) return false;
-    const representatives = cards.map(card => card.tagName === 'IMG' || card.getAttribute?.('role') === 'img' ? card : mediaNodes(card).find(isVisibleCandidate)).filter(Boolean);
+    const representatives = cards.map(card => card.tagName === 'IMG' || card.getAttribute?.('role') === 'img'
+      ? isVisibleCandidate(card) ? card : null : mediaNodes(card).find(isVisibleCandidate)).filter(Boolean);
     return representatives.length >= 2 && new Set(representatives.map(node => key(sources(node)[0]))).size >= 2;
   }
   function linkedImageCards(parent) {
@@ -204,7 +205,7 @@
   }
   function scopeFor(seed) {
     if (!seed) return null;
-    const semantic = seed.closest('[data-gallery], [role="list"], [role="grid"], [aria-roledescription*="gallery" i], .gallery, .masonry, .photos, .photo-list, .image-grid');
+    const semantic = seed.closest('[data-gallery], [role="list"], [role="grid"], [role="feed"], [aria-roledescription*="gallery" i], .gallery, .masonry, .photos, .photo-list, .image-grid');
     if (semantic && mediaNodes(semantic).length > 1) return semantic;
     // Gallery cards can have different tags at each level (anchor/div/list item).
     // Find a bounded parent whose direct children resolve to distinct image cards.
@@ -307,7 +308,14 @@
       if (rect.width < 72 || rect.height < 72 || node.closest?.('header, nav, footer')) return false;
       const own = new Set(String(node.className || '').split(/\s+/).filter(Boolean));
       const similar = classes.size && [...classes].filter(name => own.has(name)).length >= classes.size * .75;
+      const emptyPeer = own.size === classes.size && [...classes].every(name => own.has(name));
       const media = nested || similar ? mediaNodes(node) : [];
+      const visibleMedia = media.filter(isVisibleCandidate);
+      const layered = visibleMedia.length > 1 && visibleMedia.every(item => {
+        const box = item.getBoundingClientRect(), first = visibleMedia[0].getBoundingClientRect();
+        return Math.abs(box.width - first.width) < 2 && Math.abs(box.height - first.height) < 2 &&
+          Math.abs(box.left - first.left) < 2 && Math.abs(box.top - first.top) < 2;
+      });
       // A repeated row can contain a recommendation cluster shaped like one
       // tile. Several independent links and no card-size image make it content,
       // not an empty photo slot. Real image sets still have a primary image.
@@ -316,7 +324,7 @@
             const box = item.getBoundingClientRect();
             return isVisibleCandidate(item) && box.width * box.height >= rect.width * rect.height * .35;
           })) return false;
-      return node === card || (similar && (nested || media.length <= 1)) ||
+      return node === card || (similar && (media.length ? nested || media.length <= 1 || visibleMedia.length === 1 || layered : emptyPeer)) ||
         (!classes.size && cardHasMedia(node) && mediaNodes(node).length <= 1);
     });
     if (cards.length < 2) return [];
@@ -326,7 +334,7 @@
       const values = cards.map(node => node.getAttribute(name));
       return values.every(value => value && value.length <= 256) && new Set(values).size === cards.length;
     });
-    return cards.map((node, order) => {
+    return ordered(cards).map((node, order) => {
       if (!slotIds.has(node)) slotIds.set(node, `slot-${++nextSlotId}`);
       return { node, order, key: identity ? `${identity}:${node.getAttribute(identity)}` : slotIds.get(node), stable: Boolean(identity),
         pending: !mediaNodes(node).some(media => sources(media).some(source => !/^data:image\/(gif|svg\+xml)/i.test(source) ||
@@ -379,7 +387,7 @@
   }
   function ordered(candidates) {
     const positions = candidates.map(node => {
-      const item = node.closest('[aria-posinset], [aria-rowindex]');
+      const item = node.closest?.('[aria-posinset], [aria-rowindex]');
       return Number(item?.getAttribute('aria-posinset') || item?.getAttribute('aria-rowindex'));
     });
     if (positions.some(n => !Number.isFinite(n) || n <= 0) || new Set(positions).size !== candidates.length) return candidates;
@@ -409,12 +417,13 @@
       const slot = slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node));
       if (slotted && !slot) continue;
       if (!eligible(node, selected, Boolean(scope))) continue;
-      if (slot && nestedScope) {
+      if (slot) {
         if (!primaryByCard.has(slot.node)) {
           const primary = slot.node.contains?.(selected) && eligible(selected, selected, true) ? selected
             : mediaNodes(slot.node).filter(media => eligible(media, selected, true)).sort((a, b) => {
               const x = a.getBoundingClientRect(), y = b.getBoundingClientRect();
-              return y.width * y.height - x.width * x.height;
+              return y.width * y.height - x.width * x.height ||
+                (b.naturalWidth || 0) * (b.naturalHeight || 0) - (a.naturalWidth || 0) * (a.naturalHeight || 0);
             })[0];
           primaryByCard.set(slot.node, primary);
         }

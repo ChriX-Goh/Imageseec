@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Imageseec overview insertion fixture</title>
+<style>
+  body { margin: 24px; background: #171b23; color: white; font: 15px system-ui }
+  [role=grid] { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px }
+  figure { margin: 0; min-height: 126px; background: #384156 }
+  img { display: block; width: 100%; height: 126px; object-fit: cover }
+</style>
+<h1>Ordered image grid</h1>
+<p>Press M while browsing to fill gaps and replace the site's unresolved tail.</p>
+<main role="grid" aria-label="Ordered images"></main>
+<script>
+  const grid = document.querySelector('[role=grid]');
+  const figures = new Map();
+  function makeCard(number) {
+    const card = document.createElement('figure');
+    card.className = 'tile';
+    if (number) {
+      const image = new Image();
+      image.src = '/image/' + number;
+      image.alt = 'Fixture image ' + number;
+      card.append(image);
+    }
+    return card;
+  }
+  for (let number = 1; number < 80; number += 2) {
+    const card = makeCard(number);
+    figures.set(number, card);
+    grid.append(card);
+  }
+  const tail = Array.from({ length: 180 }, () => makeCard());
+  grid.append(...tail);
+  document.addEventListener('keydown', event => {
+    if (event.key.toLowerCase() !== 'm' || grid.dataset.inserted) return;
+    for (const number of [18, 24, 30, 38, 48]) grid.insertBefore(makeCard(number), figures.get(number + 1));
+    for (const card of tail) card.remove();
+    grid.dataset.inserted = '5';
+  }, { capture: true });
+</script></html>

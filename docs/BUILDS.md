@@ -11,6 +11,7 @@ Number changed source deliveries sequentially: **2.0 b1**, **2.0 b2**, and so on
 | 2.0 b5 | 2.0.0.5 | 2026-11-09 | Stable thumbnail selection and delayed layout, independent 25–300% thumbnail size, toolbar controls, directional loading and return feedback | Developer fixture checks pass; live-site matrix incomplete; no store submission |
 | 2.0 b6 | 2.0.0.6 | 2026-11-09 | Fixed 4:3 overview slots, decoded two-band buffers, proactive lazy discovery, persistent finite boundaries, mouse dragging and direct source exit | Source-only beta; generated-fixture QA recorded separately from pending live-site acceptance; no ZIP or store submission |
 | 2.0 b7 | 2.0.0.7 | 2026-11-09 | Adaptive aspect-ratio masonry restored, reserved lazy rows discovered and filled, scanning tied to viewport demand, one silent initial before band | Source-only beta; no ZIP or store submission |
+| 2.0 b8 | 2.0.0.8 | 2026-11-10 | Reconcile discovered cards in the active overview, bound unconfirmed placeholders, scan before thumbnail buffer runs out, improve layered image grouping | Source-only beta; no ZIP or store submission |
 
 ## b1
 

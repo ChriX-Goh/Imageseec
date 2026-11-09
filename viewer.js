@@ -66,6 +66,7 @@
     .overview-grid { position: relative; flex: none; margin: 0; }
     .overview-card { position: absolute; margin: 0; padding: 5px; border: 1px solid #ffffff1c; border-radius: 12px; background: #202229; cursor: pointer; text-align: left; overflow: hidden; }
     .overview-card:hover { border-color: #a9c0ff99; background: #2d3039; }
+    .overview-card:disabled { pointer-events: none; }
     .overview-card[aria-current="true"] { border-color: #b4c8ff; box-shadow: 0 0 16px #9fb9ff30; }
     .overview-card img { display: block; width: 100%; height: calc(100% - 27px); object-fit: contain; border-radius: 8px; pointer-events: none; color: transparent; opacity: 0; transition: opacity .18s ease; }
     .overview-card[data-thumb-state="ready"] img { opacity: 1; background: #15171b; }
@@ -803,7 +804,7 @@
       if (!overviewOpen) return true;
       if (side < 0 && settings.overviewCacheBeforeMode === 'auto' && !overviewBackwardExpanded && !overviewBackwardProbeCompleted) return false;
       const window = overviewCacheWindow();
-      const items = overviewItems.slice(window.start, window.end + 1);
+      const items = side < 0 ? overviewItems.slice(window.start, window.last + 1) : overviewItems.slice(window.first, window.end + 1);
       const allReady = items.every(item => {
         if (!item.entry || !item.thumb) return !overviewSlotPending(item, side);
         const job = overviewThumbJobs.get(item.key);
@@ -811,9 +812,7 @@
         // cannot make an in-flight decode or failed thumbnail request finish.
         return job?.source === item.thumb;
       });
-      const countReady = side < 0
-        ? window.before >= window.countBefore || scanStates[-1].ended
-        : window.after >= window.countAfter || scanStates[1].ended;
+      const countReady = !overviewNeedsDiscovery(side, window) || scanStates[side].ended;
       return allReady && countReady;
     }
     function overviewSlotPending(item, side) {
@@ -1113,8 +1112,12 @@
         return { key: previous?.key || entry.key, entry, thumb: entry.thumb,
           slotKey: entry.slotKey, slotNode: entry.slotNode, ...layoutRatio(previous, entry, slot) };
       });
-      const entryAtSlot = new Map(candidates.filter(item => item.slotKey && slotsByKey.get(item.slotKey)?.node === item.slotNode &&
-        item.entry.node?.isConnected).map(item => [item.slotKey, item]));
+      const entryAtSlot = new Map();
+      for (const item of candidates) {
+        if (item.slotKey && slotsByKey.get(item.slotKey)?.node === item.slotNode && item.entry.node?.isConnected && !entryAtSlot.has(item.slotKey)) {
+          entryAtSlot.set(item.slotKey, item);
+        }
+      }
       let next = null;
       const nextItems = activeSlots.map(() => null);
       for (let i = activeSlots.length - 1; i >= 0; i--) {
@@ -1125,24 +1128,31 @@
       activeSlots.forEach((slot, i) => {
         const item = entryAtSlot.get(slot.key);
         if (item) { previous = item; return; }
-        if (!slot.pending || (!previous && !nextItems[i])) return;
+        if (!slot.pending || !slot.node?.isConnected || (!previous && !nextItems[i])) return;
         const list = previous ? after : before, key = (previous || nextItems[i]).key;
         if (!list.has(key)) list.set(key, []);
         const old = reserved.get(slot.key);
         list.get(key).push({ key: old?.key || `reserved:${slot.key}`,
-          entry: null, thumb: '', slotKey: slot.key, slotNode: slot.node, ...layoutRatio(old, null, slot) });
+          entry: null, thumb: '', slotKey: slot.key, slotNode: slot.node, slotStable: slot.stable,
+          ...layoutRatio(old, null, slot) });
       });
-      const desired = candidates.flatMap(item => [...(before.get(item.key) || []), item, ...(after.get(item.key) || [])]);
-      if (rebuild || !overviewItems.length) { overviewStartOrdinal = 0; return desired; }
-      const desiredByKey = new Map(desired.map(item => [item.key, item]));
-      const current = new Set(overviewItems.map(item => item.key));
-      const first = desired.findIndex(item => current.has(item.key));
-      const last = desired.findLastIndex(item => current.has(item.key));
-      if (first < 0) return overviewItems;
-      overviewStartOrdinal -= first;
-      return [...desired.slice(0, first),
-        ...overviewItems.map(item => desiredByKey.get(item.key) || item),
-        ...desired.slice(last + 1)];
+      // The source scanner keeps all slots, but a site's long reserved tail
+      // must not turn into hundreds of unselectable cards or fake cache space.
+      const placeholderRun = 24;
+      const reservations = (items, leading) => (items || []).some(item => item.slotStable) ? items :
+        (items || []).slice(leading ? -placeholderRun : 0, leading ? undefined : placeholderRun);
+      const desired = candidates.flatMap(item => [...reservations(before.get(item.key), true),
+        item, ...reservations(after.get(item.key), false)]);
+      if (rebuild || !overviewItems.length) overviewStartOrdinal = 0;
+      else {
+        const previousIndices = new Map(overviewItems.map((item, index) => [item.key, index]));
+        const shared = desired.findIndex(item => previousIndices.has(item.key));
+        if (shared >= 0) overviewStartOrdinal += previousIndices.get(desired[shared].key) - shared;
+      }
+      // Entries already have a stable source order from mergeEntries(). Keep
+      // their existing nodes and lane hints, including when new items land
+      // between two known cards. Removed source slots no longer take space.
+      return desired;
     }
     function renderOverview(anchor, rebuild = false) {
       if (!overviewOpen) return;
@@ -1175,6 +1185,7 @@
         const current = String(currentKeys.has(entry?.key)), disabled = String(!entry);
         if (card.getAttribute('aria-current') !== current) card.setAttribute('aria-current', current);
         if (card.getAttribute('aria-disabled') !== disabled) card.setAttribute('aria-disabled', disabled);
+        card.disabled = !entry;
         if (card.tabIndex !== (entry ? 0 : -1)) card.tabIndex = entry ? 0 : -1;
         const image = card.querySelector('img');
         if (image.dataset.src !== thumb) image.dataset.src = thumb;
@@ -1261,11 +1272,23 @@
         visible.first = visible.last = centerIndex >= 0 ? centerIndex : Math.max(0, active);
       }
       const countBefore = overviewCacheCount('Before'), countAfter = overviewCacheCount('After');
-      return { ...visible, ...lens.controls.overviewCacheRange(overviewItems.length, visible.first, visible.last, countBefore, countAfter), countBefore, countAfter };
+      return { ...visible, ...overviewImageRange(visible, countBefore, countAfter), countBefore, countAfter };
+    }
+    function overviewImageRange(visible, before, after) {
+      return lens.controls.overviewCacheRange(overviewItems.length, visible.first, visible.last, before, after,
+        index => Boolean(overviewItems[index]?.entry?.thumb));
+    }
+    function overviewNeedsDiscovery(side, window) {
+      const backwardProbe = side < 0 && settings.overviewCacheBeforeMode === 'auto' && !overviewBackwardExpanded;
+      const ahead = backwardProbe ? 0 : Math.max(1, overviewBandSize);
+      const target = (side < 0 ? window.countBefore : window.countAfter) + ahead;
+      const lookahead = overviewImageRange(window, side < 0 ? target : 0, side > 0 ? target : 0);
+      return (side < 0 ? lookahead.before : lookahead.after) < target;
     }
     function dropOverviewThumbnail(job, removeSource = true) {
       if (!job) return;
       job.cancelled = true;
+      clearTimeout(job.timeout);
       job.image.onload = job.image.onerror = null;
       if (job.active) { overviewThumbActive = Math.max(0, overviewThumbActive - 1); job.active = false; }
       if (removeSource && job.image.getAttribute('src') === job.source) job.image.removeAttribute('src');
@@ -1426,8 +1449,8 @@
       const pendingBefore = overviewItems.slice(window.start, Math.max(window.start, window.first)).some(item => overviewSlotPending(item, -1));
       const pendingAfter = overviewItems.slice(Math.min(overviewItems.length, window.last + 1), window.end + 1).some(item => overviewSlotPending(item, 1));
       const pendingVisible = overviewItems.slice(window.first, window.last + 1).some(item => overviewSlotPending(item, 1));
-      const shortBefore = window.before < window.countBefore;
-      const shortAfter = window.after < window.countAfter;
+      const shortBefore = overviewNeedsDiscovery(-1, window);
+      const shortAfter = overviewNeedsDiscovery(1, window);
       const wantsScan = { [-1]: shortBefore || pendingBefore || pendingVisible, [1]: shortAfter || pendingAfter || pendingVisible };
       if (overviewEdgeIntentState.side && overviewEdgeDistance(overviewEdgeIntentState.side) > 2) {
         overviewEdgeIntentState.side = 0; overviewEdgeIntentState.distance = 0; overviewEdgeIntentState.retried = false;
@@ -1467,8 +1490,13 @@
       const origin = scanScroller?.getBoundingClientRect();
       const coordinate = node => { const box = node.getBoundingClientRect(); return sourcePosition() + (scanHorizontal ? box.left - (origin?.left || 0) : box.top - (origin?.top || 0)); };
       const slots = collection.slots || [];
-      const pending = slots.filter(slot => slot.pending);
       const cacheWindow = overviewOpen ? overviewCacheWindow() : null;
+      const pendingNearby = () => (collection.slots || []).some(slot => {
+        if (!slot.pending || !slot.node?.isConnected) return false;
+        const position = coordinate(slot.node);
+        return direction < 0 ? position >= state.cursor - viewport * 1.5 && position <= state.cursor + viewport * .65
+          : position >= state.cursor - viewport * .65 && position <= state.cursor + viewport * 1.5;
+      });
       const hasPendingVisibleOrCache = () => overviewOpen && (() => {
         return overviewItems.slice(cacheWindow.start, cacheWindow.end + 1).filter(item => overviewSlotPending(item, direction)).some(item => {
           const box = item.slotNode?.getBoundingClientRect();
@@ -1481,7 +1509,7 @@
       if (overviewOpen && overviewScanDemandSatisfied(direction) && !hasPendingVisibleOrCache()) return { edge: false, demandSatisfied: true };
       const first = slots[0]?.node || collection.scope, last = slots.at(-1)?.node || collection.scope;
       const lastBox = last.getBoundingClientRect();
-      const low = Math.max(0, coordinate(first) - viewport * .25);
+      const low = Math.min(Math.max(0, maximum), Math.max(0, coordinate(first) - viewport * .25));
       const scopeBox = collection.scope.getBoundingClientRect();
       const end = slots.length ? coordinate(last) + (scanHorizontal ? lastBox.width : lastBox.height) : coordinate(collection.scope) + (scanHorizontal ? scopeBox.width : scopeBox.height);
       const high = Math.min(Math.max(0, maximum), Math.max(low, end - viewport * .25));
@@ -1493,8 +1521,9 @@
       const targetedSlots = overviewOpen ? overviewItems.slice(cacheWindow.start, cacheWindow.end + 1)
         .filter(item => overviewSlotPending(item, direction) && item.slotNode?.isConnected)
         .map(item => ({ item, position: coordinate(item.slotNode), signature: scanOneSlotSignature((collection.slots || []).find(slot => slot.key === item.slotKey)) }))
-        .filter(candidate => candidate.position >= low - 2 && candidate.position <= high + viewport)
-        .sort((a, b) => Math.abs(a.position - beforePosition) - Math.abs(b.position - beforePosition)).slice(0, 6) : [];
+        .filter(candidate => candidate.position >= low - 2 && candidate.position <= high + viewport &&
+          (direction < 0 ? candidate.position <= state.cursor + viewport * .65 : candidate.position >= state.cursor - viewport * .2))
+        .sort((a, b) => direction * (a.position - b.position)).slice(0, 6) : [];
       if (targetedSlots.length) next = targetedSlots[0].position - direction * viewport * .2;
       next = Math.max(low, Math.min(high, next));
       const limited = Math.abs(next - beforePosition) < step * .75;
@@ -1503,7 +1532,7 @@
       try {
         const beforeResolved = scanResolvedSnapshot();
         const beforeSignature = scanSlotSignature();
-        state.phase = pending.length ? 'waiting-trigger' : 'scanning';
+        state.phase = pendingNearby() ? 'waiting-trigger' : 'scanning';
         state.sourceLoading = false; state.loadingNode = null;
         let observedChanges = 0;
         const localObserver = new MutationObserver(records => {
@@ -1512,8 +1541,8 @@
         localObserver.observe(collection.scope, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
         if (scanScroller) scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = next;
         else window.scrollTo(pagePosition.x, next);
-        state.cursor = next;
-        const started = performance.now(), timeout = pending.length || edge ? 4200 : 1800;
+        state.cursor = sourcePosition();
+        const started = performance.now(), timeout = pendingNearby() || edge ? 4200 : 1800;
         let stableSince = started, signature = beforeSignature;
         try {
           while (!signal.aborted && !closed && performance.now() - started < timeout) {
@@ -1527,12 +1556,7 @@
             const changed = currentSignature !== signature;
             if (changed) { signature = currentSignature; stableSince = performance.now(); }
             const progressed = scanResolvedProgress(beforeResolved, currentResolved);
-            const pendingNow = (collection.slots || []).some(slot => {
-              if (!slot.pending || !slot.node?.isConnected) return false;
-              const position = coordinate(slot.node);
-              return direction < 0 ? position <= state.cursor + viewport * .65 && position >= state.cursor - viewport * 1.5
-                : position >= state.cursor - viewport * .65 && position <= state.cursor + viewport * 1.5;
-            });
+            const pendingNow = pendingNearby();
             state.loadingNode = scanViewportSourceLoad(direction, state, viewport, origin);
             state.sourceLoading = Boolean(state.loadingNode);
             const settled = performance.now() - stableSince >= 420;
@@ -1549,7 +1573,7 @@
           if (scanOneSlotSignature(slot) === signature) state.slotAttempts.set(item.slotKey, (state.slotAttempts.get(item.slotKey) || 0) + 1);
           else state.slotAttempts.delete(item.slotKey);
         }
-        const pendingAfter = (collection.slots || []).some(slot => slot.pending);
+        const pendingAfter = pendingNearby();
         const sourceErrors = scanSourceFailureCount(direction);
         state.loadingNode = scanViewportSourceLoad(direction, state, viewport, origin);
         state.sourceLoading = !signal.aborted && Boolean(state.loadingNode);
@@ -1629,7 +1653,7 @@
           if (edgeSide === direction && !state.ended) resetOverviewEdge(true);
           updateOverviewStatus(); queueOverviewCommit(); updateOverviewThumbnails();
           const window = overviewCacheWindow();
-          const short = direction < 0 ? window.before < window.countBefore : window.after < window.countAfter;
+          const short = overviewNeedsDiscovery(direction, window);
           if (short && !state.ended && !state.paused && !state.failed) scheduleOverviewCacheCheck(220);
         }
       });
@@ -1860,6 +1884,10 @@
       const newer = lens.gallery.collect(current.thumb, current.node, collection.scope);
       if (newer.scope) { collection.scope = newer.scope; scopeParent = newer.scope.parentElement; }
       collection.slots = newer.slots || [];
+      const pendingKeys = new Set(collection.slots.filter(slot => slot.pending).map(slot => slot.key));
+      for (const state of Object.values(scanStates)) {
+        for (const key of state.slotAttempts.keys()) if (!pendingKeys.has(key)) state.slotAttempts.delete(key);
+      }
       // Retain already discovered entries when a virtual list recycles its DOM.
       const before = entries.length;
       entries = lens.gallery.mergeEntries(entries, newer.entries, direction);

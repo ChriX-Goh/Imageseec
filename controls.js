@@ -84,12 +84,14 @@
     const target = horizontal ? Math.min(210 * scale, width) : Math.min(180, Math.max(100, width / 3)) * scale;
     const limit = horizontal ? height : width;
     let offset = 0, start = 0, generated = 0;
+    const usedBands = new Set(bandHints.filter(key => key !== null && key !== undefined));
     while (start < count) {
       let end = start + 1, key = bandHints[start];
-      if (key !== null && key !== undefined) {
+      if (key !== null && key !== undefined && !bands.some(band => band.key === key)) {
         while (end < count && bandHints[end] === key) end++;
       } else {
-        key = `band:${ordinalStart + start}:${generated++}`;
+        do { key = `band:${ordinalStart + start}:${generated++}`; } while (usedBands.has(key));
+        usedBands.add(key);
         let sum = horizontal ? 1 / safe[start] : safe[start];
         while (end < count && (bandHints[end] === null || bandHints[end] === undefined)) {
           const n = end - start + 1;
@@ -128,14 +130,17 @@
     const bandSize = counts.length ? counts.length % 2 ? counts[middle] : Math.round((counts[middle - 1] + counts[middle]) / 2) : 1;
     return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap), bandSize, bands, lanes, bandIds };
   }
-  function overviewCacheRange(total, firstVisible, lastVisible, before, after) {
+  function overviewCacheRange(total, firstVisible, lastVisible, before, after, hasImage = () => true) {
     const count = Math.max(0, Math.floor(Number(total) || 0));
     if (!count) return { start: 0, end: -1, before: 0, after: 0 };
     const first = Math.max(0, Math.min(count - 1, Math.floor(Number(firstVisible) || 0)));
     const last = Math.max(first, Math.min(count - 1, Math.floor(Number(lastVisible) || first)));
-    const start = Math.max(0, first - Math.max(0, Math.floor(Number(before) || 0)));
-    const end = Math.min(count - 1, last + Math.max(0, Math.floor(Number(after) || 0)));
-    return { start, end, before: first - start, after: end - last };
+    const targetBefore = Math.max(0, Math.floor(Number(before) || 0));
+    const targetAfter = Math.max(0, Math.floor(Number(after) || 0));
+    let start = first, end = last, foundBefore = 0, foundAfter = 0;
+    while (start > 0 && foundBefore < targetBefore) { if (hasImage(--start)) foundBefore++; }
+    while (end < count - 1 && foundAfter < targetAfter) { if (hasImage(++end)) foundAfter++; }
+    return { start, end, before: foundBefore, after: foundAfter };
   }
   function overviewRetryIntent(intent, side, amount, now) {
     side = Math.sign(Number(side));

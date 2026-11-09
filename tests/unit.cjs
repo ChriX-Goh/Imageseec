@@ -129,6 +129,41 @@ function context(hostname = 'example.com') {
   }
   return { c, image, images };
 }
+function viewerFunction(name) {
+  const viewer = source('viewer.js');
+  const lines = viewer.split(/\r?\n/);
+  const start = lines.findIndex(line => new RegExp(`^\\s{4}function ${name}\\(`).test(line));
+  assert.notEqual(start, -1, `missing viewer function ${name}`);
+  let end = start + 1;
+  while (end < lines.length && !/^\s{4}function [A-Za-z_$][\w$]*\(/.test(lines[end])) end++;
+  return lines.slice(start, end).join('\n');
+}
+function overviewProjectionHarness(initial) {
+  const c = vm.createContext({ state: initial, getComputedStyle: () => ({ aspectRatio: 'auto' }) });
+  vm.runInContext(`
+    let entries = state.entries, overviewItems = state.overviewItems, collection = state.collection;
+    let overviewStartOrdinal = state.overviewStartOrdinal || 0;
+    ${['ratioRank', 'ratioFromEntry', 'ratioFromSlot', 'layoutRatio', 'collectOverviewItems'].map(viewerFunction).join('\n')}
+    globalThis.project = rebuild => collectOverviewItems(rebuild);
+    globalThis.replaceState = next => {
+      entries = next.entries; overviewItems = next.overviewItems;
+      collection = next.collection; overviewStartOrdinal = next.overviewStartOrdinal || 0;
+    };
+    globalThis.readStartOrdinal = () => overviewStartOrdinal;
+  `, c);
+  return c;
+}
+function projectionSlot(key, { connected = true, pending = true, order = '' } = {}) {
+  const node = { isConnected: connected, getAttribute: name => name === 'aria-posinset' ? order : null,
+    querySelectorAll: () => [], getBoundingClientRect: () => ({ width: 240, height: 180 }) };
+  return { key, node, pending, stable: true };
+}
+function projectionEntry(key, slot, extra = {}) {
+  const node = { isConnected: true };
+  const thumb = `https://img.example/${key}.jpg`;
+  return { key, thumb, sources: [thumb], aliases: [thumb], node, slotKey: slot.key, slotStable: true,
+    slotNode: slot.node, aspectRatio: 4 / 3, aspectRatioSource: 'intrinsic', ...extra };
+}
 test('settings defaults, invalid storage values and independent bounds', () => {
   const { c } = context(); const normalize = c.ImageLens.settings.normalize;
   assert.deepEqual(plain(normalize(null)), { language: 'auto', toolbarAutoHide: false, overviewScale: 100, zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
@@ -283,6 +318,32 @@ test('overview automatic preload follows live visual band count and custom sides
   assert.deepEqual(plain(controls.overviewCacheRange(100, 2, 95, 50, 50)), { start: 0, end: 99, before: 2, after: 4 });
   assert.deepEqual(plain(controls.overviewCacheRange(3, 1, 1, 0, 0)), { start: 1, end: 1, before: 0, after: 0 });
 });
+test('unresolved cards do not fill either side of the overview thumbnail buffer', () => {
+  const { c } = context();
+  const images = new Set([0, 2, 4, 5, 7, 10]);
+  const range = c.ImageLens.controls.overviewCacheRange;
+  assert.deepEqual(plain(range(12, 4, 5, 2, 2, i => images.has(i))), { start: 0, end: 10, before: 2, after: 2 });
+  assert.deepEqual(plain(range(12, 4, 5, 0, 3, i => images.has(i))), { start: 4, end: 11, before: 0, after: 2 });
+});
+
+test('new justified bands stay distinct from existing bands after middle insertion', () => {
+  const { c } = context();
+  const layout = c.ImageLens.controls.overviewLayout;
+  for (const horizontal of [false, true]) {
+    const alignment = horizontal ? 'vertical' : 'horizontal';
+    const previous = layout(Array(24).fill(1.4), 1200, 720, horizontal, false, alignment);
+    const ratios = Array(25).fill(1.4), hints = [...previous.bandIds];
+    hints.splice(5, 0, null);
+    const updated = layout(ratios, 1200, 720, horizontal, false, alignment, 12, 100, 0, { bands: hints });
+    const positions = new Map();
+    updated.bandIds.forEach((key, index) => {
+      if (positions.has(key)) assert.equal(positions.get(key), index - 1, 'a band may not recur after another band');
+      positions.set(key, index);
+    });
+    assert.equal(updated.boxes.length, 25);
+  }
+});
+
 test('overview virtual gallery grows ahead and behind the visible range as cache demand changes', () => {
   const { c } = context(), controls = c.ImageLens.controls;
   const cache = (total, first, last, band, beforeMode = 'auto', beforeValue = 12, afterMode = 'auto', afterValue = 12) =>
@@ -316,6 +377,78 @@ test('gallery snapshots retain identity and order across prepend, holes, aliases
   const node = {};
   assert.equal(merge([entry('first', { node })], [entry('unrelated', { node })]).length, 2);
   assert.deepEqual(plain(merge([entry('e'), entry('f')], [entry('a'), entry('b'), entry('c')], -1).map(e=>e.key)), ['a', 'b', 'c', 'e', 'f']);
+});
+test('overview projection fills a newly resolved middle slot and removes the reserved card', () => {
+  const { c } = context();
+  const a = projectionSlot('slot:a', { pending: false }), b = projectionSlot('slot:b'), slotC = projectionSlot('slot:c', { pending: false });
+  const first = [projectionEntry('a', a), projectionEntry('c', slotC)];
+  const state = { entries: first, collection: { slots: [a, b, slotC] }, overviewItems: [
+    { key: 'a', entry: first[0], thumb: first[0].thumb, slotKey: a.key, slotNode: a.node, layoutRatio: 4/3, layoutRatioSource: 'intrinsic' },
+    { key: 'reserved:slot:b', entry: null, thumb: '', slotKey: b.key, slotNode: b.node, layoutRatio: 4/3, layoutRatioSource: 'fallback' },
+    { key: 'c', entry: first[1], thumb: first[1].thumb, slotKey: slotC.key, slotNode: slotC.node, layoutRatio: 4/3, layoutRatioSource: 'intrinsic' }
+  ] };
+  const vmc = overviewProjectionHarness(state);
+  const resolved = projectionEntry('b', b);
+  b.pending = false;
+  const merged = c.ImageLens.gallery.mergeEntries(first, [first[0], resolved, first[1]]);
+  vmc.replaceState({ entries: merged, collection: { slots: [a, b, slotC] }, overviewItems: state.overviewItems });
+  const result = plain(vmc.project(false));
+  assert.deepEqual(result.map(item => item.entry.key), ['a', 'b', 'c']);
+  assert.equal(result[1].key, 'reserved:slot:b', 'filling a reserved card retains its stable projection key');
+  assert.equal(result[1].thumb, resolved.thumb);
+  assert.equal(result[0].lane, null);
+  assert.equal(result[2].lane, null);
+});
+test('overview projection drops stale disconnected slots instead of preserving dead placeholders', () => {
+  const a = projectionSlot('slot:a', { pending: false }), dead = projectionSlot('slot:dead', { connected: false }), c = projectionSlot('slot:c', { pending: false });
+  const entries = [projectionEntry('a', a), projectionEntry('c', c)];
+  const overviewItems = [
+    { key: 'a', entry: entries[0], thumb: entries[0].thumb, slotKey: a.key, slotNode: a.node, layoutRatio: 4/3, layoutRatioSource: 'intrinsic' },
+    { key: 'reserved:slot:dead', entry: null, thumb: '', slotKey: dead.key, slotNode: dead.node, layoutRatio: 4/3, layoutRatioSource: 'fallback' },
+    { key: 'c', entry: entries[1], thumb: entries[1].thumb, slotKey: c.key, slotNode: c.node, layoutRatio: 4/3, layoutRatioSource: 'intrinsic' }
+  ];
+  const vmc = overviewProjectionHarness({ entries, collection: { slots: [a, dead, c] }, overviewItems });
+  vmc.replaceState({ entries, collection: { slots: [a, dead, c] }, overviewItems });
+  const result = plain(vmc.project(false));
+  assert.deepEqual(result.map(item => item.key), ['a','c']);
+  assert.equal(result.some(item => item.slotKey === dead.key), false);
+});
+test('overview projection bounds an unresolved tail to 24 non-selectable reservations', () => {
+  const first = projectionSlot('slot:first', { pending: false }), last = projectionSlot('slot:last', { pending: false });
+  const reserved = Array.from({ length: 40 }, (_, index) => ({ ...projectionSlot(`pending:${index + 1}`), stable: false }));
+  const entries = [projectionEntry('first', first), projectionEntry('last', last)];
+  const slots = [first, ...reserved, last];
+  const overviewItems = entries.map(entry => ({ key: entry.key, entry, thumb: entry.thumb, slotKey: entry.slotKey,
+    slotNode: entry.slotNode, layoutRatio: 4/3, layoutRatioSource: 'intrinsic' }));
+  const vmc = overviewProjectionHarness({ entries, collection: { slots }, overviewItems });
+  const result = plain(vmc.project(false));
+  assert.equal(result.length, 26);
+  assert.deepEqual(result.slice(1, -1).map(item => item.slotKey), reserved.slice(0, 24).map(slot => slot.key));
+  assert.ok(result.slice(1, -1).every(item => item.entry === null));
+});
+test('stable reserved positions remain intact when a far middle image resolves first', () => {
+  const slots = Array.from({ length: 102 }, (_, i) => ({ ...projectionSlot(`slot:${i}`), stable: true }));
+  const entries = [0, 50, 101].map(i => { slots[i].pending = false; return projectionEntry(String(i), slots[i]); });
+  const harness = overviewProjectionHarness({ entries, collection: { slots }, overviewItems: [] });
+  const result = plain(harness.project(true));
+  assert.equal(result.length, 102);
+  assert.equal(result.findIndex(item => item.entry?.key === '50'), 50);
+  assert.equal(new Set(result.map(item => item.key)).size, 102);
+});
+
+test('ARIA ordering is shared by media entries and reserved slots', () => {
+  const { c, image } = context();
+  const first = image('https://img.example/1.jpg'), second = image('https://img.example/2.jpg');
+  const scope = { children: [] };
+  for (const [position, picture] of [[3, null], [1, first], [2, second]]) {
+    const card = { tagName: 'DIV', className: 'tile', parentElement: scope, attributes: [{ name: 'aria-posinset' }],
+      getAttribute: name => name === 'aria-posinset' ? String(position) : null,
+      closest(selector) { return selector.includes('aria-posinset') ? this : null; }, getBoundingClientRect: () => ({ width: 300, height: 200 }),
+      querySelectorAll: selector => selector === 'img' && picture ? [picture] : [] };
+    if (picture) picture.parentElement = card;
+    scope.children.push(card);
+  }
+  assert.deepEqual(plain(c.ImageLens.gallery.slotsFor(scope, first, false).map(slot => slot.node.getAttribute('aria-posinset'))), ['1', '2', '3']);
 });
 test('confirmed thumbnail geometry survives a lazy refresh only for the same resource', () => {
   const { c, image } = context(), g = c.ImageLens.gallery;
@@ -528,6 +661,139 @@ test('repeated media cards can use mixed child element tags', () => {
   });
   const result = c.ImageLens.gallery.collect(pictures[1].src, pictures[1]);
   assert.equal(result.entries.length, 3); assert.equal(result.index, 1);
+});
+test('ARIA feed of layered article cards yields one primary image and slot per card', () => {
+  const { c, image, images } = context();
+  const feed = { tagName: 'UL', className: 'results', role: 'feed', isConnected: true,
+    children: [], parentElement: null, getAttribute: name => name === 'role' ? 'feed' : null,
+    querySelectorAll: selector => selector === 'img' ? images.filter(node => feed.contains(node)) : descendants(feed),
+    contains(node) { return node === this || this.children.some(child => child === node || child.contains?.(node)); } };
+  function descendants(root) { return root.children.flatMap(child => [child, ...(child.children ? descendants(child) : [])]); }
+  for (let index = 0; index < 20; index++) {
+    const card = { tagName: 'LI', className: 'result-tile', isConnected: true, parentElement: feed, children: [],
+      attributes: [{ name: 'aria-posinset' }], getAttribute: name => name === 'role' ? 'article' : name === 'aria-posinset' ? String(index + 1) : null,
+      getBoundingClientRect: () => ({ left: 0, top: index * 250, width: 320, height: 240 }),
+      closest: selector => selector.includes('[role="feed"]') ? feed : null,
+      contains(node) { return node === this || this.children.some(child => child === node || child.contains?.(node)); },
+      querySelector: selector => selector.includes('img') ? stack.children[0] : null,
+      querySelectorAll: selector => selector === 'img' ? stack.children : descendants(card) };
+    const stack = { tagName: 'DIV', className: 'media-stack', parentElement: card, children: [],
+      getBoundingClientRect: card.getBoundingClientRect, closest: selector => selector.includes('[role="feed"]') ? feed : null,
+      querySelector: () => stack.children[0], querySelectorAll: selector => selector === 'img' ? stack.children : descendants(stack),
+      contains(node) { return node === this || this.children.includes(node); } };
+    const preview = image(`https://images.example.test/${index + 1}-preview.jpg`);
+    const primary = image(`https://images.example.test/${index + 1}-large.jpg`);
+    for (const [layer, width, height] of [[preview, 640, 480], [primary, 2400, 1800]]) {
+      layer.className = 'image-layer'; layer.parentElement = stack; layer.naturalWidth = width; layer.naturalHeight = height;
+      layer.getAttribute = name => name === 'src' ? layer.src : null;
+      layer.getBoundingClientRect = card.getBoundingClientRect;
+      layer.closest = selector => selector.includes('[role="feed"]') ? feed : selector.includes('[role="dialog"]') ? null
+        : selector === 'header, nav, footer, [role="navigation"]' || selector === '[aria-hidden="true"]' || selector === 'a[href]' || selector === 'picture'
+          ? null : selector === '[aria-posinset], [aria-rowindex]' ? card : null;
+    }
+    stack.children.push(preview, primary); card.children.push(stack); feed.children.push(card);
+  }
+  const selected = images[18];
+  const result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.scope, feed);
+  assert.equal(result.slots.length, 20);
+  assert.equal(result.entries.length, 20);
+  assert.equal(new Set(result.entries.map(entry => entry.slotKey)).size, 20);
+  assert.deepEqual(plain(result.entries.map(entry => entry.title)), Array(20).fill(''));
+  assert.equal(result.entries[9].node, selected, 'the explicitly selected preview remains the seed entry');
+  assert.equal(result.entries[8].node, images[17], 'an unselected layered card chooses its higher-resolution primary');
+});
+test('feed projection excludes interleaved extra-class caption panels from image slots', () => {
+  const { c, image, images } = context();
+  const feed = { tagName: 'UL', className: 'results', children: [], isConnected: true,
+    getAttribute: name => name === 'role' ? 'feed' : null,
+    contains(node) { return node === this || this.children.some(child => child === node || child.contains?.(node)); },
+    querySelectorAll(selector) {
+      const all = this.children.flatMap(child => [child, ...(child.children || [])]);
+      return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all;
+    } };
+  const imageCards = [];
+  for (let index = 0; index < 18; index++) {
+    const card = { tagName: 'DIV', className: 'flexbox_item', role: 'article', parentElement: feed,
+      children: [], attributes: [{ name: 'data-item-id' }], getAttribute: name => name === 'role' ? 'article' : name === 'data-item-id' ? `item-${index}` : null,
+      getBoundingClientRect: () => ({ left: 0, top: index * 252, width: 320, height: 240 }),
+      closest: selector => selector.includes('[role="feed"]') ? feed : null,
+      contains(node) { return node === this || this.children.includes(node); },
+      querySelector: selector => selector.includes('img') ? card.children[0] : null,
+      querySelectorAll: selector => selector === 'img' ? card.children : card.children };
+    const photo = image(`https://media.example.test/item-${index}.jpg`);
+    photo.parentElement = card;
+    photo.getBoundingClientRect = card.getBoundingClientRect;
+    photo.closest = selector => selector.includes('[role="feed"]') ? feed
+      : selector === '[aria-posinset], [aria-rowindex]' ? null : null;
+    card.children.push(photo);
+    const caption = { tagName: 'DIV', className: 'flexbox_item bottom_panel', parentElement: feed,
+      children: [], getAttribute: () => null, getBoundingClientRect: card.getBoundingClientRect,
+      closest: selector => selector.includes('[role="feed"]') ? feed : null,
+      querySelector: () => null, querySelectorAll: () => [] };
+    imageCards.push(card); feed.children.push(card, caption);
+  }
+  const selected = images[8];
+  const result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.scope, feed);
+  assert.equal(result.slots.length, 18);
+  assert.equal(result.entries.length, 18);
+  assert.deepEqual(plain(result.slots.map(slot => slot.node.getAttribute('data-item-id'))), imageCards.map((_, index) => `item-${index}`));
+  assert.equal(result.slots.some(slot => slot.node.className.includes('bottom_panel')), false);
+});
+test('responsive duplicate hidden image layers keep the repeated list as the gallery scope', () => {
+  const { c, image, images } = context();
+  const body = { tagName: 'BODY', children: [], parentElement: null };
+  const list = { tagName: 'UL', className: 'result-list', children: [], parentElement: body,
+    querySelectorAll(selector) { return descendants(this, selector); },
+    contains(node) { return node === this || this.children.some(child => child === node || child.contains?.(node)); } };
+  function descendants(root, selector) {
+    const all = [];
+    const visit = node => { for (const child of node.children || []) { all.push(child); visit(child); } };
+    visit(root);
+    return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all;
+  }
+  body.children.push(list);
+  body.querySelectorAll = selector => descendants(body, selector);
+  const cards = [];
+  for (let index = 0; index < 10; index++) {
+    const card = { tagName: 'LI', className: 'result-card', children: [], parentElement: list,
+      getAttribute: () => null,
+      getBoundingClientRect: () => ({ left: 0, top: index * 250, width: 320, height: 240 }),
+      contains(node) { return node === this || this.children.some(child => child === node || child.contains?.(node)); },
+      querySelector: selector => selector.includes('img') ? card.children[0]?.children[0] || null : null,
+      querySelectorAll: selector => descendants(card, selector) };
+    const anchor = { tagName: 'A', className: '', children: [], parentElement: card,
+      getAttribute: () => null,
+      getBoundingClientRect: card.getBoundingClientRect,
+      closest: selector => selector === 'a[href]' ? anchor : selector === '[data-gallery], [role="list"], [role="grid"], [role="feed"], [aria-roledescription*="gallery" i], .gallery, .masonry, .photos, .photo-list, .image-grid' ? null : null,
+      contains(node) { return node === this || this.children.includes(node); },
+      querySelector: selector => selector.includes('img') ? anchor.children.find(node => node.tagName === 'IMG' && node.getBoundingClientRect().height >= 72) || null : null,
+      querySelectorAll: selector => selector === 'img' ? anchor.children.filter(node => node.tagName === 'IMG') : anchor.children };
+    const desktop = image(`https://media.example.test/responsive-${index}.jpg`);
+    const mobile = image(`https://media.example.test/responsive-${index}-mobile.jpg`);
+    desktop.parentElement = anchor; mobile.parentElement = anchor;
+    desktop.querySelectorAll = () => []; mobile.querySelectorAll = () => [];
+    desktop.getBoundingClientRect = () => ({ left: 0, top: index * 250, width: 320, height: 240 });
+    mobile.getBoundingClientRect = () => ({ left: 0, top: index * 250, width: 0, height: 0 });
+    for (const node of [desktop, mobile]) node.closest = selector => selector === 'a[href]' ? anchor
+      : selector === '[data-gallery], [role="list"], [role="grid"], [role="feed"], [aria-roledescription*="gallery" i], .gallery, .masonry, .photos, .photo-list, .image-grid' ? null
+      : selector === '[aria-posinset], [aria-rowindex]' ? null : null;
+    anchor.children.push(desktop, mobile); card.children.push(anchor); list.children.push(card); cards.push(card);
+  }
+  const outside = { tagName: 'SECTION', className: 'recommended', parentElement: body, children: [], querySelectorAll: selector => selector === 'img' ? [outsideImage] : [outsideImage] };
+  const outsideImage = image('https://media.example.test/unrelated.jpg');
+  outsideImage.parentElement = outside; outsideImage.getBoundingClientRect = () => ({ left: 0, top: 0, width: 400, height: 300 });
+  outsideImage.querySelectorAll = () => [];
+  outsideImage.closest = () => null; outside.children.push(outsideImage); body.children.push(outside);
+  c.document.body = body;
+  const selected = images[10];
+  const result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.scope, list, 'scope resolution must skip the narrow anchor with a hidden responsive layer');
+  assert.equal(result.slots.length, 10);
+  assert.equal(result.entries.length, 10);
+  assert.deepEqual(plain(result.entries.map(entry => entry.node.src)), cards.map((_, index) => `https://media.example.test/responsive-${index}.jpg`));
+  assert.equal(result.entries.some(entry => entry.node === outsideImage), false);
 });
 test('visually grouped image results can expose originals through detail-link parameters', () => {
   const { c, image } = context();
