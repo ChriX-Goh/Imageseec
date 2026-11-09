@@ -1,6 +1,6 @@
 # Imageseec
 
-Current development build: **2.0 b7** (Chrome version `2.0.0.7`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+Current development build: **2.0 b8** (Chrome version `2.0.0.8`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
 
 A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, an adaptive masonry overview, temporary magnification, free panning and a compact zoom ruler.
 
