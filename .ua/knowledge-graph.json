@@ -13,15 +13,15 @@
       "txt"
     ],
     "frameworks": [],
-    "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、固定槽位全览、双向懒加载、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-09T12:04:23.073Z",
-    "gitCommitHash": "15795f406af394116e358efb6d77dae6aa33e0b7"
+    "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、稳定比例和顺序的自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
+    "analyzedAt": "2026-11-09T13:31:56.929Z",
+    "gitCommitHash": "f026405c42e3806b57005cbd0c1eed2b96e373cb"
   },
   "sourceState": {
-    "trackedAndUntrackedFiles": 100,
+    "trackedAndUntrackedFiles": 101,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b6",
+    "versionName": "2.0 b7",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -62,7 +62,7 @@
       "type": "file",
       "name": "unit.cjs",
       "filePath": "tests/unit.cjs",
-      "summary": "检查 11 种语言、设置范围、固定全览槽位的方向/缩放/前插稳定性、懒图库身份及扩展入口。",
+      "summary": "检查 11 种语言、设置范围、自适应全览稳定轨道和比例、图片顺序、懒加载扫描及扩展入口。",
       "tags": [
         "test",
         "unit",
@@ -177,7 +177,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "1f73739d2f8205396c41805d88e4d7bb4ac5331206b99b78be72b5d12df35677",
+      "sourceHash": "5ff3eea377315e8a725b2c527cc13a5af1b5a6db003118e3a801306378916fa4",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -226,7 +226,7 @@
         "compatibility"
       ],
       "complexity": "moderate",
-      "sourceHash": "5c12c66cb77f4fbc0711db27b5a9595be469c7ef7da6674b4e6721863d588e09",
+      "sourceHash": "87c3d6913440c0efb61bc9de9c62e9206528344fa0a8a8d9a09f5ceb7fde2010",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -259,7 +259,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "ae4c984b3ae973d25e30c9c5e42f5097ee5b7ede7eb975d36ea36c88addea3ec",
+      "sourceHash": "3f9a3af443f413664af379052a3b6b2520dcf8fa8636a521f201d66fe9acd691",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -339,7 +339,7 @@
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "4d5663748a13d88b14e0342da5877144f72541d83aa725c4ab21d1fc79144bcb",
+      "sourceHash": "bac59b532cdfe7621ce45d863dfd836ebde2a74d6dbd129bdce3a5e98193b8b4",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -429,7 +429,7 @@
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "2824fbe05b5ce355d4bea29910b74e77fc6083504e21b2f3bb8982123bd34169",
+      "sourceHash": "24a3dc3e73ba40951fb711bb00db6f6d77fb059dbc79dbc8d49049e9dea305ab",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -968,7 +968,7 @@
         "limits"
       ],
       "complexity": "moderate",
-      "sourceHash": "0b9423de46b9bff156bb1ec09be8ca1e36e1824a9616581fdc571b2034fcacb8",
+      "sourceHash": "c3c070781a4471e234948249a96823f209740ea47aa0df34f6454be9f6e7abdf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1282,7 +1282,7 @@
       "type": "file",
       "name": "controls.js",
       "filePath": "controls.js",
-      "summary": "提供缩放规则、双向缓存窗口、固定 4:3 全览几何及端点重试阈值。",
+      "summary": "提供缩放规则、双向缓存窗口、稳定顺序和轨道的自适应全览几何及端点重试阈值。",
       "tags": [
         "utility",
         "zoom",
@@ -1297,7 +1297,7 @@
       "type": "file",
       "name": "gallery.js",
       "filePath": "gallery.js",
-      "summary": "按通用 DOM 语义和稳定槽位发现同组图库，保留完整来源身份、待加载项和可靠图片尺寸。",
+      "summary": "按通用 DOM 语义、重复行和稳定槽位发现同组图库；保留无图地址卡片、完整来源身份、待加载项及可靠比例。",
       "tags": [
         "gallery-discovery",
         "image-sources",
@@ -1555,7 +1555,7 @@
         20,
         20
       ],
-      "summary": "依据绝对序号计算固定 4:3 全览槽位和视觉带区；原图比例、异步加载次序和前插不参与位置计算。",
+      "summary": "依据源图库顺序、可靠比例和稳定轨道计算自适应全览位置；迟到图片尺寸不重新洗牌已分配的槽位。",
       "tags": [
         "overview",
         "fixed-slots",
@@ -1569,8 +1569,8 @@
       "name": "overviewCacheRange",
       "filePath": "controls.js",
       "lineRange": [
-        69,
-        69
+        131,
+        131
       ],
       "summary": "按可见槽位和前后独立数量求缩略图缓存窗口，并裁剪到当前已发现图库。",
       "tags": [
@@ -1654,10 +1654,10 @@
       "name": "slotsFor",
       "filePath": "gallery.js",
       "lineRange": [
-        275,
-        275
+        285,
+        285
       ],
-      "summary": "从重复卡片和可靠 ARIA 顺序识别同组槽位；尚未取得图片地址的槽位仍可预留位置。",
+      "summary": "从重复卡片、行结构和可靠 ARIA 顺序识别同组槽位；没有图片地址的卡片仍作为懒加载预留项。",
       "tags": [
         "gallery-discovery",
         "stable-slots",
@@ -1671,8 +1671,8 @@
       "name": "connectedEntryNode",
       "filePath": "gallery.js",
       "lineRange": [
-        306,
-        306
+        336,
+        336
       ],
       "summary": "通过来源别名或稳定槽位重新验证虚拟列表中的连接节点，防止把回收复用节点认作旧图片。",
       "tags": [
@@ -1705,10 +1705,10 @@
       "name": "mergeEntries",
       "filePath": "gallery.js",
       "lineRange": [
-        324,
-        324
+        354,
+        354
       ],
-      "summary": "按图像身份合并并保留既有几何；无重叠时按方向整段有序前插或追加。",
+      "summary": "按图片身份和稳定槽位合并；保留既有几何，无序号重叠时按方向整段有序前插或追加。",
       "tags": [
         "gallery-discovery",
         "ordering",
@@ -2213,7 +2213,7 @@
       "type": "file",
       "name": "viewer.js",
       "filePath": "viewer.js",
-      "summary": "管理单／双图与固定槽位阅览，协调双向预缓存、懒加载扫描、拖拽浏览及直接返回来源页。",
+      "summary": "管理单／双图与顺序固定的自适应全览，协调空槽、稳定尺寸、双向懒加载扫描、按需缓存、拖拽和返回来源页。",
       "tags": [
         "viewer-runtime",
         "image-navigation",
@@ -2524,8 +2524,8 @@
       "name": "close",
       "filePath": "viewer.js",
       "lineRange": [
-        383,
-        383
+        384,
+        384
       ],
       "summary": "Esc 与关闭按钮都直接退出查看器；选择当前活动图或全览中央图作为回网页目标，取消扫描并恢复页面后定位来源。",
       "tags": [
@@ -2898,8 +2898,8 @@
       "name": "renderOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1045,
-        1045
+        1147,
+        1147
       ],
       "summary": "按稳定身份复用全览卡片；为尚未加载的图库槽位保留固定框格，图片解码后填入占位而不换序。",
       "tags": [
@@ -2915,8 +2915,8 @@
       "name": "layoutOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1091,
-        1091
+        1193,
+        1193
       ],
       "summary": "按绝对序号和固定比例布置行优先或列优先槽位；应用方向、对齐、间距和缩放，同时恢复中央图片锚点。",
       "tags": [
@@ -2932,8 +2932,8 @@
       "name": "updateOverviewThumbnails",
       "filePath": "viewer.js",
       "lineRange": [
-        1242,
-        1242
+        1370,
+        1370
       ],
       "summary": "只加载可见范围及前后缓存窗口里的缩略图，并在滚动后取消窗口外任务。",
       "tags": [
@@ -2983,10 +2983,10 @@
       "name": "scanSegment",
       "filePath": "viewer.js",
       "lineRange": [
-        1326,
-        1326
+        1462,
+        1462
       ],
-      "summary": "按嵌套源滚动容器分段触发延迟加载，观察图库签名和槽位变化，结束每段后恢复网页坐标。",
+      "summary": "按需求沿来源滚动容器触发同组图库懒加载，等待网络／槽位变化并限制每个稳定槽位的重复尝试。",
       "tags": [
         "lazy-loading",
         "nested-scroll",
@@ -3000,10 +3000,10 @@
       "name": "scanMore",
       "filePath": "viewer.js",
       "lineRange": [
-        1397,
-        1397
+        1568,
+        1568
       ],
-      "summary": "沿单一方向限时补充图库，区分确定边界、来源错误、待触发和暂时无进展；关闭时可取消。",
+      "summary": "沿用户需要方向进行限时、限段扫描；仅因新增图库条目、槽位或来源继续，空闲时暂停。",
       "tags": [
         "lazy-loading",
         "bidirectional",
@@ -3017,8 +3017,8 @@
       "name": "enterOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1465,
-        1465
+        1645,
+        1645
       ],
       "summary": "保存当前图片状态，构造稳定槽位并按活动图设置全览入口锚点。",
       "tags": [
@@ -3034,8 +3034,8 @@
       "name": "exitOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1498,
-        1498
+        1678,
+        1678
       ],
       "summary": "选择缩略图后进入单图或双图；键盘返回时恢复进入全览前的图片模式状态。",
       "tags": [
@@ -3153,8 +3153,8 @@
       "name": "refresh",
       "filePath": "viewer.js",
       "lineRange": [
-        1664,
-        1664
+        1844,
+        1844
       ],
       "summary": "按图片身份合并重新收集的条目，保留已确认比例并安排增量布局。",
       "tags": [
@@ -3289,8 +3289,8 @@
       "name": "revealSource",
       "filePath": "viewer.js",
       "lineRange": [
-        427,
-        427
+        431,
+        431
       ],
       "summary": "以稳定图片身份定位回源节点；必要时恢复页面／嵌套滚动锚点并限时等待虚拟节点重挂载，用户输入可取消。",
       "tags": [
@@ -3460,10 +3460,10 @@
       "name": "overviewCacheCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1135,
-        1135
+        1241,
+        1241
       ],
-      "summary": "自动模式按实际方向取前后各两视觉带；自定义模式分别读取每侧数量。",
+      "summary": "自动前缓存初始一视觉带，用户向前操作后扩为两带；自动后缓存两带，自定义值保持不变。",
       "tags": [
         "overview",
         "thumbnail-cache",
@@ -3472,13 +3472,31 @@
       "complexity": "moderate"
     },
     {
+      "id": "function:viewer.js:activateOverviewBackward",
+      "type": "function",
+      "name": "activateOverviewBackward",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1247,
+        1247
+      ],
+      "summary": "只在当前阅读轴收到明确向前输入后，将自动前缓存扩展到两视觉带并恢复需要的前向扫描。",
+      "tags": [
+        "overview",
+        "user-intent",
+        "automatic-cache",
+        "lazy-scanning"
+      ],
+      "complexity": "simple"
+    },
+    {
       "id": "function:viewer.js:overviewCacheWindow",
       "type": "function",
       "name": "overviewCacheWindow",
       "filePath": "viewer.js",
       "lineRange": [
-        1139,
-        1139
+        1254,
+        1254
       ],
       "summary": "把中央可见带和前后设置换算为独立、有界的缩略图预载区间。",
       "tags": [
@@ -3511,10 +3529,10 @@
       "name": "checkOverviewCache",
       "filePath": "viewer.js",
       "lineRange": [
-        1291,
-        1291
+        1419,
+        1419
       ],
-      "summary": "持续维持视口外前后缓存并触发对应方向的源图库扫描；扫描期间跟踪可见和待加载槽位。",
+      "summary": "依据可见内容、已排队缩略图及配置缓存窗口计算扫描需求；没有待解析图库内容时不继续探测页面。",
       "tags": [
         "overview",
         "prefetch",
@@ -3564,8 +3582,8 @@
       "name": "overviewVisibleRange",
       "filePath": "viewer.js",
       "lineRange": [
-        1115,
-        1115
+        1226,
+        1226
       ],
       "summary": "根据布局带区而非图片完成顺序计算可见槽位索引，供缓存窗口使用。",
       "tags": [
@@ -3625,7 +3643,7 @@
         "async-wait"
       ],
       "complexity": "moderate",
-      "sourceHash": "9fa88931ba9873ede57e1ab70560c0c170a7af561cb981dbc3df06d44107b81c",
+      "sourceHash": "c25b740ce6342ce93129349d9bed40a0b9a8c320a3284a4bc3f86dcb0ec2bea7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3714,8 +3732,8 @@
       "name": "overviewCardBox",
       "filePath": "viewer.js",
       "lineRange": [
-        985,
-        985
+        1053,
+        1053
       ],
       "summary": "读取固定布局赋给卡片的矩形，不使用图片自然尺寸重排框格。",
       "tags": [
@@ -3731,8 +3749,8 @@
       "name": "queueOverviewCommit",
       "filePath": "viewer.js",
       "lineRange": [
-        990,
-        990
+        1058,
+        1058
       ],
       "summary": "合并短时间的图库变化并延后布局提交；用户按住缩略图时暂挂会改变命中目标的更新。",
       "tags": [
@@ -3780,8 +3798,8 @@
       "name": "updateOverviewStatus",
       "filePath": "viewer.js",
       "lineRange": [
-        825,
-        825
+        881,
+        881
       ],
       "summary": "分别显示两端的加载、失败、可重试暂停和图库边界提示。",
       "tags": [
@@ -3828,8 +3846,8 @@
       "name": "releaseOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        1786,
-        1786
+        1973,
+        1973
       ],
       "summary": "结束轻点或拖拽手势，恢复暂挂动画并在必要时提交图库更新、续算预缓存。",
       "tags": [
@@ -3845,8 +3863,8 @@
       "name": "applyRuler",
       "filePath": "viewer.js",
       "lineRange": [
-        1920,
-        1920
+        2108,
+        2108
       ],
       "summary": "把标尺位置应用为独立全览缩略图尺寸或单／双图缩放。",
       "tags": [
@@ -3862,8 +3880,8 @@
       "name": "makeEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        253,
-        253
+        261,
+        261
       ],
       "summary": "收集稳定图片来源、缩略图、标题及可信原始尺寸；全览几何不取决于异步到达比例。",
       "tags": [
@@ -3872,7 +3890,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "3d1d78e8f17f7e7d3ab0234b64df71ec4f31245a352fd35f21005482b2bf46af",
+      "sourceHash": "e1c0ac5667e154948b69f8822148d917b0c8278bfca816f60a9dfcfb825f7b89",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3915,10 +3933,10 @@
       "name": "collectOverviewItems",
       "filePath": "viewer.js",
       "lineRange": [
-        1001,
-        1001
+        1102,
+        1102
       ],
-      "summary": "按稳定图库槽位合并真实图片与待加载占位项；按原始序号保留前插、延迟加载和虚拟窗口复用时的相对次序。",
+      "summary": "按稳定图库槽位合并真实图片与待加载占位项；保留原始次序和已分配轨道，避免迟到图片改写相邻项目位置。",
       "tags": [
         "overview",
         "stable-slots",
@@ -3932,8 +3950,8 @@
       "name": "overviewRetryIntent",
       "filePath": "controls.js",
       "lineRange": [
-        78,
-        78
+        140,
+        140
       ],
       "summary": "累计 500ms 窗口内朝同一端点的滚动意图；达到 72 CSS px 后，每次手势只允许一次边界重试。",
       "tags": [
@@ -3942,7 +3960,7 @@
         "gesture"
       ],
       "complexity": "moderate",
-      "sourceHash": "6a29f0d7a29f85c09cb231e4f50ffe14c3371f2df5ae24fe800b930c14c7dcdd",
+      "sourceHash": "b178e6bc97c95e95f5f58a343b2eff793f097633f2ad183ce4bdc7ac03966de0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3951,8 +3969,8 @@
       "name": "overviewEdgeIntent",
       "filePath": "viewer.js",
       "lineRange": [
-        886,
-        886
+        947,
+        947
       ],
       "summary": "在图库端点提供滚动阻力；只有同向累积意图达到阈值才解除暂停或结束状态并重试一次。",
       "tags": [
@@ -3962,6 +3980,211 @@
       ],
       "complexity": "moderate",
       "sourceHash": "12c2bdc6c71203b9d842f4255bd8339542eb27f7288e8ec0c6bfb59bf2c51bb5",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/b7-rows.html",
+      "type": "file",
+      "name": "b7-rows.html",
+      "filePath": "tests/b7-rows.html",
+      "summary": "用通用嵌套滚动和重复横向行组成图库夹具；空卡片稍后取得图片地址，支持延迟发布，用于检查预留位置与按需懒加载扫描。",
+      "tags": [
+        "test-fixture",
+        "lazy-loading",
+        "nested-scroll",
+        "repeated-rows"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "7a0329a241d2c746a699cf7e1621d0035b3f6604f0075993d20f7618408cb190",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:overviewSourceLoads",
+      "type": "function",
+      "name": "overviewSourceLoads",
+      "filePath": "viewer.js",
+      "lineRange": [
+        790,
+        790
+      ],
+      "summary": "确认当前扫描方向的缓存范围内，图库图像来源是否仍在实际网络加载。",
+      "tags": [
+        "overview",
+        "loading-state",
+        "source-loading"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:overviewScanDemandSatisfied",
+      "type": "function",
+      "name": "overviewScanDemandSatisfied",
+      "filePath": "viewer.js",
+      "lineRange": [
+        802,
+        802
+      ],
+      "summary": "依据可见图、已排队缩略图和待扫描图库槽位判断是否还有真实扫描需求。",
+      "tags": [
+        "overview",
+        "demand-limited",
+        "lazy-scanning"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:overviewSlotPending",
+      "type": "function",
+      "name": "overviewSlotPending",
+      "filePath": "viewer.js",
+      "lineRange": [
+        819,
+        819
+      ],
+      "summary": "按稳定槽位的有限重试次数判断空卡片是否仍需懒加载触发。",
+      "tags": [
+        "overview",
+        "lazy-loading",
+        "slot-attempts"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanResolvedSnapshot",
+      "type": "function",
+      "name": "scanResolvedSnapshot",
+      "filePath": "viewer.js",
+      "lineRange": [
+        822,
+        822
+      ],
+      "summary": "从同组图库条目、来源与稳定槽位创建扫描状态快照。",
+      "tags": [
+        "lazy-loading",
+        "gallery-snapshot",
+        "identity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanResolvedProgress",
+      "type": "function",
+      "name": "scanResolvedProgress",
+      "filePath": "viewer.js",
+      "lineRange": [
+        839,
+        839
+      ],
+      "summary": "比较扫描前后的同组图库来源、条目和稳定槽位身份，判断是否取得实际进展。",
+      "tags": [
+        "lazy-loading",
+        "progress-detection",
+        "gallery-scope"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanViewportSourceLoad",
+      "type": "function",
+      "name": "scanViewportSourceLoad",
+      "filePath": "viewer.js",
+      "lineRange": [
+        845,
+        845
+      ],
+      "summary": "只定位同组图库扫描视口附近尚未完成的有效图片来源，用于区分网络加载与无进展。",
+      "tags": [
+        "lazy-loading",
+        "loading-state",
+        "scoped-image"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanSlotSignature",
+      "type": "function",
+      "name": "scanSlotSignature",
+      "filePath": "viewer.js",
+      "lineRange": [
+        966,
+        966
+      ],
+      "summary": "为同组图库稳定槽位计算来源、顺序及待加载状态签名。",
+      "tags": [
+        "lazy-loading",
+        "slot-state",
+        "gallery-scope"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanOneSlotSignature",
+      "type": "function",
+      "name": "scanOneSlotSignature",
+      "filePath": "viewer.js",
+      "lineRange": [
+        975,
+        975
+      ],
+      "summary": "计算一个待加载槽位的来源与状态签名，为有限重试计数提供依据。",
+      "tags": [
+        "lazy-loading",
+        "slot-attempts",
+        "identity"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:explicitScanBoundary",
+      "type": "function",
+      "name": "explicitScanBoundary",
+      "filePath": "viewer.js",
+      "lineRange": [
+        981,
+        981
+      ],
+      "summary": "仅当完整可靠的 ARIA 槽位顺序、总数和图片解析状态一致时确认图库端点。",
+      "tags": [
+        "lazy-loading",
+        "boundary-detection",
+        "aria"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:scanSourceFailureCount",
+      "type": "function",
+      "name": "scanSourceFailureCount",
+      "filePath": "viewer.js",
+      "lineRange": [
+        998,
+        998
+      ],
+      "summary": "只统计扫描方向上的同组图库失败图像来源，不把无关页面图片算作扫描失败。",
+      "tags": [
+        "lazy-loading",
+        "network-errors",
+        "gallery-scope"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:viewer.js:queueGalleryRefresh",
+      "type": "function",
+      "name": "queueGalleryRefresh",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1907,
+        1907
+      ],
+      "summary": "统一响应源图库 image load/error 及结构变化，稳定合并当前图库并更新空槽和预缓存。",
+      "tags": [
+        "lazy-loading",
+        "load-error",
+        "gallery-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "0bfe4f6de09e132679aa84546a0d3c06c7264bb42389e2d0a2f4085949730e71",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
@@ -8262,13 +8485,277 @@
       "target": "file:tests/b6-virtual.html",
       "type": "tested_by",
       "description": "夹具检查端点提示、阻力与扫描重试状态。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:activateOverviewBackward",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "源码文件包含该函数。"
+    },
+    {
+      "source": "function:viewer.js:activateOverviewBackward",
+      "target": "function:viewer.js:checkOverviewCache",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "实际向前操作扩展自动预缓存并检查新的前向需求。"
+    },
+    {
+      "source": "function:controls.js:overviewLayout",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "集成夹具提供混合图片比例和重复横向行，用于检查稳定轨道布局。"
+    },
+    {
+      "source": "function:gallery.js:slotsFor",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "重复行内保留尚未创建图片节点的卡片，提供同级槽位识别样本。"
+    },
+    {
+      "source": "function:viewer.js:collectOverviewItems",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查空卡片转为图片后仍保留原顺序和预留位置。"
+    },
+    {
+      "source": "function:viewer.js:overviewCacheCount",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查自动前缓存的初始一带与输入后扩展语义；自定义缓存保持独立。"
+    },
+    {
+      "source": "function:viewer.js:activateOverviewBackward",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "按当前阅读轴触发向前预缓存扩展的集成夹具。"
+    },
+    {
+      "source": "function:viewer.js:checkOverviewCache",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "夹具模拟延迟发布图像地址并核对按需补充缓存。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "在嵌套容器对空卡片延迟发布图片地址，供扫描分段触发测试。"
+    },
+    {
+      "source": "function:viewer.js:scanMore",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "夹具支持慢速增长场景，供有界扫描与无进展暂停测试。"
+    },
+    {
+      "source": "function:viewer.js:overviewSourceLoads",
+      "target": "function:viewer.js:scanViewportSourceLoad",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "调用当前图库视口源图检测以显示真实网络加载。"
+    },
+    {
+      "source": "function:viewer.js:overviewScanDemandSatisfied",
+      "target": "function:viewer.js:overviewCacheWindow",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "依据当前可见和配置缓存窗口测量需求。"
+    },
+    {
+      "source": "function:viewer.js:overviewScanDemandSatisfied",
+      "target": "function:viewer.js:overviewSlotPending",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "将仍在尝试预算内的空槽计为待满足项。"
+    },
+    {
+      "source": "function:viewer.js:scanResolvedProgress",
+      "target": "function:viewer.js:scanResolvedSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "只比较同组图库条目、来源与槽位身份。"
+    },
+    {
+      "source": "function:viewer.js:scanViewportSourceLoad",
+      "target": "function:viewer.js:scanSlotSignature",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "将源图加载状态限定在稳定图库槽位。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanResolvedSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "扫描前后仅快照当前图库条目和槽位。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanResolvedProgress",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "识别真实图库条目、来源或槽位新增。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanOneSlotSignature",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "对空槽的相同状态进行有限尝试计数。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanViewportSourceLoad",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "等待同级图库视口内正在加载的来源。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanSlotSignature",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检测图库来源和顺序变化是否稳定。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanSourceFailureCount",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "分开处理网络失败与等待懒触发。"
+    },
+    {
+      "source": "function:viewer.js:scanMore",
+      "target": "function:viewer.js:overviewScanDemandSatisfied",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "满足阅览缓存需求后结束扫描。"
+    },
+    {
+      "source": "function:viewer.js:scanMore",
+      "target": "function:viewer.js:explicitScanBoundary",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "以完整可靠槽位序列确认端点。"
+    },
+    {
+      "source": "function:viewer.js:updateOverviewStatus",
+      "target": "function:viewer.js:overviewSourceLoads",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "显示同级图库来源的实际加载状态。"
+    },
+    {
+      "source": "function:viewer.js:updateOverviewStatus",
+      "target": "function:viewer.js:overviewSlotPending",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "根据空槽重试预算显示等待状态。"
+    },
+    {
+      "source": "function:viewer.js:queueGalleryRefresh",
+      "target": "function:viewer.js:refresh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "加载、失败和结构变化后更新同组图库快照。"
+    },
+    {
+      "source": "function:viewer.js:overviewScanDemandSatisfied",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查有已排队缩略图时不会继续扫描源图库。"
+    },
+    {
+      "source": "function:viewer.js:scanResolvedProgress",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查进展信号只来自当前图库条目、来源和槽位。"
+    },
+    {
+      "source": "function:viewer.js:scanViewportSourceLoad",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "延迟图片验证等待加载和等待懒加载触发的差别。"
+    },
+    {
+      "source": "function:viewer.js:scanOneSlotSignature",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "同级空卡片重复扫描使用有限尝试预算。"
+    },
+    {
+      "source": "function:viewer.js:scanSlotSignature",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "延迟地址、顺序和图片来源变化的集成检查。"
+    },
+    {
+      "source": "function:viewer.js:scanSourceFailureCount",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "失败来源只在同级图库中产生网络错误提示。"
+    },
+    {
+      "source": "function:viewer.js:queueGalleryRefresh",
+      "target": "file:tests/b7-rows.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "验证源图 load/error 事件统一更新图库模型和阅览。"
     }
   ],
   "layers": [
     {
       "id": "layer:viewer-runtime",
       "name": "查看与图像运行时",
-      "description": "扩展入口、通用图库发现与查看器运行时；包含固定槽位全览、双向缩略图预缓存、鼠标拖拽、边界重试阻力和关闭后直接返回网页当前位置。",
+      "description": "扩展入口、通用图库发现与查看器运行时；包含顺序稳定、按比例分配轨道的全览，双向缩略图预缓存、需求驱动懒加载扫描、鼠标拖拽及关闭后返回网页当前位置。",
       "nodeIds": [
         "file:standalone.html",
         "file:background.js",
@@ -8326,7 +8813,8 @@
         "file:tests/installed-checks.js",
         "file:tests/lazy-gallery.js",
         "file:tests/quick-demo.js",
-        "file:tests/b6-virtual.html"
+        "file:tests/b6-virtual.html",
+        "file:tests/b7-rows.html"
       ]
     },
     {
@@ -8503,7 +8991,7 @@
     {
       "order": 6,
       "title": "固定全览与双向预缓存",
-      "description": "全览按绝对序号分配固定槽位和柔和色占位，不会按图片解码完成顺序换位。自动缓存让视口外前后各保持两视觉行或列；缓存缺口驱动对应方向的懒扫描。鼠标沿当前阅读轴拖动浏览；已知端点保留提示，超过同向累计阻力后才允许重试。80 槽位通用夹具覆盖延迟、失败、前插和虚拟节点回收；真实站点矩阵仍未完成。",
+      "description": "全览按图库顺序和可信比例分配稳定轨道与柔和色占位，不会按图片解码次序换位。自动后缓存维持两视觉带；自动前缓存初始一带，只有明确向前操作才扩到两带。空卡片、延迟地址和嵌套滚动由通用夹具覆盖；有限预算无进展时暂停，等待用户重试。真实站点矩阵仍未完成。",
       "nodeIds": [
         "function:viewer.js:collectOverviewItems",
         "function:viewer.js:renderOverview",
@@ -8519,7 +9007,20 @@
         "function:controls.js:overviewLayout",
         "function:controls.js:overviewRetryIntent",
         "file:tests/b6-virtual.html",
-        "file:tests/unit.cjs"
+        "file:tests/unit.cjs",
+        "function:viewer.js:activateOverviewBackward",
+        "file:tests/b7-rows.html",
+        "function:viewer.js:overviewSourceLoads",
+        "function:viewer.js:overviewScanDemandSatisfied",
+        "function:viewer.js:overviewSlotPending",
+        "function:viewer.js:scanResolvedSnapshot",
+        "function:viewer.js:scanResolvedProgress",
+        "function:viewer.js:scanViewportSourceLoad",
+        "function:viewer.js:scanOneSlotSignature",
+        "function:viewer.js:scanSlotSignature",
+        "function:viewer.js:explicitScanBoundary",
+        "function:viewer.js:scanSourceFailureCount",
+        "function:viewer.js:queueGalleryRefresh"
       ]
     },
     {
