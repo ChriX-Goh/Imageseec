@@ -1,6 +1,7 @@
 (() => {
   let count = 9;
   const run = crypto.randomUUID();
+  const qa = new URLSearchParams(location.search);
   const gallery = document.querySelector('.gallery');
   function add(n) {
     const figure = document.createElement('figure');
@@ -13,6 +14,19 @@
   async function open(src) { const { settings } = await chrome.storage.local.get('settings'); ImageLens.open(src, settings); }
   for (let n = 1; n <= count; n++) add(n);
   document.querySelector('#open').onclick = () => open(gallery.querySelectorAll('img')[4].src);
+  if (qa.has('lateRatios')) document.querySelector('#open').onclick = () => {
+    for (const n of [2, 3]) {
+      const old = gallery.querySelectorAll('img')[n - 1], delayed = new Image();
+      delayed.alt = old.alt; delayed.dataset.full = old.dataset.full;
+      delayed.src = `/image/${n}?run=${crypto.randomUUID()}&delay=${n === 2 ? 3500 : 4200}`;
+      old.replaceWith(delayed);
+    }
+    open(gallery.querySelectorAll('img')[4].src);
+  };
+  if (qa.has('overviewChurn')) {
+    const churn = setInterval(() => gallery.firstElementChild?.classList.toggle('fixture-refresh'), 330);
+    window.addEventListener('pagehide', () => clearInterval(churn), { once: true });
+  }
   document.querySelector('#small').onclick = () => open(gallery.querySelectorAll('img')[1].src);
   document.querySelector('#add').onclick = () => add(++count);
   document.querySelector('#add-many').onclick = () => { while (count < 80) add(++count); };

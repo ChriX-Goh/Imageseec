@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Automatycznie ukrywaj pasek narzędzi"
+  },
+  "overviewSize": {
+    "message": "Rozmiar miniatur"
+  },
+  "overviewSizeReset": {
+    "message": "Przywróć rozmiar miniatur do 100%"
+  },
+  "overviewSizeTo": {
+    "message": "Ustaw rozmiar miniatur na $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Wcześniej"
+  },
+  "overviewLater": {
+    "message": "Później"
+  },
+  "overviewStart": {
+    "message": "Początek galerii"
+  },
   "extName": {
     "message": "Imageseec"
   },

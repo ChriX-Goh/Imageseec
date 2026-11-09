@@ -131,8 +131,8 @@ function context(hostname = 'example.com') {
 }
 test('settings defaults, invalid storage values and independent bounds', () => {
   const { c } = context(); const normalize = c.ImageLens.settings.normalize;
-  assert.deepEqual(plain(normalize(null)), { language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
-  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, overviewBuffer: 20, dividerMin: 1, compareStep: 0, doubleClickExit: false })), { language: 'fr', zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'custom', overviewCacheAfter: 20, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 10, compareStep: 1, compareEnabled: false, zoomLocked: false, doubleClickExit: false, quickOpen: true });
+  assert.deepEqual(plain(normalize(null)), { language: 'auto', toolbarAutoHide: false, overviewScale: 100, zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
+  assert.deepEqual(plain(normalize({ language: 'fr', zoomStep: 0, holdZoom: 999, cacheBefore: -2, cacheAfter: 99, previewBefore: 'x', previewAfter: 0, overviewBuffer: 20, dividerMin: 1, compareStep: 0, doubleClickExit: false })), { language: 'fr', toolbarAutoHide: false, overviewScale: 100, zoomStep: 1, holdZoom: 800, cacheBefore: 0, cacheAfter: 12, previewBefore: 3, previewAfter: 0, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'custom', overviewCacheAfter: 20, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 10, compareStep: 1, compareEnabled: false, zoomLocked: false, doubleClickExit: false, quickOpen: true });
   assert.equal(normalize({ overviewBuffer: 6 }).overviewCacheBeforeMode, 'auto');
   assert.equal(normalize({ overviewCacheBeforeMode: 'custom', overviewCacheBefore: 0 }).overviewCacheBefore, 0);
   assert.equal(normalize({ overviewCacheAfterMode: 'custom', overviewCacheAfter: 37 }).overviewCacheAfter, 37);
@@ -141,6 +141,29 @@ test('settings defaults, invalid storage values and independent bounds', () => {
   assert.equal(normalize({ overviewDirection: 'sideways' }).overviewDirection, 'vertical');
   assert.equal(normalize({ overviewDirection: 'horizontal', overviewClean: true }).overviewDirection, 'horizontal');
   assert.equal(normalize({ overviewClean: 'true' }).overviewClean, false);
+  assert.equal(normalize({ toolbarAutoHide: true }).toolbarAutoHide, true);
+  assert.equal(normalize({ overviewScale: 1 }).overviewScale, 25);
+  assert.equal(normalize({ overviewScale: 500 }).overviewScale, 300);
+});
+test('overview size bounds preserve aspect, direction and the default layout', () => {
+  const { c } = context(), controls = c.ImageLens.controls;
+  const ratios = Array.from({ length: 36 }, (_, i) => [.6, 1, 1.8][i % 3]);
+  for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) {
+    const layout = (scale, w = 1250, h = 760) => controls.overviewLayout(ratios, w, h, horizontal, false, alignment, 12, scale);
+    assert.deepEqual(plain(layout()), plain(layout(100)));
+    assert.ok(layout(25).bandSize >= layout(100).bandSize);
+    assert.ok(layout(300).bandSize <= layout(100).bandSize);
+    for (const scale of [25, 100, 300]) for (const [w, h] of [[1250, 760], [300, 280]]) {
+      const result = layout(scale, w, h);
+      for (const [n, box] of result.boxes.entries()) {
+        assert.ok(Math.abs((box.width - 12) / (box.height - 39) - ratios[n]) < .00001);
+        assert.ok(horizontal ? box.y + box.height <= h + .01 : box.x + box.width <= w + .01);
+      }
+    }
+  }
+  for (const size of [25, 33, 50, 88, 100, 181, 200, 259, 300]) {
+    assert.ok(Math.abs(controls.fromPosition(controls.toPosition(size, 100, true), 100, true) - size) < .00001);
+  }
 });
 test('overview packs ordered rows or columns without cropping or cross-axis overflow', () => {
   const { c } = context();
@@ -228,6 +251,19 @@ test('gallery snapshots retain identity and order across prepend, holes, aliases
   const node = {};
   assert.equal(merge([entry('first', { node })], [entry('unrelated', { node })]).length, 2);
   assert.deepEqual(plain(merge([entry('e'), entry('f')], [entry('a'), entry('b'), entry('c')], -1).map(e=>e.key)), ['a', 'b', 'c', 'e', 'f']);
+});
+test('confirmed thumbnail geometry survives a lazy refresh only for the same resource', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const first = image('https://media.example.test/one.jpg', { width: '400', height: '800' });
+  const entry = g.collect(first.src).entries[0];
+  assert.equal(entry.aspectRatio, .5);
+  Object.assign(entry, { dimensions: [900, 1200], aspectRatio: .75, slotKey: 'stable:1', slotStable: true });
+  const next = g.collect(first.src).entries[0];
+  assert.equal(g.mergeEntries([entry], [next])[0].aspectRatio, .75);
+  const different = { ...next, thumb: 'https://media.example.test/two.jpg', aspectRatio: 1.5, slotKey: 'stable:1', slotStable: true };
+  const result = g.mergeEntries([entry], [different])[0];
+  assert.equal(result.aspectRatio, 1.5);
+  assert.equal(result.dimensions, null);
 });
 
 test('repeated reserved image slots exclude unrelated recommendation cards', () => {

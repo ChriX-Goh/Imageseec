@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "도구 모음 자동 숨기기"
+  },
+  "overviewSize": {
+    "message": "썸네일 크기"
+  },
+  "overviewSizeReset": {
+    "message": "썸네일 크기를 100%로 재설정"
+  },
+  "overviewSizeTo": {
+    "message": "썸네일 크기를 $arg1$%로 설정",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "이전"
+  },
+  "overviewLater": {
+    "message": "이후"
+  },
+  "overviewStart": {
+    "message": "갤러리의 처음"
+  },
   "extName": {
     "message": "Imageseec"
   },

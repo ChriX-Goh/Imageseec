@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Symbolleiste automatisch ausblenden"
+  },
+  "overviewSize": {
+    "message": "Miniaturgröße"
+  },
+  "overviewSizeReset": {
+    "message": "Miniaturgröße auf 100 % zurücksetzen"
+  },
+  "overviewSizeTo": {
+    "message": "Miniaturgröße auf $arg1$ % setzen",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Davor"
+  },
+  "overviewLater": {
+    "message": "Danach"
+  },
+  "overviewStart": {
+    "message": "Anfang der Galerie"
+  },
   "extName": {
     "message": "Imageseec"
   },

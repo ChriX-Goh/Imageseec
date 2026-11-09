@@ -30,7 +30,8 @@ const server = http.createServer((req, res) => {
       ? `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 900 1600">${portraitArt}</svg>`
       : `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${scaledLandscape}</svg>`;
     const send = () => res.end(image);
-    if (n === 97) setTimeout(send, 1400); else send();
+    const delay = n === 97 ? 1400 : Math.max(0, Math.min(5000, Number(u.searchParams.get('delay')) || 0));
+    if (delay) setTimeout(send, delay); else send();
     return;
   }
   const file = path.resolve(root, `.${decodeURIComponent(u.pathname === '/' ? '/tests/demo.html' : u.pathname)}`);
@@ -46,4 +47,5 @@ const server = http.createServer((req, res) => {
     res.end(data);
   });
 });
-server.listen(18766, '127.0.0.1', () => console.log('Image Lens development fixture: http://127.0.0.1:18766'));
+server.listen(Number(process.env.IMAGESEEC_TEST_PORT) || 18766, '127.0.0.1',
+  () => console.log(`Image Lens development fixture: http://127.0.0.1:${server.address().port}`));

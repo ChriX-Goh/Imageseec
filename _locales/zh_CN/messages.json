@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "自动隐藏工具栏"
+  },
+  "overviewSize": {
+    "message": "缩略图大小"
+  },
+  "overviewSizeReset": {
+    "message": "恢复缩略图大小至 100%"
+  },
+  "overviewSizeTo": {
+    "message": "缩略图大小设为 $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "前方"
+  },
+  "overviewLater": {
+    "message": "后方"
+  },
+  "overviewStart": {
+    "message": "已到图库开头"
+  },
   "extName": {
     "message": "Imageseec"
   },

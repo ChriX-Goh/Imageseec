@@ -16,8 +16,8 @@
     button:focus-visible { outline: 2px solid #b3caff; outline-offset: 3px; }
     button:disabled { opacity: .23; cursor: default; }
     svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-    .bar { position: absolute; z-index: 11; left: 26px; right: 26px; top: 20px; display: flex; gap: 14px; align-items: center; pointer-events: none; transform: translateY(-145%); opacity: 0; transition: transform .18s ease, opacity .15s ease; }
-    .viewer.top-open .bar, .bar:hover, .bar:focus-within { transform: translateY(0); opacity: 1; }
+    .bar { position: absolute; z-index: 11; left: 26px; right: 26px; top: 20px; display: flex; gap: 14px; align-items: center; pointer-events: none; transition: transform .18s ease, opacity .15s ease; }
+    .viewer.toolbar-auto:not(.top-open):not(:has(.settings:not([hidden]))) .bar:not(:hover):not(:has(:focus-visible)) { transform: translateY(-145%); opacity: 0; }
     .brand { font-weight: 650; letter-spacing: .1em; font-size: 16px; display: flex; gap: 10px; align-items: center; text-shadow: 0 1px 8px #000; }
     .brand svg { color: #b9caff; }
     .counter, .resolution { color: #b6bac5; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -55,29 +55,37 @@
     .divider::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: #ffffffaa; box-shadow: 0 0 12px #0009; }
     .divider::after { content: ''; position: absolute; left: 50%; top: var(--divider-handle-y, 50%); width: 26px; height: 52px; transform: translate(-50%, -50%); border: 1px solid #ffffff70; border-radius: 13px; background: #20232bdd; box-shadow: 0 6px 18px #0008; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .12s, visibility .12s, background .12s; }
     .divider:hover::after, .divider:focus-visible::after, .divider.dragging::after { background: #3d4350; opacity: 1; visibility: visible; }
-    .overview { position: absolute; z-index: 4; inset: 0; display: none; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 82px 24px 36px; background: #101114; scrollbar-width: thin; scrollbar-gutter: stable; }
+    .overview-shell { position: absolute; z-index: 4; inset: 0; overflow: clip; background: #101114; }
+    .overview-shell[hidden] { display: none; }
+    .overview { position: absolute; inset: 0; display: none; overflow-y: auto; overflow-x: hidden; overflow-anchor: none; overscroll-behavior: none; padding: 82px 24px 36px; scrollbar-width: thin; scrollbar-gutter: stable; }
     .overview.active { display: block; }
     .overview.horizontal { overflow-x: auto; overflow-y: hidden; }
     .overview-grid { position: relative; margin: 0; }
     .overview-card { position: absolute; margin: 0; padding: 5px; border: 1px solid #ffffff1c; border-radius: 12px; background: #202229; cursor: pointer; text-align: left; overflow: hidden; }
     .overview-card:hover { border-color: #a9c0ff99; background: #2d3039; }
     .overview-card[aria-current="true"] { border-color: #b4c8ff; box-shadow: 0 0 16px #9fb9ff30; }
-    .overview-card img { display: block; width: 100%; height: calc(100% - 27px); object-fit: contain; border-radius: 8px; background: #15171b; }
+    .overview-card img { display: block; width: 100%; height: calc(100% - 27px); object-fit: contain; border-radius: 8px; background: #15171b; pointer-events: none; }
     .overview-card span { display: block; height: 27px; padding: 5px 3px 1px; color: #b6bac5; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .overview.clean .overview-card { border: 0; border-radius: 0; padding: 0; background: transparent; box-shadow: none; }
     .overview.clean .overview-card img { height: 100%; border-radius: 0; background: transparent; }
     .overview.clean .overview-card span { display: none; }
     .overview.clean .overview-card[aria-current="true"] img { filter: brightness(.88); }
-    .overview.horizontal .overview-status { position: absolute; left: 0; bottom: 0; padding: 4px; pointer-events: none; }
-    .overview.horizontal .overview-sentinel { display: none; }
-    .overview-status { padding: 20px; color: #b6bac5; text-align: center; }
-    .overview-sentinel { height: 1px; }
+    .overview-status { position: absolute; z-index: 1; left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 8px; padding: 7px 12px; max-width: 85%; border-radius: 14px; color: #e3e9f8; background: #222632ed; font-size: 12px; text-align: center; pointer-events: none; }
+    .overview-status[data-side="-1"] { top: 68px; }
+    .overview-status[data-side="1"] { bottom: 12px; }
+    .overview.horizontal ~ .overview-status { top: 50%; bottom: auto; translate: 0 -50%; max-width: min(20ch, 40%); }
+    .overview.horizontal ~ .overview-status[data-side="-1"] { left: 12px; }
+    .overview.horizontal ~ .overview-status[data-side="1"] { left: auto; right: 12px; }
     .overview-status[hidden] { display: none; }
+    .loading-flower { width: 19px; height: 19px; flex: none; fill: #b6cbff; stroke: none; animation: flower-turn 1s linear infinite; }
+    .message .loading-flower { vertical-align: middle; margin-inline-end: 8px; }
+    @keyframes flower-turn { to { transform: rotate(1turn); } }
     .stage.zoomed { cursor: grab; }
     .stage.holding, .compare.holding { cursor: zoom-out; }
     .stage.dragging, .compare.dragging { cursor: grabbing; }
     .edge { position: absolute; z-index: 3; top: 18%; bottom: 20%; width: clamp(52px, 9vw, 150px); border: 0; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; opacity: .4; transition: opacity .18s, background .18s; }
     .edge:hover { opacity: 1; background: linear-gradient(90deg, #0003, transparent); }
+    .viewer.in-overview :is(.resolution, .zoom-lock, .edge, .trigger, .message) { display: none; }
     .edge span { display: grid; place-items: center; width: 44px; height: 56px; background: #23252b99; border: 1px solid #ffffff18; border-radius: 16px; backdrop-filter: blur(12px); }
     .prev { left: 0; } .next { right: 0; } .next:hover { background: linear-gradient(270deg, #0003, transparent); }
     .edge .edge-preview { position: absolute; display: none; width: 136px; height: 118px; padding: 6px; background: #1f222bf0; border: 1px solid #ffffff35; border-radius: 14px; box-shadow: 0 12px 36px #0007; pointer-events: none; }
@@ -104,7 +112,8 @@
     .settings[hidden] { display: none; }
     .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     @media(max-width: 600px) { .bar { left: 12px; right: 12px; top: 12px; gap: 8px; } .brand { font-size: 13px; } .tools { gap: 4px; } .tools button { width: 34px; height: 34px; } .thumb { flex-basis: 62px; width: 62px; height: 62px; } .strip { padding-inline: 12px; } .counter { font-size: 10px; } .overview { padding: 64px 12px 24px; } .overview-grid { column-width: 150px; column-gap: 8px; } .overview-card { margin-bottom: 8px; } }
-    @media(prefers-reduced-motion: reduce) { * { transition: none !important; } }
+    @media(max-width: 520px) { .brand { font-size: 0; gap: 0; } .resolution { overflow: hidden; text-overflow: ellipsis; min-width: 0; } .tools { flex-shrink: 0; } }
+    @media(prefers-reduced-motion: reduce) { * { transition: none !important; } .loading-flower { animation: none; } }
   `;
   const icon = name => {
     const paths = { close: '<path d="m6 6 12 12M18 6 6 18"/>', prev: '<path d="m14 5-7 7 7 7"/>', next: '<path d="m10 5 7 7-7 7"/>', full: '<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>', settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="#25272c"/><circle cx="15" cy="12" r="2" fill="#25272c"/><circle cx="9" cy="18" r="2" fill="#25272c"/>', lens: '<path d="M8 3H3v5m18 0V3h-5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="5"/><path d="M12 4v3m0 10v3M4 12h3m10 0h3"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>', compare: '<rect x="3" y="4" width="8" height="16" rx="1"/><rect x="13" y="4" width="8" height="16" rx="1"/><path d="M12 4v16"/>', overview: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>' };
@@ -112,6 +121,86 @@
     paths.unlock = '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/><path d="M12 14v3"/>';
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
   };
+  const flower = '<svg class="loading-flower" viewBox="0 0 24 24" aria-hidden="true">' +
+    Array.from({ length: 9 }, (_, n) => `<path d="M12 9.6C9.7 8.6 9 5.1 10.4 2.9c.8-1.3 2.4-1.3 3.2 0 1.4 2.2.7 5.7-1.6 6.7Z" transform="rotate(${n * 40} 12 12)" opacity="${(.24 + n * .095).toFixed(2)}"/>`).join('') + '</svg>';
+  function clipBox(box, bounds) {
+    const left = Math.max(box.left, bounds.left), top = Math.max(box.top, bounds.top);
+    const width = Math.min(box.right, bounds.right) - left, height = Math.min(box.bottom, bounds.bottom) - top;
+    return width > 1 && height > 1 ? { left, top, width, height, right: left + width, bottom: top + height } : null;
+  }
+  function visibleSourceBox(node) {
+    let box = clipBox(node.getBoundingClientRect(), { left: 0, top: 0, right: innerWidth, bottom: innerHeight });
+    for (let parent = node.parentElement; box && parent && parent !== document.body && parent !== document.documentElement; parent = parent.parentElement) {
+      const style = getComputedStyle(parent);
+      const clips = value => /auto|scroll|overlay|hidden|clip/.test(value);
+      if (!clips(style.overflowX) && !clips(style.overflowY)) continue;
+      const rect = parent.getBoundingClientRect();
+      const left = rect.left + parent.clientLeft, top = rect.top + parent.clientTop;
+      box = clipBox(box, {
+        left: clips(style.overflowX) ? left : box.left,
+        right: clips(style.overflowX) ? left + parent.clientWidth : box.right,
+        top: clips(style.overflowY) ? top : box.top,
+        bottom: clips(style.overflowY) ? top + parent.clientHeight : box.bottom
+      });
+    }
+    return box;
+  }
+  function pictureSnapshot(image, bounds) {
+    if (!image || image.hidden || !image.naturalWidth || !image.naturalHeight) return null;
+    const full = image.getBoundingClientRect(), box = clipBox(full, bounds);
+    if (!box) return null;
+    const canvas = document.createElement('canvas'), ratio = Math.min(1, 1024 / Math.max(box.width, box.height));
+    canvas.width = Math.max(1, Math.round(box.width * ratio)); canvas.height = Math.max(1, Math.round(box.height * ratio));
+    const xScale = image.naturalWidth / full.width, yScale = image.naturalHeight / full.height;
+    try {
+      canvas.getContext('2d').drawImage(image, (box.left - full.left) * xScale, (box.top - full.top) * yScale,
+        box.width * xScale, box.height * yScale, 0, 0, canvas.width, canvas.height);
+    } catch { return null; }
+    return { canvas, box };
+  }
+  function returnFeedback(snapshot, target, parent, reduced) {
+    lens.feedbackController?.abort();
+    if (!target && (!snapshot || reduced)) return;
+    const feedback = new AbortController();
+    lens.feedbackController = feedback;
+    const host = document.createElement('div');
+    host.setAttribute('aria-hidden', 'true');
+    const layer = host.attachShadow({ mode: 'closed' });
+    layer.innerHTML = `<style>
+      :host { all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; }
+      .return-layer { position: fixed; inset: 0; margin: 0; padding: 0; width: auto; height: auto; overflow: visible; border: 0; background: transparent; pointer-events: none; }
+      .return-layer::backdrop { background: transparent; pointer-events: none; }
+      canvas, i { position: absolute; box-sizing: border-box; object-fit: cover; pointer-events: none; }
+      i { border: 2px solid #b8ceff; border-radius: 6px; box-shadow: 0 0 0 2px #142344b0, 0 0 20px #89acff80; }
+    </style><div class="return-layer"></div>`;
+    const surface = layer.querySelector('.return-layer');
+    if (!parent) surface.setAttribute('popover', 'manual');
+    (parent || document.documentElement).append(host);
+    if (!parent) { try { surface.showPopover(); } catch { surface.removeAttribute('popover'); } }
+    const stop = () => feedback.abort();
+    for (const type of ['wheel', 'pointerdown', 'keydown', 'resize', 'pagehide']) {
+      window.addEventListener(type, stop, { capture: true, signal: feedback.signal });
+    }
+    const frame = box => ({ left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
+    const duration = reduced || !snapshot ? 0 : target ? 240 : 140;
+    if (duration) {
+      const { canvas, box } = snapshot;
+      surface.append(canvas);
+      const motion = canvas.animate([{ ...frame(box), opacity: 1 }, { ...frame(target || box), opacity: 0 }],
+        { duration, easing: 'cubic-bezier(.2,.75,.25,1)', fill: 'both' });
+      motion.onfinish = () => canvas.remove();
+    }
+    if (target) {
+      const outline = document.createElement('i'); Object.assign(outline.style, frame(target)); surface.append(outline);
+      if (duration) outline.animate([{ opacity: 0 }, { opacity: 1, offset: .28 }, { opacity: 1, offset: .76 }, { opacity: 0 }],
+        { duration: duration + 800, fill: 'both' });
+    }
+    const timer = setTimeout(stop, duration + (target ? 800 : 0));
+    feedback.signal.addEventListener('abort', () => {
+      clearTimeout(timer); host.remove();
+      if (lens.feedbackController === feedback) lens.feedbackController = null;
+    }, { once: true });
+  }
 
   class ImagePool {
     constructor() { this.records = new Map(); this.queue = []; this.active = 0; this.closed = false; }
@@ -169,6 +258,7 @@
     if (!lens.gallery.url(source)) return;
     lens.close?.();
     lens.returnController?.abort();
+    lens.feedbackController?.abort();
     const collection = lens.gallery.collect(source);
     let scopeParent = collection.scope?.parentElement;
     let entries = collection.entries;
@@ -228,7 +318,8 @@
         <div class="compare-pane right"><img alt="" draggable="false" hidden><button class="pane-lock" data-pane="right" aria-pressed="false" aria-label="${h('lockPane')}" title="${h('lockPane')}">${icon('unlock')}</button></div>
         <button class="divider" aria-label="${h('resetDivider')}" title="${h('resetDivider')}"></button>
       </div>
-      <div class="overview" aria-label="${h('overviewTitle')}" aria-hidden="true" tabindex="0"><div class="overview-grid"></div><div class="overview-status" role="status" hidden></div><div class="overview-sentinel" aria-hidden="true"></div></div>
+      <div class="overview-shell" hidden><div class="overview" aria-label="${h('overviewTitle')}" aria-hidden="true" tabindex="0"><div class="overview-grid"></div></div>
+        <div class="overview-status" data-side="-1" role="status" hidden></div><div class="overview-status" data-side="1" role="status" hidden></div></div>
       <div class="top-trigger" aria-hidden="true"></div>
       <header class="bar"><div class="brand">${icon('lens')}Imageseec</div><div class="counter"></div><div class="resolution"></div><div class="tools">
         <button class="compare-toggle" title="${h('splitView')}" aria-label="${h('splitView')}" aria-pressed="false">${icon('compare')}</button>
@@ -261,7 +352,7 @@
     const divider = $('.divider');
     const overview = $('.overview');
     const overviewGrid = $('.overview-grid');
-    const overviewStatus = $('.overview-status');
+    const overviewShell = $('.overview-shell');
     const message = $('.message');
     const strip = $('.strip');
     const form = $('.settings');
@@ -271,24 +362,32 @@
     let compareEnabled = settings.compareEnabled, compareLeft = index, compareRight = index + 1, activePane = 0, lockedPane = null, pairNeedsAnchor = false;
     let compareScale = 1, comparePanX = [0, 0], comparePanY = [0, 0], compareDims = [null, null], dividerPosition = .5, dividerDragging = false;
     let overviewOpen = false, overviewReturn = null, overviewRecent = null, overviewAnchor = null, fromOverview = false, overviewBandSize = 1;
-    let lastOverviewPick = null;
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const overviewCards = new Map();
+    let overviewPress = null, overviewCommitTimer = 0, overviewCommitStarted = 0, overviewDirty = false, pictureClick = 0;
+    let overviewLayoutAnchor = null;
     let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, overviewCacheCheckTimer = 0, scanRevision = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
+    let edgeSide = 0, edgePull = 0, edgeTimer = 0, edgeAnimation = null;
     const on = (node, type, handler, options = {}) => node.addEventListener(type, handler, { ...options, signal });
 
     function close(event) {
       if (closed) return;
+      const snapshot = !standalone && event?.type !== 'pagehide' ? activeSnapshot() : null;
       const target = entries[overviewOpen ? centralOverviewIndex() : activeIndex()];
       rememberSourceAnchors();
       const targetPosition = target && sourceAnchors.get(target.key);
       closed = true; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       scanController?.abort(); scanRestore?.(); scanRestore = null;
-      endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer);
+      endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      resetOverviewEdge();
+      lens.feedbackController?.abort();
       globalThis.chrome?.storage?.onChanged?.removeListener(storageChanged);
-      if (document.fullscreenElement === viewer || document.fullscreenElement === host) document.exitFullscreen().catch(() => {});
+      const leavingFullscreen = document.fullscreenElement === viewer || document.fullscreenElement === host
+        ? document.exitFullscreen().catch(() => {}) : null;
       dialog.close(); host.remove();
       restorePageCoordinates(); restorePageStyles();
       focused?.focus?.({ preventScroll: true });
-      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition);
+      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition, snapshot, leavingFullscreen);
       if (lens.close === close) lens.close = null;
       if (standalone) window.close();
     }
@@ -312,8 +411,8 @@
       try { node.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }); }
       catch { node.scrollIntoView({ block: 'center', inline: 'nearest' }); }
     }
-    async function revealSource(target, position = sourceAnchors.get(target?.key)) {
-      if (!target) return;
+    async function revealSource(target, position, snapshot, leavingFullscreen) {
+      if (!target) { returnFeedback(snapshot, null, null, reducedMotion.matches); return; }
       const recovery = new AbortController(); lens.returnController?.abort(); lens.returnController = recovery;
       const stop = () => recovery.abort();
       for (const type of ['wheel', 'pointerdown', 'keydown']) window.addEventListener(type, stop, { capture: true, once: true, signal: recovery.signal });
@@ -330,10 +429,12 @@
           window.scrollTo(position.pageX, position.position - innerHeight / 2);
         }
       }
-      let node = lens.gallery.connectedEntryNode(target, collection.scope);
-      if (!node) restoreAnchor();
-      const deadline = performance.now() + 2200;
       try {
+        if (leavingFullscreen) await leavingFullscreen;
+        if (recovery.signal.aborted) return;
+        let node = lens.gallery.connectedEntryNode(target, collection.scope);
+        if (!node) { restoreAnchor(); returnFeedback(snapshot, null, null, reducedMotion.matches); snapshot = null; }
+        const deadline = performance.now() + 2200;
         do {
           if (recovery.signal.aborted) return;
           node = lens.gallery.connectedEntryNode(target, collection.scope);
@@ -341,25 +442,37 @@
             const fresh = lens.gallery.collect(target.thumb, null, collection.scope);
             node = fresh.entries.find(entry => lens.gallery.sameEntry(target, entry))?.node;
           }
-          if (node) { centerSourceNode(node); return; }
+          if (node) {
+            centerSourceNode(node);
+            returnFeedback(snapshot, visibleSourceBox(node), null, reducedMotion.matches); return;
+          }
           await scanDelay(120, recovery.signal);
         } while (performance.now() < deadline);
         if (!recovery.signal.aborted) {
           const index = entries.indexOf(target);
           const nearby = entries.map((entry, n) => ({ entry, distance: Math.abs(n - index) }))
-            .filter(item => item.entry.node?.isConnected).sort((a, b) => a.distance - b.distance)[0];
-          if (nearby) centerSourceNode(nearby.entry.node);
+            .map(item => ({ ...item, node: lens.gallery.connectedEntryNode(item.entry, collection.scope) }))
+            .filter(item => item.node).sort((a, b) => a.distance - b.distance)[0];
+          if (nearby) centerSourceNode(nearby.node);
         }
       } finally { recovery.abort(); if (lens.returnController === recovery) lens.returnController = null; }
     }
     function status(text, retry = false) {
-      message.replaceChildren(document.createTextNode(text)); message.hidden = false;
+      message.replaceChildren();
+      if (!retry) message.insertAdjacentHTML('afterbegin', flower);
+      message.append(document.createTextNode(text)); message.hidden = false;
       if (retry) { const b = document.createElement('button'); b.textContent = t('retry'); b.onclick = () => { pool.retain(new Set()); show(index); }; message.append(b); }
     }
     function activeIndex() {
       if (!compareEnabled) return index;
       const selected = lockedPane === 0 ? compareRight : lockedPane === 1 ? compareLeft : activePane === 1 ? compareRight : compareLeft;
       return entries[selected] ? selected : (entries[compareLeft] ? compareLeft : Math.max(0, compareRight));
+    }
+    function activeSnapshot() {
+      if (overviewOpen || reducedMotion.matches) return null;
+      if (!compareEnabled) return pictureSnapshot(photo, stage.getBoundingClientRect());
+      const side = activeIndex() === compareLeft ? 0 : 1;
+      return pictureSnapshot(comparePhotos[side], comparePanes[side].getBoundingClientRect());
     }
     function updateCompareControls() {
       $('.compare-toggle').setAttribute('aria-pressed', String(compareEnabled));
@@ -381,6 +494,11 @@
     function updateOverviewButton() {
       const label = t(overviewOpen ? 'exitOverview' : 'overviewView');
       $('.overview-toggle').setAttribute('aria-label', label); $('.overview-toggle').title = `${label} (G)`;
+      viewer.classList.toggle('in-overview', overviewOpen);
+      $('.fit').setAttribute('aria-label', t(overviewOpen ? 'overviewSize' : 'zoom'));
+      $('.fit').title = t(overviewOpen ? 'overviewSizeReset' : 'zoomCycle');
+      $('.zoom-slider').setAttribute('aria-label', t(overviewOpen ? 'overviewSize' : 'zoomSlider'));
+      updateRuler();
     }
     function transformCompare() {
       const rect = compare.getBoundingClientRect();
@@ -406,6 +524,7 @@
       updateRuler();
     }
     function transform() {
+      if (overviewOpen) return;
       if (compareEnabled) { transformCompare(); return; }
       const rect = stage.getBoundingClientRect();
       const maxX = Math.max(0, (width * scale - rect.width) / 2);
@@ -417,14 +536,27 @@
       updateRuler();
     }
     function updateRuler() {
-      const value = (compareEnabled ? compareScale : scale) * 100;
-      if (!sliding) rulerMaximum = lens.controls.rulerMax(value);
-      $('.zoom-slider').value = lens.controls.toPosition(value, rulerMaximum);
+      const value = overviewOpen ? settings.overviewScale : (compareEnabled ? compareScale : scale) * 100;
+      if (!overviewOpen && !sliding) rulerMaximum = lens.controls.rulerMax(value);
+      if (overviewOpen) $('.fit').textContent = `${value}%`;
+      $('.zoom-slider').value = lens.controls.toPosition(value, rulerMaximum, overviewOpen);
       $('.zoom-slider').setAttribute('aria-valuetext', `${Math.round(value)}%`);
-      const last = $('.zoom-ticks [data-tick="4"]');
-      last.textContent = rulerMaximum; last.classList.toggle('over', rulerMaximum > 100);
-      last.setAttribute('aria-label', t('zoomTo', rulerMaximum));
-      $('.zoom-control').classList.toggle('over', value > 100);
+      const ticks = overviewOpen ? lens.controls.overviewTicks : [...lens.controls.ticks.slice(0, 4), rulerMaximum];
+      ticks.forEach((tick, n) => {
+        const button = $(`.zoom-ticks [data-tick="${n}"]`);
+        button.textContent = tick;
+        button.classList.toggle('over', !overviewOpen && n === 4 && tick > 100);
+        button.setAttribute('aria-label', t(overviewOpen ? 'overviewSizeTo' : 'zoomTo', tick));
+      });
+      $('.zoom-control').classList.toggle('over', !overviewOpen && value > 100);
+    }
+    function setOverviewSize(percent) {
+      const value = Math.round(Math.max(25, Math.min(300, percent)));
+      if (value === settings.overviewScale) return;
+      settings.overviewScale = value;
+      updateRuler();
+      queueOverviewCommit();
+      chrome.storage.local.set({ settings }).catch(() => {});
     }
     function fit(manual = true) {
       endHold();
@@ -513,10 +645,11 @@
     function savePreferences(next) {
       const languageChanged = settings.language !== next.language;
       settings = next; cacheNeighbors(); updateLock();
+      viewer.classList.toggle('toolbar-auto', settings.toolbarAutoHide);
       dividerPosition = Math.max(settings.dividerMin / 100, Math.min(1 - settings.dividerMin / 100, dividerPosition));
       transform(); updateNavigationButtons();
       if (strip.classList.contains('visible')) renderStrip();
-      if (overviewOpen) renderOverview();
+      if (overviewOpen) { updateRuler(); queueOverviewCommit(); }
       chrome.storage.local.set({ settings }).then(async () => {
         $('.pref-error').hidden = true;
         if (languageChanged) await refreshLanguage();
@@ -630,75 +763,167 @@
       }
       updateEdgePreviews();
     }
-    function setOverviewStatus(messageKey, visible = true) {
-      overviewStatus.textContent = t(messageKey);
-      overviewStatus.hidden = !visible;
+    function overviewEdgeDistance(side) {
+      const horizontal = overview.classList.contains('horizontal');
+      const offset = horizontal ? overview.scrollLeft : overview.scrollTop;
+      return side < 0 ? offset : (horizontal ? overview.scrollWidth - overview.clientWidth : overview.scrollHeight - overview.clientHeight) - offset;
+    }
+    function updateOverviewStatus() {
+      for (const side of [-1, 1]) {
+        const label = $(`.overview-status[data-side="${side}"]`);
+        const state = scanStates[side];
+        const loading = Boolean(scanController && !scanController.signal.aborted && scanningDirection === side);
+        const ended = state.ended || !collection.scope;
+        const key = loading ? 'overviewLoading' : ended ? (side < 0 ? 'overviewStart' : 'overviewEnd')
+          : state.failed ? 'overviewScanFailed' : state.paused ? 'overviewPaused' : '';
+        const visible = overviewOpen && key && overviewEdgeDistance(side) <= (loading ? 120 : 2);
+        label.hidden = !visible;
+        const text = key ? (ended && !loading ? t(key) : `${t(side < 0 ? 'overviewEarlier' : 'overviewLater')}: ${t(key)}`) : '';
+        if (label.textContent !== text || Boolean(label.querySelector('.loading-flower')) !== loading) {
+          label.replaceChildren();
+          if (loading) label.insertAdjacentHTML('afterbegin', flower);
+          label.append(document.createTextNode(text));
+        }
+      }
+    }
+    function resetOverviewEdge(animate = false, bounce = false) {
+      if (animate && overviewPress) return;
+      clearTimeout(edgeTimer);
+      const from = overview.style.translate || '0px';
+      const side = edgeSide;
+      edgeAnimation?.cancel(); edgeAnimation = null;
+      edgeSide = edgePull = 0; overview.style.translate = '';
+      if (animate && from !== '0px' && !reducedMotion.matches) {
+        const reverse = overview.classList.contains('horizontal') ? `${side * 2}px 0px` : `0px ${side * 2}px`;
+        edgeAnimation = overview.animate(bounce
+          ? [{ translate: from }, { translate: reverse, offset: .72 }, { translate: '0px 0px' }]
+          : [{ translate: from }, { translate: '0px 0px' }], { duration: bounce ? 310 : 160, easing: 'cubic-bezier(.15,.72,.25,1)' });
+      }
+    }
+    function pushOverviewEdge(side, amount) {
+      const ended = scanStates[side].ended || !collection.scope;
+      const loading = scanController && !scanController.signal.aborted && scanningDirection === side;
+      if (reducedMotion.matches || (!ended && !loading)) { updateOverviewStatus(); return; }
+      edgeAnimation?.cancel(); edgeAnimation = null;
+      if (edgeSide && edgeSide !== side) resetOverviewEdge();
+      edgeSide = side;
+      const horizontal = overview.classList.contains('horizontal');
+      const limit = ended ? Math.min(64, (horizontal ? overview.clientWidth : overview.clientHeight) * .08) : 18;
+      if (!limit) return;
+      edgePull = Math.min(limit, edgePull + Math.min(120, amount) * .22 * (1 - edgePull / limit));
+      const displacement = -side * edgePull;
+      overview.style.translate = horizontal ? `${displacement}px 0px` : `0px ${displacement}px`;
+      clearTimeout(edgeTimer);
+      if (ended) edgeTimer = setTimeout(() => resetOverviewEdge(true, true), 95);
+      updateOverviewStatus();
     }
     function centralOverviewIndex() {
       const rect = overview.getBoundingClientRect();
+      const grid = overviewGrid.getBoundingClientRect();
       const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
-      const cards = [...overviewGrid.children].map(card => ({ card, box: card.getBoundingClientRect() }))
+      const cards = [...overviewGrid.children].map(card => ({ card, box: overviewCardBox(card, grid) }))
         .filter(({ box }) => box.right > rect.left && box.left < rect.right && box.bottom > rect.top && box.top < rect.bottom);
       cards.sort((a, b) => Math.hypot(a.box.left + a.box.width / 2 - cx, a.box.top + a.box.height / 2 - cy) - Math.hypot(b.box.left + b.box.width / 2 - cx, b.box.top + b.box.height / 2 - cy));
-      return cards.length ? Number(cards[0].card.dataset.index) : activeIndex();
+      const index = cards.length ? entries.findIndex(entry => entry.key === cards[0].card.dataset.key) : -1;
+      return index >= 0 ? index : activeIndex();
     }
     function captureOverviewAnchor() {
-      const card = overviewGrid.children[centralOverviewIndex()];
+      const card = overviewCards.get(entries[centralOverviewIndex()]?.key);
       if (!card) return overviewAnchor;
-      const box = card.getBoundingClientRect(), rect = overview.getBoundingClientRect();
+      const box = overviewCardBox(card), rect = overview.getBoundingClientRect();
+      if (!rect.width || !rect.height) return overviewAnchor;
       return { key: card.dataset.key, x: (box.left + box.width / 2 - rect.left) / rect.width, y: (box.top + box.height / 2 - rect.top) / rect.height };
     }
     function restoreOverviewAnchor(anchor) {
-      const card = anchor && [...overviewGrid.children].find(card => card.dataset.key === anchor.key);
+      const card = anchor && overviewCards.get(anchor.key);
       if (!card) return;
-      const box = card.getBoundingClientRect(), rect = overview.getBoundingClientRect();
+      const box = overviewCardBox(card), rect = overview.getBoundingClientRect();
       if (settings.overviewDirection === 'horizontal') overview.scrollLeft += box.left + box.width / 2 - rect.left - anchor.x * rect.width;
       else overview.scrollTop += box.top + box.height / 2 - rect.top - anchor.y * rect.height;
       lastOverviewOffset = settings.overviewDirection === 'horizontal' ? overview.scrollLeft : overview.scrollTop;
     }
-    function renderOverview() {
+    function overviewCardBox(card, grid = overviewGrid.getBoundingClientRect()) {
+      const left = grid.left + (parseFloat(card.style.left) || 0), top = grid.top + (parseFloat(card.style.top) || 0);
+      const width = parseFloat(card.style.width) || 0, height = parseFloat(card.style.height) || 0;
+      return { left, top, width, height, right: left + width, bottom: top + height };
+    }
+    function queueOverviewCommit() {
       if (!overviewOpen) return;
-      const anchor = overviewGrid.children.length ? captureOverviewAnchor() : overviewAnchor;
+      overviewDirty = true;
+      if (overviewPress) return;
+      overviewCommitStarted ||= performance.now();
+      clearTimeout(overviewCommitTimer);
+      overviewCommitTimer = setTimeout(() => renderOverview(), Math.max(0, Math.min(80, 120 - (performance.now() - overviewCommitStarted))));
+    }
+    function renderOverview(anchor, animate = true) {
+      if (!overviewOpen) return;
+      if (overviewPress) { overviewDirty = true; return; }
+      clearTimeout(overviewCommitTimer);
+      overviewCommitTimer = overviewCommitStarted = 0;
+      overviewDirty = false;
+      // Keep the same reference through successive late images. A real scroll picks a new reference.
+      anchor ??= overviewLayoutAnchor ?? (overviewGrid.children.length ? captureOverviewAnchor() : overviewAnchor);
+      overviewLayoutAnchor = anchor;
+      const previous = new Map();
+      if (animate && !reducedMotion.matches) {
+        const view = overview.getBoundingClientRect();
+        const grid = overviewGrid.getBoundingClientRect();
+        for (const [key, card] of overviewCards) {
+          const box = overviewCardBox(card, grid);
+          if (box.bottom >= view.top - 180 && box.top <= view.bottom + 180 && box.right >= view.left - 180 && box.left <= view.right + 180) {
+            previous.set(key, card.getBoundingClientRect());
+          }
+        }
+      }
       const currentKeys = new Set(compareEnabled ? [entries[compareLeft]?.key, entries[compareRight]?.key] : [entries[index]?.key]);
-      const existing = new Map([...overviewGrid.children].map(card => [card.dataset.key, card]));
-      const fragment = document.createDocumentFragment();
+      const live = new Set(entries.map(entry => entry.key));
+      for (const [key, card] of overviewCards) if (!live.has(key)) { card.remove(); overviewCards.delete(key); }
+      let cursor = overviewGrid.firstElementChild;
       entries.forEach((entry, n) => {
-        let card = existing.get(entry.key);
+        let card = overviewCards.get(entry.key);
         if (!card) {
           card = document.createElement('button'); card.type = 'button'; card.className = 'overview-card';
           const image = document.createElement('img'); image.alt = ''; image.loading = 'lazy'; image.decoding = 'async'; image.draggable = false;
           const label = document.createElement('span'); card.append(image, label);
+          overviewCards.set(entry.key, card);
         }
         card.dataset.key = entry.key; card.dataset.index = String(n);
         card.setAttribute('aria-label', t('viewImage', n + 1) + (entry.title ? `: ${entry.title}` : ''));
         card.setAttribute('aria-current', String(currentKeys.has(entry.key)));
         const image = card.querySelector('img');
         image.dataset.src = entry.thumb;
-        const ratio = Number(entry.aspectRatio);
-        card.style.setProperty('--overview-ratio', ratio > 0 && Number.isFinite(ratio) ? String(ratio) : '1');
         card.querySelector('span').textContent = t('imageCount', n + 1, entries.length);
-        card.onclick = event => { lastOverviewPick = { at: performance.now(), x: event.clientX, y: event.clientY }; exitOverview(true, Number(card.dataset.index)); };
-        fragment.append(card);
+        if (card !== cursor) overviewGrid.insertBefore(card, cursor);
+        cursor = card.nextElementSibling;
       });
-      overviewGrid.replaceChildren(fragment);
       layoutOverview(anchor);
+      const laidOutGrid = overviewGrid.getBoundingClientRect();
+      for (const [key, from] of previous) {
+        const card = overviewCards.get(key);
+        if (!card) continue;
+        const to = overviewCardBox(card, laidOutGrid);
+        if (Math.max(Math.abs(from.left - to.left), Math.abs(from.top - to.top), Math.abs(from.width - to.width), Math.abs(from.height - to.height)) < 1) continue;
+        card.getAnimations().forEach(animation => animation.cancel());
+        card.animate([
+          { translate: `${from.left - to.left}px ${from.top - to.top}px`, width: `${from.width}px`, height: `${from.height}px` },
+          { translate: '0px 0px', width: `${to.width}px`, height: `${to.height}px` }
+        ], { duration: 240, easing: 'cubic-bezier(.2,.7,.25,1)' });
+      }
       updateOverviewThumbnails();
       $('.counter').textContent = `${entries.length}`;
-      if (!scanPromise) {
-        const state = scanStates[overviewDirection];
-        setOverviewStatus(state.failed ? 'overviewScanFailed' : state.ended ? 'overviewEnd' : state.paused ? 'overviewPaused' : '', state.failed || state.ended || state.paused);
-      }
+      if (edgeSide && overviewEdgeDistance(edgeSide) > 2) resetOverviewEdge(true);
+      updateOverviewStatus();
       requestAnimationFrame(() => checkOverviewCache());
     }
     function layoutOverview(anchor = captureOverviewAnchor()) {
       if (!overviewOpen) return;
       const horizontal = settings.overviewDirection === 'horizontal';
-      if (overview.classList.contains('horizontal') !== horizontal) { overview.scrollTop = 0; overview.scrollLeft = 0; }
+      if (overview.classList.contains('horizontal') !== horizontal) { resetOverviewEdge(); overview.scrollTop = 0; overview.scrollLeft = 0; }
       overview.classList.toggle('horizontal', horizontal); overview.classList.toggle('clean', settings.overviewClean);
       const style = getComputedStyle(overview);
       const width = Math.max(1, overview.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
       const height = Math.max(1, overview.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
-      const layout = lens.controls.overviewLayout(entries.map(e => Number(e.aspectRatio)), width, height, horizontal, settings.overviewClean, settings.overviewAlignment, settings.overviewGap);
+      const layout = lens.controls.overviewLayout(entries.map(e => Number(e.aspectRatio)), width, height, horizontal, settings.overviewClean, settings.overviewAlignment, settings.overviewGap, settings.overviewScale);
       overviewBandSize = layout.bandSize || 1;
       [...overviewGrid.children].forEach((card, n) => {
         const box = layout.boxes[n];
@@ -707,19 +932,15 @@
       overviewGrid.style.width = `${layout.width}px`; overviewGrid.style.height = `${layout.height}px`;
       restoreOverviewAnchor(anchor);
     }
-    function overviewBounds(card, rect) {
-      const box = card.getBoundingClientRect();
-      return settings.overviewDirection === 'horizontal'
-        ? { start: box.left, end: box.right, viewStart: rect.left, viewEnd: rect.right }
-        : { start: box.top, end: box.bottom, viewStart: rect.top, viewEnd: rect.bottom };
-    }
     function overviewVisibleRange(rect = overview.getBoundingClientRect()) {
+      const grid = overviewGrid.getBoundingClientRect();
       const visible = [...overviewGrid.children].filter(card => {
-        const box = card.getBoundingClientRect();
+        const box = overviewCardBox(card, grid);
         return box.right > rect.left && box.left < rect.right && box.bottom > rect.top && box.top < rect.bottom;
       }).map(card => Number(card.dataset.index)).filter(Number.isInteger);
-      const fallback = Math.max(0, Math.min(entries.length - 1, centralOverviewIndex()));
-      return visible.length ? { first: Math.min(...visible), last: Math.max(...visible) } : { first: fallback, last: fallback };
+      if (visible.length) return { first: Math.min(...visible), last: Math.max(...visible) };
+      const fallback = Math.max(0, Math.min(entries.length - 1, activeIndex()));
+      return { first: fallback, last: fallback };
     }
     function overviewCacheCount(side) {
       const mode = settings[`overviewCache${side}Mode`];
@@ -731,27 +952,28 @@
       return { ...visible, ...lens.controls.overviewCacheRange(entries.length, visible.first, visible.last, countBefore, countAfter), countBefore, countAfter };
     }
     function updateOverviewThumbnails() {
-      if (!overviewOpen) return;
+      if (!overviewOpen || (overviewPress && overviewDirty)) return;
       const cards = [...overviewGrid.children], window = overviewCacheWindow();
       for (const card of cards) {
         const image = card.querySelector('img'), source = image.dataset.src;
-        const entry = entries[Number(card.dataset.index)];
         const index = Number(card.dataset.index), shouldLoad = index >= window.start && index <= window.end;
         image.loading = shouldLoad ? 'eager' : 'lazy';
-        if (shouldLoad) {
-          if (source && image.getAttribute('src') !== source) image.src = source;
-          if (!entry?.dimensions) image.onload = () => {
-            if (image.naturalWidth && image.naturalHeight && Number(card.dataset.index) < entries.length) {
-              const current = entries[Number(card.dataset.index)]; current.aspectRatio = image.naturalWidth / image.naturalHeight;
-              current.dimensions = [image.naturalWidth, image.naturalHeight];
-              card.style.setProperty('--overview-ratio', String(current.aspectRatio));
-              if (!overviewScrollFrame) overviewScrollFrame = requestAnimationFrame(() => {
-                overviewScrollFrame = 0; layoutOverview(); updateOverviewThumbnails(); checkOverviewCache();
-              });
-            }
+        if (!shouldLoad || !source) { image.onload = null; if (image.hasAttribute('src')) image.removeAttribute('src'); continue; }
+        if (image.getAttribute('src') !== source) {
+          const key = card.dataset.key;
+          const loaded = () => {
+            if (closed || !image.naturalWidth || !image.naturalHeight || image.currentSrc !== source || image.dataset.src !== source) return;
+            const current = entries.find(item => item.key === key);
+            if (!current || current.thumb !== source) return;
+            const ratio = image.naturalWidth / image.naturalHeight;
+            const changed = Math.abs(current.aspectRatio - ratio) > .001;
+            current.aspectRatio = ratio; current.dimensions = [image.naturalWidth, image.naturalHeight];
+            if (changed) queueOverviewCommit();
           };
+          image.onload = loaded;
+          image.src = source;
+          if (image.complete) loaded();
         }
-        else image.removeAttribute('src');
       }
     }
     function scheduleOverviewCacheCheck() {
@@ -840,11 +1062,11 @@
     }
     async function scanMore(direction = 1, force = false, targetCount = 6) {
       const state = scanStates[direction];
-      if (scanPromise || closed || !collection.scope || ((!force && (state.paused || state.ended)) || performance.now() - state.lastAttempt < 600)) return scanPromise;
+      if (scanPromise || closed || !collection.scope || state.ended || (!force && state.paused) || performance.now() - state.lastAttempt < 600) return scanPromise;
       state.paused = state.ended = state.failed = false; state.lastAttempt = performance.now(); scanningDirection = direction;
       scanController = new AbortController();
       const signal = scanController.signal;
-      if (overviewOpen) setOverviewStatus('overviewLoading');
+      if (overviewOpen) updateOverviewStatus();
       const initialCount = entries.length;
       const target = Math.max(1, Math.min(6, Math.floor(Number(targetCount) || 6)));
       scanPromise = (async () => {
@@ -870,7 +1092,10 @@
       })().finally(() => {
         scanPromise = null; scanController = null;
         updateNavigationButtons();
-        if (!closed && overviewOpen) renderOverview();
+        if (!closed && overviewOpen) {
+          if (edgeSide === direction) resetOverviewEdge(true);
+          updateOverviewStatus(); queueOverviewCommit();
+        }
       });
       return scanPromise;
     }
@@ -884,27 +1109,51 @@
     function enterOverview() {
       if (overviewOpen) return;
       endHold();
+      const snapshot = activeSnapshot();
+      const key = entries[activeIndex()]?.key;
       if (!overviewGrid.children.length && !overviewAnchor) {
         const selected = entries[activeIndex()];
         if (selected) overviewAnchor = { key: selected.key, x: .5, y: .5 };
       }
       overviewRecent = pictureState();
       if (!fromOverview || !overviewReturn) overviewReturn = overviewRecent;
-      overviewOpen = true; overview.classList.add('active'); overview.setAttribute('aria-hidden', 'false');
+      overviewOpen = true; pictureClick = 0;
+      overviewShell.hidden = false;
+      overview.classList.add('active'); overview.setAttribute('aria-hidden', 'false');
       updateOverviewButton();
       compare.classList.toggle('active', false); stage.hidden = true; compare.setAttribute('aria-hidden', 'true');
       showStrip(false); $('.counter').textContent = `${entries.length}`;
-      renderOverview(); overview.focus({ preventScroll: true });
+      renderOverview(overviewAnchor, false); overview.focus({ preventScroll: true });
+      const card = overviewCards.get(key);
+      if (card) {
+        const box = overviewCardBox(card), viewport = overview.getBoundingClientRect();
+        const horizontal = settings.overviewDirection === 'horizontal';
+        const top = viewport.top + parseFloat(getComputedStyle(overview).paddingTop);
+        const rect = { left: viewport.left, right: viewport.right, top, bottom: viewport.bottom };
+        if (!clipBox(box, rect)) {
+          if (horizontal) overview.scrollLeft += box.right < rect.left ? box.left - rect.left : Math.min(box.left - rect.left, box.right - rect.right);
+          else overview.scrollTop += box.bottom < rect.top ? box.top - rect.top : Math.min(box.top - rect.top, box.bottom - rect.bottom);
+        }
+        const image = card.querySelector('img');
+        const target = clipBox(image.getBoundingClientRect(), rect);
+        returnFeedback(snapshot, target, viewer, reducedMotion.matches);
+      }
     }
     async function exitOverview(selectImage = false, selectedIndex = -1, explicitMode = null, restoreParent = false) {
       if (!overviewOpen) return;
       overviewAnchor = captureOverviewAnchor();
       const state = restoreParent ? overviewReturn : overviewRecent;
-      overviewOpen = false;
+      overviewPress?.animations.forEach(animation => animation.cancel());
+      overviewOpen = false; overviewPress = null; pictureClick = 0;
+      overviewLayoutAnchor = null;
+      lens.feedbackController?.abort();
+      clearTimeout(overviewCommitTimer);
+      overviewCommitTimer = overviewCommitStarted = 0; overviewDirty = false;
       overview.classList.remove('active'); overview.setAttribute('aria-hidden', 'true');
+      overviewShell.hidden = true; resetOverviewEdge();
       updateOverviewButton();
       scanController?.abort(); scanRestore?.(); scanRestore = null;
-      setOverviewStatus('', false);
+      updateOverviewStatus();
       const resolveIndex = (key, fallback) => {
         const found = entries.findIndex(entry => entry.key === key);
         return found >= 0 ? found : Math.max(0, Math.min(entries.length - 1, fallback));
@@ -1041,7 +1290,8 @@
       const selected = Math.max(0, Math.min(entries.length - 1, activeIndex()));
       if (overviewOpen) {
         const focusedCard = shadow.activeElement?.closest?.('.overview-card');
-        exitOverview(true, focusedCard ? Number(focusedCard.dataset.index) : centralOverviewIndex(), enabled); return;
+        const selected = focusedCard ? entries.findIndex(entry => entry.key === focusedCard.dataset.key) : -1;
+        exitOverview(true, selected >= 0 ? selected : centralOverviewIndex(), enabled); return;
       }
       compareEnabled = enabled; settings.compareEnabled = enabled;
       if (enabled) {
@@ -1056,7 +1306,6 @@
     }
     function refresh(direction = scanningDirection) {
       if (closed || standalone) return;
-      const anchor = overviewOpen ? captureOverviewAnchor() : null;
       const leftKey = compareEnabled ? entries[compareLeft]?.key : entries[index]?.key;
       const rightKey = compareEnabled ? entries[compareRight]?.key : null;
       const current = entries[compareEnabled ? activeIndex() : index];
@@ -1096,16 +1345,16 @@
         }
         updateNavigationButtons();
         cacheNeighbors(); if (strip.classList.contains('visible')) renderStrip();
-        if (overviewOpen) renderOverview();
+        if (overviewOpen) queueOverviewCommit();
       }
-      if (overviewOpen && refreshed && !changed) renderOverview();
-      if (overviewOpen) restoreOverviewAnchor(anchor);
+      if (overviewOpen && refreshed && !changed) queueOverviewCommit();
     }
     function storageChanged(changes, area) {
       if (area !== 'local' || !changes.settings) return;
       const previouslyLocked = settings.zoomLocked;
       const previousLanguage = settings.language;
       settings = lens.settings.normalize(changes.settings.newValue); cacheNeighbors();
+      viewer.classList.toggle('toolbar-auto', settings.toolbarAutoHide);
       if (settings.compareEnabled !== compareEnabled) setCompare(settings.compareEnabled, false);
       dividerPosition = Math.max(settings.dividerMin / 100, Math.min(1 - settings.dividerMin / 100, dividerPosition));
       transform(); updateNavigationButtons();
@@ -1114,7 +1363,7 @@
       if (previousLanguage !== settings.language) refreshLanguage();
       else lens.preferences.fill(form, settings);
       if (strip.classList.contains('visible')) renderStrip();
-      if (overviewOpen) renderOverview();
+      if (overviewOpen) { updateRuler(); queueOverviewCommit(); }
     }
     const observer = new MutationObserver(records => {
       if (!records.some(record => !host.contains(record.target) && (collection.scope?.contains(record.target) || record.target === scopeParent))) return;
@@ -1128,29 +1377,71 @@
     on($('.prev'), 'click', () => navigate(-1)); on($('.next'), 'click', () => navigate(1));
     on($('.compare-toggle'), 'click', () => setCompare(!compareEnabled));
     on($('.overview-toggle'), 'click', () => overviewOpen ? exitOverview(false) : enterOverview());
-    on(viewer, 'click', event => {
-      if (!overviewOpen && fromOverview && lastOverviewPick && performance.now() - lastOverviewPick.at < 450 &&
-          Math.hypot(event.clientX - lastOverviewPick.x, event.clientY - lastOverviewPick.y) < 6 &&
-          !event.composedPath().some(node => node?.tagName === 'BUTTON')) {
-        event.preventDefault(); event.stopImmediatePropagation(); lastOverviewPick = null; enterOverview();
+    on(overviewGrid, 'pointerdown', event => {
+      if (!event.isPrimary || event.button !== 0) return;
+      const card = event.target.closest('.overview-card');
+      if (card) {
+        const animations = [...card.getAnimations(), ...(edgeAnimation ? [edgeAnimation] : [])].filter(animation => animation.playState === 'running');
+        animations.forEach(animation => animation.pause());
+        overviewPress = { pointer: event.pointerId, key: card.dataset.key, animations };
       }
-    }, { capture: true });
+    });
+    const releaseOverviewPress = event => {
+      const press = overviewPress;
+      if (!press || (event.pointerId !== undefined && press.pointer !== event.pointerId)) return;
+      setTimeout(() => {
+        if (overviewPress !== press) return;
+        overviewPress = null;
+        press.animations.forEach(animation => { if (animation.playState === 'paused') animation.play(); });
+        if (edgeSide && (!scanController || scanningDirection !== edgeSide || overviewEdgeDistance(edgeSide) > 2)) {
+          resetOverviewEdge(true, scanStates[edgeSide].ended || !collection.scope);
+        }
+        if (overviewDirty) queueOverviewCommit();
+      }, 0);
+    };
+    on(window, 'pointerup', releaseOverviewPress, { capture: true });
+    on(window, 'pointercancel', releaseOverviewPress, { capture: true });
+    on(window, 'blur', releaseOverviewPress);
+    on(overviewGrid, 'click', event => {
+      const key = event.target.closest('.overview-card')?.dataset.key;
+      if (!key || (event.detail && overviewPress && key !== overviewPress.key)) return;
+      const selected = entries.findIndex(entry => entry.key === key);
+      if (selected >= 0) exitOverview(true, selected);
+    });
     on(overview, 'scroll', () => {
       const offset = settings.overviewDirection === 'horizontal' ? overview.scrollLeft : overview.scrollTop;
-      if (Math.abs(offset - lastOverviewOffset) > 2) overviewDirection = offset > lastOverviewOffset ? 1 : -1;
+      if (Math.abs(offset - lastOverviewOffset) > .5) {
+        overviewDirection = offset > lastOverviewOffset ? 1 : -1;
+        overviewLayoutAnchor = null;
+      }
       lastOverviewOffset = offset;
       if (overviewScrollFrame) return;
-      overviewScrollFrame = requestAnimationFrame(() => { overviewScrollFrame = 0; updateOverviewThumbnails(); checkOverviewCache(true); });
+      overviewScrollFrame = requestAnimationFrame(() => {
+        overviewScrollFrame = 0;
+        if (edgeSide && overviewEdgeDistance(edgeSide) > 2) resetOverviewEdge(true);
+        updateOverviewThumbnails(); checkOverviewCache(true); updateOverviewStatus();
+      });
     }, { passive: true });
     on(overview, 'wheel', event => {
-      if (event.ctrlKey || event.composedPath().includes(form)) return;
-      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      overviewDirection = delta < 0 ? -1 : 1;
-      if (settings.overviewDirection === 'horizontal') {
+      if (event.ctrlKey || event.metaKey || event.composedPath().includes(form)) return;
+      const horizontal = settings.overviewDirection === 'horizontal';
+      const delta = (horizontal || event.altKey || event.shiftKey) && Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (!delta) return;
+      if (event.altKey || event.shiftKey) {
         event.preventDefault(); event.stopPropagation();
-        overview.scrollLeft += delta * (event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? overview.clientWidth : 1);
+        setOverviewSize(settings.overviewScale + (delta < 0 ? 1 : -1) * (event.shiftKey ? 1 : settings.zoomStep)); return;
       }
-      requestAnimationFrame(() => checkOverviewCache(true));
+      overviewDirection = delta < 0 ? -1 : 1;
+      if (edgeSide && overviewDirection !== edgeSide) resetOverviewEdge();
+      const amount = delta * (event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? (horizontal ? overview.clientWidth : overview.clientHeight) : 1);
+      const atEdge = overviewEdgeDistance(overviewDirection) <= 1;
+      if (!atEdge && edgeAnimation) resetOverviewEdge();
+      if (horizontal || atEdge) {
+        event.preventDefault(); event.stopPropagation();
+        if (!atEdge) overview.scrollLeft += amount;
+      }
+      checkOverviewCache(true);
+      if (atEdge) pushOverviewEdge(overviewDirection, Math.abs(amount));
     }, { passive: false });
     for (let side = 0; side < comparePanes.length; side++) {
       const pane = comparePanes[side];
@@ -1189,6 +1480,7 @@
       on($(selector), 'pointerleave', () => { $(selector).classList.remove('pointer-preview'); updateEdgePreviews(); });
     }
     on($('.fit'), 'click', () => {
+      if (overviewOpen) { setOverviewSize(100); return; }
       if (compareEnabled ? !compareDims.some(Boolean) : (!width || photo.hidden)) return;
       const currentScale = compareEnabled ? compareScale : scale;
       const cycle = preset || { original: currentScale, step: 0 };
@@ -1215,15 +1507,20 @@
     });
     on($('.zoom-slider'), 'pointerdown', () => { sliding = true; });
     for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on($('.zoom-slider'), type, () => { sliding = false; updateRuler(); });
-    on($('.zoom-slider'), 'input', event => setScale(lens.controls.fromPosition(event.target.value, rulerMaximum) / 100));
+    const applyRuler = position => {
+      const value = lens.controls.fromPosition(position, rulerMaximum, overviewOpen);
+      if (overviewOpen) setOverviewSize(value); else setScale(value / 100);
+    };
+    on($('.zoom-slider'), 'input', event => applyRuler(event.target.value));
     on($('.zoom-ticks'), 'click', event => {
       const tick = event.target.closest('[data-tick]');
-      if (tick) setScale(lens.controls.fromPosition(Number(tick.dataset.tick), rulerMaximum) / 100);
+      if (tick) applyRuler(Number(tick.dataset.tick));
     });
     on($('.zoom-control'), 'wheel', event => {
       event.preventDefault(); event.stopPropagation();
       const delta = event.deltaY || event.deltaX;
       if (!delta) return;
+      if (overviewOpen) { setOverviewSize(settings.overviewScale + (delta < 0 ? 1 : -1) * (event.shiftKey ? 1 : settings.zoomStep)); return; }
       const currentScale = compareEnabled ? compareScale : scale;
       if (event.shiftKey) setScale((Math.round(currentScale * 100) + (delta < 0 ? 1 : -1)) / 100);
       else zoom(delta < 0 ? 1 : -1);
@@ -1354,12 +1651,16 @@
     for (const target of [stage, compare]) {
       on(target, 'pointermove', followHold);
       on(target, 'pointerup', endHold); on(target, 'pointercancel', endHold); on(target, 'lostpointercapture', endHold);
+      on(target, 'click', event => {
+        if (event.altKey || event.composedPath().some(node => node?.tagName === 'BUTTON')) { pictureClick = 0; return; }
+        pictureClick = event.detail === 1 || !pictureClick ? 1 : pictureClick + 1;
+      });
     }
     on(window, 'blur', endHold);
     on(viewer, 'dblclick', event => {
       if (overviewOpen) { event.preventDefault(); event.stopPropagation(); return; }
       if (event.altKey || event.composedPath().some(node => node === divider || node === form || node?.tagName === 'BUTTON')) return;
-      if (fromOverview && overviewReturn) { event.preventDefault(); enterOverview(); }
+      if (fromOverview && overviewReturn) { if (pictureClick >= 2) { event.preventDefault(); enterOverview(); } }
       else if (settings.doubleClickExit) { event.preventDefault(); close(); }
     });
     on(viewer, 'pointermove', event => {
@@ -1395,12 +1696,21 @@
         event.preventDefault(); event.stopImmediatePropagation();
         const horizontal = settings.overviewDirection === 'horizontal', axis = horizontal ? 'left' : 'top';
         overviewDirection = ['ArrowUp', 'ArrowLeft', 'Home'].includes(event.key) ? -1 : 1;
+        if (edgeSide && overviewDirection !== edgeSide) resetOverviewEdge();
+        if (overviewEdgeDistance(overviewDirection) <= 1) {
+          checkOverviewCache(true); pushOverviewEdge(overviewDirection, 100); return;
+        }
         if (event.key === 'Home') overview.scrollTo({ [axis]: 0, behavior: 'smooth' });
         else if (event.key === 'End') overview.scrollTo({ [axis]: horizontal ? overview.scrollWidth : overview.scrollHeight, behavior: 'smooth' });
         else overview.scrollBy({ [axis]: (['ArrowDown', 'ArrowRight'].includes(event.key) ? 1 : -1) * Math.max(120, (horizontal ? overview.clientWidth : overview.clientHeight) * .35), behavior: 'smooth' });
         requestAnimationFrame(() => checkOverviewCache(true)); return;
       }
-      if (overviewOpen) return;
+      if (overviewOpen) {
+        if (!event.altKey && !event.ctrlKey && !event.metaKey && event.key.toLowerCase() === 'f') {
+          event.preventDefault(); event.stopImmediatePropagation(); $('.fullscreen').click();
+        }
+        return;
+      }
       if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
         for (const selector of ['.prev', '.next']) $(selector).classList.remove('pointer-preview');
       }
@@ -1412,10 +1722,10 @@
       if (event.key === '0') fit(); if (event.key === '+' || event.key === '=') zoom(1); if (event.key === '-') zoom(-1);
       if (event.key.toLowerCase() === 'f') $('.fullscreen').click();
     }, { capture: true });
-    on(window, 'resize', () => { fit(false); if (overviewOpen) { layoutOverview(); updateOverviewThumbnails(); checkOverviewCache(); } });
+    on(window, 'resize', () => { if (overviewOpen) queueOverviewCommit(); else fit(false); });
     const sizeObserver = new ResizeObserver(() => {
       if (closed || !overviewOpen) return;
-      layoutOverview(); updateOverviewThumbnails();
+      queueOverviewCommit();
     });
     sizeObserver.observe(overview);
     signal.addEventListener('abort', () => sizeObserver.disconnect(), { once: true });
@@ -1428,6 +1738,7 @@
     });
     on(window, 'pagehide', close);
     rememberSourceAnchors();
+    viewer.classList.toggle('toolbar-auto', settings.toolbarAutoHide);
     dialog.showModal(); viewer.focus();
     show(index);
   };

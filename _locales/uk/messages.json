@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Автоматично приховувати панель інструментів"
+  },
+  "overviewSize": {
+    "message": "Розмір мініатюр"
+  },
+  "overviewSizeReset": {
+    "message": "Повернути розмір мініатюр до 100 %"
+  },
+  "overviewSizeTo": {
+    "message": "Установити розмір мініатюр $arg1$ %",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Раніше"
+  },
+  "overviewLater": {
+    "message": "Далі"
+  },
+  "overviewStart": {
+    "message": "Початок галереї"
+  },
   "extName": {
     "message": "Imageseec"
   },

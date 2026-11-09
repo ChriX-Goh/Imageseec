@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Masquer automatiquement la barre d’outils"
+  },
+  "overviewSize": {
+    "message": "Taille des vignettes"
+  },
+  "overviewSizeReset": {
+    "message": "Rétablir la taille des vignettes à 100 %"
+  },
+  "overviewSizeTo": {
+    "message": "Régler la taille des vignettes à $arg1$ %",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Avant"
+  },
+  "overviewLater": {
+    "message": "Après"
+  },
+  "overviewStart": {
+    "message": "Début de la galerie"
+  },
   "extName": {
     "message": "Imageseec"
   },

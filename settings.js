@@ -1,9 +1,9 @@
 (() => {
   const lens = globalThis.ImageLens ||= {};
-  const defaults = Object.freeze({ language: 'auto', zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
+  const defaults = Object.freeze({ language: 'auto', toolbarAutoHide: false, overviewScale: 100, zoomStep: 15, holdZoom: 200, cacheBefore: 2, cacheAfter: 2, previewBefore: 3, previewAfter: 3, overviewCacheBeforeMode: 'auto', overviewCacheBefore: 12, overviewCacheAfterMode: 'auto', overviewCacheAfter: 12, overviewDirection: 'vertical', overviewAlignment: 'auto', overviewGap: 12, overviewClean: false, dividerMin: 33, compareStep: 2, compareEnabled: false, zoomLocked: false, doubleClickExit: true, quickOpen: true });
   const languages = new Set(['auto', 'en', 'zh_CN', 'zh_TW', 'ja', 'ko', 'de', 'fr', 'es', 'ru', 'uk', 'pl']);
   const enums = { language: languages, overviewCacheBeforeMode: new Set(['auto', 'custom']), overviewCacheAfterMode: new Set(['auto', 'custom']), overviewDirection: new Set(['vertical', 'horizontal']), overviewAlignment: new Set(['auto', 'vertical', 'horizontal']) };
-  const limits = { zoomStep: [1, 100], holdZoom: [100, 800], cacheBefore: [0, 12], cacheAfter: [0, 12], previewBefore: [0, 12], previewAfter: [0, 12], overviewGap: [0, 48], dividerMin: [10, 33], compareStep: [1, 2] };
+  const limits = { overviewScale: [25, 300], zoomStep: [1, 100], holdZoom: [100, 800], cacheBefore: [0, 12], cacheAfter: [0, 12], previewBefore: [0, 12], previewAfter: [0, 12], overviewGap: [0, 48], dividerMin: [10, 33], compareStep: [1, 2] };
   const unboundedCounts = new Set(['overviewCacheBefore', 'overviewCacheAfter']);
   function normalize(value = {}) {
     value = value && typeof value === 'object' ? value : {};

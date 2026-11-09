@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Auto-hide toolbar"
+  },
+  "overviewSize": {
+    "message": "Thumbnail size"
+  },
+  "overviewSizeReset": {
+    "message": "Reset thumbnail size to 100%"
+  },
+  "overviewSizeTo": {
+    "message": "Set thumbnail size to $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Earlier"
+  },
+  "overviewLater": {
+    "message": "Later"
+  },
+  "overviewStart": {
+    "message": "Start of gallery"
+  },
   "extName": {
     "message": "Imageseec"
   },

@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "Ocultar automáticamente la barra de herramientas"
+  },
+  "overviewSize": {
+    "message": "Tamaño de las miniaturas"
+  },
+  "overviewSizeReset": {
+    "message": "Restablecer el tamaño de las miniaturas al 100 %"
+  },
+  "overviewSizeTo": {
+    "message": "Ajustar el tamaño de las miniaturas al $arg1$ %",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "Antes"
+  },
+  "overviewLater": {
+    "message": "Después"
+  },
+  "overviewStart": {
+    "message": "Inicio de la galería"
+  },
   "extName": {
     "message": "Imageseec"
   },

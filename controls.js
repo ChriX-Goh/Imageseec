@@ -1,37 +1,46 @@
 (() => {
   const lens = globalThis.ImageLens ||= {};
   const ticks = [0, 25, 50, 75, 100];
+  const overviewTicks = [25, 50, 100, 200, 300];
   function rulerMax(percent) { return [100, 150, 200, 300, 500].find(n => percent <= n) || 500; }
-  function fromPosition(position, maximum = 100) {
-    const values = [0, 25, 50, 75, maximum];
+  function fromPosition(position, maximum = 100, overview = false) {
+    const values = overview ? overviewTicks : [0, 25, 50, 75, maximum];
     const n = Math.max(0, Math.min(4, Number(position)));
     const i = Math.min(3, Math.floor(n));
     return values[i] + (values[i + 1] - values[i]) * (n - i);
   }
-  function toPosition(percent, maximum = 100) {
-    const values = [0, 25, 50, 75, maximum];
-    const n = Math.max(0, Math.min(maximum, Number(percent)));
+  function toPosition(percent, maximum = 100, overview = false) {
+    const values = overview ? overviewTicks : [0, 25, 50, 75, maximum];
+    const n = Math.max(values[0], Math.min(values[4], Number(percent)));
     const i = Math.max(0, values.findIndex((value, index) => index < 4 && n <= values[index + 1]));
     return i + (n - values[i]) / (values[i + 1] - values[i]);
   }
   function holdPan(initialPan, anchor, delta, ratio) { return anchor - (anchor - initialPan) * ratio - delta * ratio; }
   function wheelMode(event) { return event.shiftKey ? 'fine' : event.altKey ? 'zoom' : 'navigate'; }
-  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12) {
+  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12, sizePercent = 100) {
     const padding = clean ? 0 : 12, caption = clean ? 0 : 27;
+    const scale = Math.max(25, Math.min(300, sizePercent)) / 100;
     const safe = ratios.map(r => Number.isFinite(r) && r > 0 ? r : 1);
     const boxes = [];
     const resolved = alignment === 'auto' ? horizontal ? 'horizontal' : 'vertical' : alignment;
     if (resolved === (horizontal ? 'horizontal' : 'vertical')) {
       const limit = horizontal ? height : width;
-      const target = horizontal ? 180 + padding + caption : 210 + padding;
+      const trim = horizontal ? padding + caption : padding;
+      const base = (horizontal ? 180 : 210) + trim;
+      const target = (base - trim) * scale + trim;
       const count = Math.max(1, Math.floor((limit + gap) / (target + gap)));
-      const cross = Math.max(1, (limit - gap * (count - 1)) / count);
+      const nominalCount = Math.max(1, Math.floor((limit + gap) / (base + gap)));
+      const nominalCross = (limit - gap * (nominalCount - 1)) / nominalCount;
+      const fitCross = (limit - gap * (count - 1)) / count;
+      // Keep the default packing exactly, but do not stretch a lone track across a wide viewport.
+      const cross = Math.max(1, scale > 1 ? Math.min(fitCross, (nominalCross - trim) * scale + trim) : fitCross);
+      const inset = Math.max(0, (limit - cross * count - gap * (count - 1)) / 2);
       const ends = Array(count).fill(0);
       for (const ratio of safe) {
         const lane = ends.indexOf(Math.min(...ends));
         const w = horizontal ? Math.max(1, cross - padding - caption) * ratio + padding : cross;
         const h = horizontal ? cross : Math.max(1, cross - padding) / ratio + padding + caption;
-        boxes.push({ x: horizontal ? ends[lane] : lane * (cross + gap), y: horizontal ? lane * (cross + gap) : ends[lane], width: w, height: h });
+        boxes.push({ x: horizontal ? ends[lane] : inset + lane * (cross + gap), y: horizontal ? inset + lane * (cross + gap) : ends[lane], width: w, height: h });
         ends[lane] += (horizontal ? w : h) + gap;
       }
       const extent = Math.max(0, ...ends) - (safe.length ? gap : 0);
@@ -40,7 +49,7 @@
     let offset = 0; const bands = [];
     for (let start = 0; start < safe.length;) {
       let end = start, sum = 0;
-      const target = horizontal ? Math.min(210, width) : Math.min(180, Math.max(100, width / 3));
+      const target = horizontal ? Math.min(210 * scale, width) : Math.min(180, Math.max(100, width / 3)) * scale;
       const limit = horizontal ? height : width;
       while (end < safe.length) {
         const value = horizontal ? 1 / safe[end] : safe[end];
@@ -78,5 +87,5 @@
     const end = Math.min(count - 1, last + Math.max(0, Math.floor(Number(after) || 0)));
     return { start, end, before: first - start, after: end - last };
   }
-  lens.controls = { ticks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange };
+  lens.controls = { ticks, overviewTicks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange };
 })();

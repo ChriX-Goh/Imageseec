@@ -30,20 +30,21 @@
     const scroller = document.querySelector('#gallery-scroll');
     const gallery = scroller.querySelector('[role="grid"]');
     let count = 6;
-    scroller.addEventListener('scroll', () => {
-      const target = Math.min(30, 6 + Math.floor(scroller.scrollTop / 260) * 6);
+    function fill(target, lazy = true) {
       while (count < target) {
         count++;
         const figure = document.createElement('figure');
         const image = new Image();
-        image.loading = 'lazy'; image.src = `/image/${count}`; image.alt = `Landscape ${count}`;
+        image.loading = lazy ? 'lazy' : 'eager'; image.src = `/image/${count}`; image.alt = `Landscape ${count}`;
         image.setAttribute('data-full', `/full/${count}`);
         image.setAttribute('data-srcset', `/image/${count} 320w, /full/${count} 1800w`);
         const link = document.createElement('a'); link.href = `/full/${count}`; link.append(image);
         const caption = document.createElement('figcaption'); caption.textContent = image.alt;
         figure.append(link, caption); gallery.append(figure);
       }
-    }, { passive: true });
+    }
+    if (new URLSearchParams(location.search).has('loaded')) fill(80, false);
+    else scroller.addEventListener('scroll', () => fill(Math.min(30, 6 + Math.floor(scroller.scrollTop / 260) * 6)), { passive: true });
   </script>
 </body>
 </html>

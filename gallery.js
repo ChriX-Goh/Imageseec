@@ -8,7 +8,7 @@
   const srcsetAttributes = ['srcset', 'data-srcset', 'data-lazy-srcset', 'data-original-srcset'];
   const backgroundAttributes = ['data-bg', 'data-background', 'data-background-image'];
   const imageUrlParameters = new Set(['mediaurl', 'imgurl', 'imageurl', 'imagesrc', 'original', 'originalurl', 'originalimage', 'originalimageurl', 'fullimage', 'fullimageurl', 'fullsrc', 'fullsizeimage', 'contenturl', 'asseturl', 'fileurl', 'downloadurl']);
-  const observedAttributes = unique(['src', ...srcsetAttributes, ...sourceAttributes, ...backgroundAttributes, 'style', 'class']);
+  const observedAttributes = unique(['src', ...srcsetAttributes, ...sourceAttributes, ...backgroundAttributes, 'width', 'height', 'style', 'class']);
 
   function url(value) {
     if (!value) return '';
@@ -254,11 +254,18 @@
     if (!variants.length) return null;
     const first = variants.find(value => !/^data:image\/(?:gif|svg\+xml)/i.test(value)) || variants[0];
     const rect = node.getBoundingClientRect?.() || {};
-    const knownSize = node.naturalWidth > 2 && node.naturalHeight > 2;
-    const width = knownSize ? node.naturalWidth : rect.width || 1, height = knownSize ? node.naturalHeight : rect.height || 1;
+    const thumb = thumbSource(node, variants);
+    const knownSize = node.naturalWidth > 2 && node.naturalHeight > 2 && url(node.currentSrc || node.getAttribute?.('src')) === thumb;
+    const width = Number(node.getAttribute?.('width')), height = Number(node.getAttribute?.('height'));
+    const styleRatio = !knownSize && !(width > 0 && height > 0) && typeof getComputedStyle === 'function' ? getComputedStyle(node).aspectRatio : '';
+    const declared = styleRatio?.match(/(?:^|\s)([\d.]+)\s*\/\s*([\d.]+)$/);
+    const aspectRatio = knownSize ? node.naturalWidth / node.naturalHeight
+      : width > 0 && height > 0 ? width / height
+      : declared && Number(declared[1]) > 0 && Number(declared[2]) > 0 ? Number(declared[1]) / Number(declared[2])
+      : rect.width > 0 && rect.height > 0 ? rect.width / rect.height : 1;
     return {
-      key: key(first), aliases: unique(variants.map(key)), sources: variants, thumb: thumbSource(node, variants),
-      title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio: width / height,
+      key: key(first), aliases: unique(variants.map(key)), sources: variants, thumb,
+      title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio,
       dimensions: knownSize ? [node.naturalWidth, node.naturalHeight] : null, node
     };
   }
@@ -319,7 +326,9 @@
       if (found) {
         const id = found.key;
         const aliases = unique([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(key)]);
-        Object.assign(found, entry, { key: id, aliases });
+        const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
+          ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio } : {};
+        Object.assign(found, entry, geometry, { key: id, aliases });
         matched.set(entry, found);
       }
     }

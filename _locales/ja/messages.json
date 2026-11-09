@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "ツールバーを自動的に隠す"
+  },
+  "overviewSize": {
+    "message": "サムネイルのサイズ"
+  },
+  "overviewSizeReset": {
+    "message": "サムネイルのサイズを 100% に戻す"
+  },
+  "overviewSizeTo": {
+    "message": "サムネイルのサイズを $arg1$% に設定",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "前方"
+  },
+  "overviewLater": {
+    "message": "後方"
+  },
+  "overviewStart": {
+    "message": "ギャラリーの先頭"
+  },
   "extName": {
     "message": "Imageseec"
   },

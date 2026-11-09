@@ -1,4 +1,30 @@
 {
+  "toolbarAutoHide": {
+    "message": "自動隱藏工具列"
+  },
+  "overviewSize": {
+    "message": "縮圖大小"
+  },
+  "overviewSizeReset": {
+    "message": "將縮圖大小重設為 100%"
+  },
+  "overviewSizeTo": {
+    "message": "將縮圖大小設為 $arg1$%",
+    "placeholders": {
+      "arg1": {
+        "content": "$1"
+      }
+    }
+  },
+  "overviewEarlier": {
+    "message": "前方"
+  },
+  "overviewLater": {
+    "message": "後方"
+  },
+  "overviewStart": {
+    "message": "已到圖庫開頭"
+  },
   "extName": {
     "message": "Imageseec"
   },
