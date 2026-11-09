@@ -174,12 +174,20 @@
   function nestedGalleryRows(parent) {
     const children = [...(parent.children || [])];
     const cards = children.filter(cardHasMedia);
-    if (cards.length < 2 || cards.length / Math.max(1, children.length) < .65) return false;
+    if (cards.length < 2) return false;
     const rows = cards.map(card => {
       const media = mediaNodes(card).filter(isVisibleCandidate);
       return { card, media };
     }).filter(row => row.media.length >= 2 && repeatedCards(row.card));
     if (rows.length < 2 || rows.length / cards.length < .75) return false;
+    // A row-based lazy grid may reserve most rows before creating any IMG.
+    // Include those rows only when their tag/classes match the populated rows.
+    const representative = rows[0].card;
+    const classes = String(representative.className || '').split(/\s+/).filter(Boolean);
+    const sameRow = node => node.tagName === representative.tagName && (!classes.length ||
+      classes.every(name => String(node.className || '').split(/\s+/).includes(name)));
+    if (cards.length / Math.max(1, children.length) < .65 &&
+        (!classes.length || children.filter(sameRow).length / children.length < .8)) return false;
     const keys = rows.flatMap(row => row.media.map(node => key(sources(node)[0]))).filter(Boolean);
     return keys.length >= 4 && new Set(keys).size >= 4 && keys.length <= 240;
   }
@@ -267,18 +275,31 @@
     return {
       key: key(first), aliases: unique(variants.map(key)), sources: variants, thumb,
       title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio,
+      aspectRatioSource: knownSize ? 'intrinsic' : width > 0 && height > 0 || declared ? 'declared'
+        : rect.width > 0 && rect.height > 0 ? 'measured' : 'fallback',
       dimensions: knownSize ? [node.naturalWidth, node.naturalHeight] : null, node
     };
   }
   const slotIds = new WeakMap();
   let nextSlotId = 0;
-  function slotsFor(scope, seed) {
+  function slotsFor(scope, seed, nested = scope && nestedGalleryRows(scope)) {
     if (!scope || !seed) return [];
+    let container = scope;
+    if (nested) {
+      while (seed.parentElement && seed.parentElement !== scope) seed = seed.parentElement;
+      container = seed;
+      // Use a populated row to infer its card shape, then flatten only peer rows.
+      seed = mediaNodes(container).find(isVisibleCandidate);
+      if (!seed) return [];
+    }
     let card = seed;
-    while (card.parentElement && card.parentElement !== scope) card = card.parentElement;
-    if (card.parentElement !== scope) return [];
+    while (card.parentElement && card.parentElement !== container) card = card.parentElement;
+    if (card.parentElement !== container) return [];
     const classes = new Set(String(card.className || '').split(/\s+/).filter(Boolean));
-    const children = [...(scope.children || [])];
+    const rowClasses = String(container.className || '').split(/\s+/).filter(Boolean);
+    const rows = nested ? [...scope.children].filter(node => node.tagName === container.tagName &&
+      rowClasses.every(name => String(node.className || '').split(/\s+/).includes(name))) : [scope];
+    const children = rows.flatMap(row => [...(row.children || [])]);
     const cards = children.filter(node => {
       if (node.tagName !== card.tagName) return false;
       const rect = node.getBoundingClientRect?.();
@@ -286,7 +307,16 @@
       if (rect.width < 72 || rect.height < 72 || node.closest?.('header, nav, footer')) return false;
       const own = new Set(String(node.className || '').split(/\s+/).filter(Boolean));
       const similar = classes.size && [...classes].filter(name => own.has(name)).length >= classes.size * .75;
-      return node === card || (similar && (mediaNodes(node).length <= 1)) ||
+      const media = nested || similar ? mediaNodes(node) : [];
+      // A repeated row can contain a recommendation cluster shaped like one
+      // tile. Several independent links and no card-size image make it content,
+      // not an empty photo slot. Real image sets still have a primary image.
+      if (nested && node !== card && (node.querySelectorAll?.('a[href]')?.length || 0) > 1 &&
+          !media.some(item => {
+            const box = item.getBoundingClientRect();
+            return isVisibleCandidate(item) && box.width * box.height >= rect.width * rect.height * .35;
+          })) return false;
+      return node === card || (similar && (nested || media.length <= 1)) ||
         (!classes.size && cardHasMedia(node) && mediaNodes(node).length <= 1);
     });
     if (cards.length < 2) return [];
@@ -329,7 +359,7 @@
         const id = found.key;
         const aliases = unique([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(key)]);
         const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
-          ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio } : {};
+          ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
         Object.assign(found, entry, geometry, { key: id, aliases });
         matched.set(entry, found);
       }
@@ -363,18 +393,36 @@
     const modal = seed?.closest('[role="dialog"], dialog, [aria-modal="true"]');
     const albumSeed = modal && [...allImages, ...allMedia].find(node => !node.closest('[role="dialog"], dialog, [aria-modal="true"]') && matches(node) && scopeFor(node));
     const selected = albumSeed || seed;
-    const scope = scopeHint?.isConnected ? scopeHint : scopeFor(selected);
+    const knownNestedScope = scopeHint?.isConnected && nestedGalleryRows(scopeHint);
+    const discovered = knownNestedScope ? scopeHint : scopeFor(selected);
+    const scope = scopeHint?.isConnected
+      ? discovered && discovered !== scopeHint && discovered.contains?.(scopeHint) ? discovered : scopeHint
+      : discovered;
     // Never widen an uncertain result to the whole page; the structural passes above must find a group.
     const candidates = ordered(scope ? mediaNodes(scope) : selected ? [selected] : []);
-    const slots = slotsFor(scope, candidates.includes(selected) ? selected : candidates.find(isVisibleCandidate));
+    const nestedScope = knownNestedScope || Boolean(scope && nestedGalleryRows(scope));
+    const slots = slotsFor(scope, candidates.includes(selected) ? selected : candidates.find(isVisibleCandidate), nestedScope);
     const slotted = slots.length > 1 && (slots.some(slot => slot.pending) || slots.every(slot => slot.stable));
     const entries = [];
+    const primaryByCard = new Map();
     for (const node of candidates) {
-      if (slotted && !slots.some(slot => slot.node === node || slot.node === node.parentElement || slot.node.contains?.(node))) continue;
+      const slot = slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node));
+      if (slotted && !slot) continue;
       if (!eligible(node, selected, Boolean(scope))) continue;
+      if (slot && nestedScope) {
+        if (!primaryByCard.has(slot.node)) {
+          const primary = slot.node.contains?.(selected) && eligible(selected, selected, true) ? selected
+            : mediaNodes(slot.node).filter(media => eligible(media, selected, true)).sort((a, b) => {
+              const x = a.getBoundingClientRect(), y = b.getBoundingClientRect();
+              return y.width * y.height - x.width * x.height;
+            })[0];
+          primaryByCard.set(slot.node, primary);
+        }
+        const primary = primaryByCard.get(slot.node);
+        if (primary && primary !== node) continue;
+      }
       const entry = makeEntry(node);
       if (!entry || entries.some(old => sameEntry(old, entry))) continue;
-      const slot = slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node));
       if (slot) Object.assign(entry, { slotKey: slot.key, slotStable: slot.stable, slotNode: slot.node });
       entries.push(entry);
     }

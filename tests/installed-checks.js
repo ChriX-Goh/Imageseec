@@ -63,13 +63,13 @@
   if(total>=40)for(let n=0;n<Math.floor(total/5);n++)await key('ArrowRight');
   const beforeOverview=read(),expectedCenter=Number(beforeOverview.pair.split(' | ')[0])-1;await key('g');await delay(700);const parentKeys=[...root().querySelectorAll('.overview-card[aria-current="true"]')].map(c=>c.dataset.key);let vertical=read(),activeCard=root().querySelector(`.overview-card[data-index="${expectedCenter}"]`),activeBox=activeCard?.getBoundingClientRect(),overviewBox=root().querySelector('.overview').getBoundingClientRect(),activeCenterDelta=activeBox?Math.abs((activeBox.top+activeBox.bottom)/2-(overviewBox.top+overviewBox.bottom)/2):null;
   record('overview opens with active image at vertical center',activeCenterDelta!==null&&activeCenterDelta<=innerHeight*.15,{expectedCenter,centerDelta:activeCenterDelta,tolerance:innerHeight*.15,centerIndex:vertical.centerIndex,initialScrollTop:vertical.top});
-  // offsetLeft/Top round fractional layout coordinates; a 1px tie is not reordering.
-  const ordered=(cards,h)=>cards.every((b,n)=>!n||(h?b.x>=cards[n-1].x-1:b.y>=cards[n-1].y-1));
-  record('vertical fixed-slot order and single axis',!vertical.horizontal&&ordered(vertical.cards,false)&&vertical.width<=vertical.viewWidth+1,{count:vertical.total,width:vertical.width,view:vertical.viewWidth});
+  // Masonry lanes keep source order independently; mixed ratios can stagger neighbors in other lanes.
+  const ordered=(cards,h)=>{const ends=new Map();return cards.every(b=>{const lane=h?b.y:b.x,offset=h?b.x:b.y,previous=ends.get(lane);ends.set(lane,offset+(h?b.w:b.h));return previous===undefined||offset>=previous-1;});};
+  record('vertical masonry lane order and single axis',!vertical.horizontal&&ordered(vertical.cards,false)&&vertical.width<=vertical.viewWidth+1,{count:vertical.total,width:vertical.width,view:vertical.viewWidth});
   record('overview dedup and bidirectional preload',vertical.total>=total&&vertical.total===vertical.unique&&vertical.visibleCount>0&&vertical.preloadedBefore>0&&vertical.preloadedAfter>0,{total:vertical.total,before:vertical.preloadedBefore,after:vertical.preloadedAfter,visible:vertical.visibleCount});
   await key('ArrowDown');await delay(240);record('vertical scroll geometry',read().height>=read().viewHeight&&read().viewHeight>0,{height:read().height,viewport:read().viewHeight,trustedKeyboardCheckedSeparately:true});
   await set({overviewDirection:'horizontal',overviewClean:true});let horizontal=read();
-  record('horizontal fixed-slot order and single axis',horizontal.horizontal&&ordered(horizontal.cards,true)&&horizontal.height<=horizontal.viewHeight+1,{count:horizontal.total,height:horizontal.height,view:horizontal.viewHeight});
+  record('horizontal masonry lane order and single axis',horizontal.horizontal&&ordered(horizontal.cards,true)&&horizontal.height<=horizontal.viewHeight+1,{count:horizontal.total,height:horizontal.height,view:horizontal.viewHeight});
   record('borderless without captions',horizontal.cards.every(c=>c.border==='0px'&&c.caption==='none'),horizontal.cards.slice(0,1));
   const o=r.querySelector('.overview');o.dispatchEvent(new WheelEvent('wheel',{deltaY:220,bubbles:true,composed:true,cancelable:true}));await delay(150);
   record('horizontal wheel and preload',horizontal.width<=horizontal.viewWidth||read().left>0&&read().top===0, {left:read().left,top:read().top,before:read().preloadedBefore,after:read().preloadedAfter});

@@ -1,8 +1,8 @@
 # Imageseec
 
-Current development build: **2.0 b6** (Chrome version `2.0.0.6`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+Current development build: **2.0 b7** (Chrome version `2.0.0.7`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
 
-A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, a fixed-grid overview, temporary magnification, free panning and a compact zoom ruler.
+A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, an adaptive masonry overview, temporary magnification, free panning and a compact zoom ruler.
 
 Designed around the desktop viewing habits familiar to Photoshop and ACDSee users: temporary magnification, precise zoom, direct panning and quick image browsing, brought to the browser. Imageseec uses its own controls and does not reproduce every shortcut from either application.
 
@@ -33,10 +33,10 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Move through comparisons | Choose one-image or two-image steps in settings; the default advances two images |
 | Hold one comparison pane | Hover a pane and select its lock icon; only the other pane then changes |
 | Resize comparison panes | Drag the divider; double-click it to reset to equal widths |
-| Browse the image group | G opens the overview; scroll or drag through fixed slots ordered left to right, then down |
-| Horizontal overview | Select Horizontal browsing in settings; scroll or drag through fixed slots ordered top to bottom, then right |
+| Browse the image group | G opens an overview with equal-width columns and aspect-ratio-aware thumbnails by default |
+| Horizontal overview | Select Horizontal browsing for equal-height rows and sideways scrolling by default |
 | Alignment and spacing | Choose automatic, vertical or horizontal alignment; set gaps from 0–48 px (default 12 px) |
-| Overview thumbnail cache | Automatic preloads two visual rows or columns on each side; each side can use an independent custom count |
+| Overview thumbnail cache | Automatic silently preloads one visual band before and two after; moving toward the beginning expands the before buffer to two bands. Each side can use an independent custom count |
 | Choose image mode | 1 selects single-image view; 2 selects comparison; in overview, use the focused or central thumbnail |
 | Return from an overview selection | Double-click the image or press G to return to the overview |
 | Leave the viewer | The close button exits to the current source image or the nearby center image, including after long browsing sessions |
@@ -50,7 +50,7 @@ No build step, desktop helper or background server is required. Keep the unpacke
 
 The initial view preserves aspect ratio, fits the webpage viewport and never enlarges beyond the original image size. Manual fit-page mode can enlarge small images. The default view leaves the browser tabs and address bar visible; browser fullscreen is requested only through F or the fullscreen button.
 
-Settings save immediately. Defaults include 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, three preview thumbnails on each side, a 33% minimum pane width, two-image comparison steps, and automatic thumbnail preloading of two visual rows or columns before and after the visible area. Custom overview counts are independent on each side and are separate from full-resolution image caching. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
+Settings save immediately. Defaults include 15% zoom steps, 200% temporary magnification, two full-resolution images cached on each side, three preview thumbnails on each side, a 33% minimum pane width and two-image comparison steps. Custom overview cache counts are independent on each side and separate from full-resolution image caching. Temporary magnification restores the previous position; Alt-drag preserves it. Both allow panning beyond image edges.
 
 ## Gallery compatibility
 

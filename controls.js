@@ -17,54 +17,116 @@
   }
   function holdPan(initialPan, anchor, delta, ratio) { return anchor - (anchor - initialPan) * ratio - delta * ratio; }
   function wheelMode(event) { return event.shiftKey ? 'fine' : event.altKey ? 'zoom' : 'navigate'; }
-  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12, sizePercent = 100, startOrdinal = 0) {
+  function overviewLayout(ratios, width, height, horizontal = false, clean = false, alignment = 'auto', gap = 12, sizePercent = 100, startOrdinal = 0, stable = null) {
     const padding = clean ? 0 : 12, caption = clean ? 0 : 27;
     const scale = Math.max(25, Math.min(300, Number(sizePercent) || 100)) / 100;
-    const count = Math.max(0, Math.floor(Number(ratios?.length) || 0));
-    const ordinalStart = Math.floor(Number(startOrdinal) || 0);
+    const safe = Array.from(ratios || [], ratio => Number.isFinite(Number(ratio)) && Number(ratio) > 0 ? Number(ratio) : 4 / 3);
+    const count = safe.length, ordinalStart = Math.floor(Number(startOrdinal) || 0);
     const resolved = alignment === 'auto' ? (horizontal ? 'horizontal' : 'vertical') : alignment;
-    const preferredImageWidth = resolved === 'horizontal' ? 180 * scale * 4 / 3 : 210 * scale;
-    const preferredImageHeight = resolved === 'vertical' ? 210 * scale * 3 / 4 : 180 * scale;
-    const crossLimit = horizontal ? height : width;
-    const preferredTrack = horizontal
-      ? preferredImageHeight + padding + caption
-      : preferredImageWidth + padding;
-    const bandSize = Math.max(1, Math.min(64, Math.floor((crossLimit + gap) / (preferredTrack + gap)) || 1));
-    const cross = Math.max(1, (crossLimit - gap * (bandSize - 1)) / bandSize);
-    const imageHeight = horizontal ? Math.max(1, cross - padding - caption) : Math.max(1, cross - padding) * 3 / 4;
-    // Every unloaded and loaded thumbnail keeps this same 4:3 geometry.
-    const cardWidth = horizontal ? imageHeight * 4 / 3 + padding : cross;
-    const cardHeight = horizontal ? cross : imageHeight + padding + caption;
-    const firstBand = Math.floor(ordinalStart / bandSize);
-    const lastBand = count ? Math.floor((ordinalStart + count - 1) / bandSize) : firstBand - 1;
-    const bands = [];
-    for (let absolute = firstBand; absolute <= lastBand; absolute++) {
-      const firstOrdinal = absolute * bandSize;
-      const lastOrdinal = firstOrdinal + bandSize - 1;
-      const firstIndex = Math.max(0, firstOrdinal - ordinalStart);
-      const lastIndex = Math.min(count - 1, lastOrdinal - ordinalStart);
-      const bandIndex = absolute - firstBand;
-      const x = horizontal ? bandIndex * (cardWidth + gap) : 0;
-      const y = horizontal ? 0 : bandIndex * (cardHeight + gap);
-      bands.push({
-        index: bandIndex, ordinal: absolute, ordinalStart: firstOrdinal, ordinalEnd: lastOrdinal,
-        startIndex: firstIndex, endIndex: lastIndex, x, y,
-        width: horizontal ? cardWidth : width, height: horizontal ? height : cardHeight
-      });
+    const boxes = Array(count), bands = [], bandIds = Array(count), lanes = Array(count).fill(-1);
+    const laneHints = Array.isArray(stable?.lanes) ? stable.lanes : [];
+    const bandHints = Array.isArray(stable?.bands) ? stable.bands : [];
+    const matchesDirection = resolved === (horizontal ? 'horizontal' : 'vertical');
+
+    if (matchesDirection) {
+      // Fixed-width columns (vertical) / fixed-height rows (horizontal) retain
+      // image aspect ratio. Stable lane hints keep a decoded image in its lane.
+      const limit = horizontal ? height : width;
+      const trim = horizontal ? padding + caption : padding;
+      const base = (horizontal ? 180 : 210) + trim;
+      const target = (base - trim) * scale + trim;
+      const laneCount = Math.max(1, Math.floor((limit + gap) / (target + gap)));
+      const nominalCount = Math.max(1, Math.floor((limit + gap) / (base + gap)));
+      const nominalCross = (limit - gap * (nominalCount - 1)) / nominalCount;
+      const fitCross = (limit - gap * (laneCount - 1)) / laneCount;
+      const cross = Math.max(1, scale > 1 ? Math.min(fitCross, (nominalCross - trim) * scale + trim) : fitCross);
+      const inset = Math.max(0, (limit - cross * laneCount - gap * (laneCount - 1)) / 2);
+      const ends = Array(laneCount).fill(0);
+      const knownLaneAfter = Array(count).fill(false);
+      let knownLane = false;
+      for (let i = count - 1; i >= 0; i--) {
+        knownLaneAfter[i] = knownLane;
+        if (Number.isInteger(laneHints[i]) && laneHints[i] >= 0 && laneHints[i] < laneCount) knownLane = true;
+      }
+      for (let index = 0; index < count; index++) {
+        const ordinal = ordinalStart + index;
+        const hint = laneHints[index];
+        const lane = Number.isInteger(hint) && hint >= 0 && hint < laneCount
+          ? hint
+          : knownLaneAfter[index]
+            ? ((ordinal % laneCount) + laneCount) % laneCount
+            : ends.indexOf(Math.min(...ends));
+        lanes[index] = lane;
+        const imageWidth = horizontal ? Math.max(1, cross - padding - caption) * safe[index] : Math.max(1, cross - padding);
+        const imageHeight = horizontal ? Math.max(1, cross - padding - caption) / safe[index] : Math.max(1, cross - padding) / safe[index];
+        const cardWidth = horizontal ? imageWidth + padding : cross;
+        const cardHeight = horizontal ? cross : imageHeight + padding + caption;
+        const x = horizontal ? ends[lane] : inset + lane * (cross + gap);
+        const y = horizontal ? inset + lane * (cross + gap) : ends[lane];
+        boxes[index] = { index, ordinal, bandIndex: lane, lane, x, y, width: cardWidth, height: cardHeight };
+        bandIds[index] = `lane:${lane}`;
+        ends[lane] += (horizontal ? cardWidth : cardHeight) + gap;
+      }
+      const extent = Math.max(0, ...ends) - (count ? gap : 0);
+      for (let lane = 0; lane < laneCount; lane++) {
+        const indices = boxes.filter(box => box.lane === lane).map(box => box.index);
+        if (!indices.length) continue;
+        const laneBoxes = indices.map(index => boxes[index]);
+        bands.push({ index: lane, key: `lane:${lane}`, startIndex: Math.min(...indices), endIndex: Math.max(...indices),
+          x: horizontal ? 0 : inset + lane * (cross + gap), y: horizontal ? inset + lane * (cross + gap) : 0,
+          width: horizontal ? extent : cross, height: horizontal ? cross : extent, size: indices.length });
+      }
+      return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize: laneCount, bands, lanes, bandIds };
     }
-    const boxes = Array(count);
-    for (let index = 0; index < count; index++) {
-      const ordinal = ordinalStart + index;
-      const absoluteBand = Math.floor(ordinal / bandSize);
-      const bandIndex = absoluteBand - firstBand;
-      const lane = ((ordinal % bandSize) + bandSize) % bandSize;
-      const band = bands[bandIndex];
-      boxes[index] = horizontal
-        ? { index, ordinal, bandIndex, x: band.x, y: lane * (cross + gap), width: cardWidth, height: cross }
-        : { index, ordinal, bandIndex, x: lane * (cross + gap), y: band.y, width: cross, height: cardHeight };
+
+    // Opposite-axis alignment uses contiguous justified rows or columns. Once a
+    // band is assigned, keep its membership stable through thumbnail decoding.
+    const target = horizontal ? Math.min(210 * scale, width) : Math.min(180, Math.max(100, width / 3)) * scale;
+    const limit = horizontal ? height : width;
+    let offset = 0, start = 0, generated = 0;
+    while (start < count) {
+      let end = start + 1, key = bandHints[start];
+      if (key !== null && key !== undefined) {
+        while (end < count && bandHints[end] === key) end++;
+      } else {
+        key = `band:${ordinalStart + start}:${generated++}`;
+        let sum = horizontal ? 1 / safe[start] : safe[start];
+        while (end < count && (bandHints[end] === null || bandHints[end] === undefined)) {
+          const n = end - start + 1;
+          const value = horizontal ? 1 / safe[end] : safe[end];
+          const projected = (sum + value) * target + n * (horizontal ? padding + caption : padding) + (n - 1) * gap;
+          if (horizontal && projected > limit) break;
+          sum += value; end++;
+          if (projected >= limit) break;
+        }
+      }
+      const sum = safe.slice(start, end).reduce((total, ratio) => total + (horizontal ? 1 / ratio : ratio), 0);
+      const n = end - start;
+      const fit = Math.max(1, (limit - (n - 1) * gap - n * (horizontal ? padding + caption : padding)) / sum);
+      const size = Math.min(fit, target * (end === count || horizontal ? 1 : 1.35));
+      let cross = 0, bandWidth = 0, bandHeight = 0;
+      for (let index = start; index < end; index++) {
+        const ratio = safe[index];
+        const cardWidth = (horizontal ? size : size * ratio) + padding;
+        const cardHeight = (horizontal ? size / ratio : size) + padding + caption;
+        const x = horizontal ? offset : cross;
+        const y = horizontal ? cross : offset;
+        boxes[index] = { index, ordinal: ordinalStart + index, bandIndex: bands.length, lane: bands.length, x, y, width: cardWidth, height: cardHeight };
+        bandIds[index] = key;
+        cross += (horizontal ? cardHeight : cardWidth) + gap;
+        bandWidth = Math.max(bandWidth, x + cardWidth - (horizontal ? offset : 0));
+        bandHeight = Math.max(bandHeight, y + cardHeight - (horizontal ? 0 : offset));
+      }
+      offset += size + padding + (horizontal ? 0 : caption) + gap;
+      bands.push({ index: bands.length, key, startIndex: start, endIndex: end - 1,
+        x: horizontal ? offset - size - padding - gap : 0, y: horizontal ? 0 : offset - size - padding - caption - gap,
+        width: horizontal ? size + padding : limit, height: horizontal ? limit : size + padding + caption, size: n });
+      start = end;
     }
-    const extent = count ? (bands.length - 1) * ((horizontal ? cardWidth : cardHeight) + gap) + (horizontal ? cardWidth : cardHeight) : 0;
-    return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize, bands };
+    const counts = bands.map(band => band.size).sort((a, b) => a - b);
+    const middle = Math.floor(counts.length / 2);
+    const bandSize = counts.length ? counts.length % 2 ? counts[middle] : Math.round((counts[middle - 1] + counts[middle]) / 2) : 1;
+    return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap), bandSize, bands, lanes, bandIds };
   }
   function overviewCacheRange(total, firstVisible, lastVisible, before, after) {
     const count = Math.max(0, Math.floor(Number(total) || 0));

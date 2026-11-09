@@ -10,6 +10,7 @@ Number changed source deliveries sequentially: **2.0 b1**, **2.0 b2**, and so on
 | 2.0 b4 | 2.0.0.4 | 2026-11-08 | Active-image and overview-center return; stable root scroll lock; pointer-follow divider handle; independent automatic/custom overview thumbnail caches | Developer QA partial; owner final acceptance pending; no store submission |
 | 2.0 b5 | 2.0.0.5 | 2026-11-09 | Stable thumbnail selection and delayed layout, independent 25–300% thumbnail size, toolbar controls, directional loading and return feedback | Developer fixture checks pass; live-site matrix incomplete; no store submission |
 | 2.0 b6 | 2.0.0.6 | 2026-11-09 | Fixed 4:3 overview slots, decoded two-band buffers, proactive lazy discovery, persistent finite boundaries, mouse dragging and direct source exit | Source-only beta; generated-fixture QA recorded separately from pending live-site acceptance; no ZIP or store submission |
+| 2.0 b7 | 2.0.0.7 | 2026-11-09 | Adaptive aspect-ratio masonry restored, reserved lazy rows discovered and filled, scanning tied to viewport demand, one silent initial before band | Source-only beta; no ZIP or store submission |
 
 ## b1
 
@@ -50,3 +51,7 @@ Package: `Imageseec-v2.0-b5.zip`, 32 files, 98,071 bytes. SHA-256: `db3dde68cb15
 Source-only beta on `beta/2.0-b6`. No ZIP was created, uploaded or submitted for review.
 
 The 80-image delayed-source comparison exposed the b5 ratio-driven reflow. Fixed slots retained order and geometry through decode and reversing scroll. The unpacked development extension was exercised in the Codex in-app browser: actual vertical/horizontal mouse dragging, decoded buffers of 12 before and 12 after in six-column layout, proactive slow unknown-total discovery while overview scroll stayed at zero, and nested virtual source restoration. B6 results and remaining acceptance work are listed in [verification status](STATUS.zh-CN.md). Older real-site results do not count as b6 passes.
+
+## b7
+
+Restores aspect-ratio masonry and preserves each assigned lane when a delayed image supplies its true ratio. Group discovery now includes repeated rows with unloaded peer cards. Automatic cache starts with one silent preceding band and expands to two after backward input; custom counts stay independent. See the [current verification brief](STATUS.zh-CN.md).

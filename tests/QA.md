@@ -1,6 +1,10 @@
 # Verification record
 
-## Current source: 2.0 b6
+## Current source: 2.0 b7
+
+The unpacked development extension in the Codex in-app browser restored varied aspect ratios in the 80-image fixture. In a five-column view opened at mid-gallery, the initial before/after decoded counts were 5/10 with no leading status, and a real backward key expanded them to 10/10. A nested delayed fixture recognized all 60 images once the source inserted them and cleared the waiting state. Unit checks and the installed handler sweep passed. The real-site compatibility matrix remains incomplete; site details stay private.
+
+## 2.0 b6
 
 Earlier sections are historical; none of their real-site counts establish b6 acceptance. Current status is maintained in [the b6 brief](../docs/STATUS.zh-CN.md). This delivery contains source and graph updates only, with no ZIP and no store action.
 

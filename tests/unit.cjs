@@ -145,62 +145,69 @@ test('settings defaults, invalid storage values and independent bounds', () => {
   assert.equal(normalize({ overviewScale: 1 }).overviewScale, 25);
   assert.equal(normalize({ overviewScale: 500 }).overviewScale, 300);
 });
-test('fixed overview slots preserve a 4:3 placeholder ratio across both scroll axes', () => {
+test('adaptive overview preserves each image ratio in masonry and justified layouts', () => {
   const { c } = context(), controls = c.ImageLens.controls;
   const ratios = Array.from({ length: 80 }, (_, i) => [.55, 1, 1.8, 2.3][i % 4]);
   for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) {
     const result = controls.overviewLayout(ratios, 1392, 760, horizontal, false, alignment, 12, 100);
-    const inset = 12, caption = 27;
-    assert.equal(result.boxes.length, 80);
-    assert.equal(result.bands.length, Math.ceil(80 / result.bandSize));
-    assert.ok(horizontal ? result.bandSize >= 1 : result.bandSize >= 1);
-    for (const [index, box] of result.boxes.entries()) {
+    const padding = 12, caption = 27;
+    assert.equal(result.boxes.length, ratios.length);
+    assert.ok(result.bandSize > 0);
+    result.boxes.forEach((box, index) => {
       assert.equal(box.index, index);
       assert.equal(box.ordinal, index);
-      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - 4 / 3) < .00001);
-      if (horizontal) {
-        assert.ok(box.x >= 0 && box.y + box.height <= 760 + .01);
-        assert.ok(Math.abs(box.y / (box.height + 12) - Math.round(box.y / (box.height + 12))) < .00001);
-      } else {
-        assert.ok(box.y >= 0 && box.x + box.width <= 1392 + .01);
-        assert.ok(Math.abs(box.x / (box.width + 12) - Math.round(box.x / (box.width + 12))) < .00001);
+      assert.ok(Math.abs((box.width - padding) / (box.height - padding - caption) - ratios[index]) < .0001);
+      assert.ok(box.width > 0 && box.height > 0);
+      if (horizontal) assert.ok(box.y >= 0 && box.y + box.height <= 760 + .01);
+      else assert.ok(box.x >= 0 && box.x + box.width <= 1392 + .01);
+      for (const next of result.boxes.slice(index + 1)) {
+        assert.ok(box.x + box.width + 12 <= next.x + .01 || next.x + next.width + 12 <= box.x + .01 ||
+          box.y + box.height + 12 <= next.y + .01 || next.y + next.height + 12 <= box.y + .01);
       }
-      const band = result.bands[box.bandIndex];
-      assert.ok(index >= band.startIndex && index <= band.endIndex);
-    }
-    const visual = result.boxes.slice().sort((a, b) =>
-      horizontal ? a.x - b.x || a.y - b.y : a.y - b.y || a.x - b.x);
-    assert.deepEqual(plain(visual.map(box => box.ordinal)), Array.from({ length: 80 }, (_, n) => n));
+    });
   }
 });
 
-test('fixed layout keeps absolute slots through prepend and ignores out-of-order ratios', () => {
+test('adaptive masonry lanes and justified bands stay attached to stable items after decode and prepend', () => {
   const { c } = context(), layout = c.ImageLens.controls.overviewLayout;
-  const oldRatios = Array.from({ length: 80 }, (_, i) => [.55, 1, 1.8, 2.3][i % 4]);
-  const before = layout(oldRatios, 1392, 760, false, false, 'auto', 12, 100, 40);
-  const prepended = layout([.9, 2.1, .6, ...oldRatios], 1392, 760, false, false, 'auto', 12, 100, 37);
-  for (let n = 0; n < oldRatios.length; n++) {
-    const previous = before.boxes[n], current = prepended.boxes[n + 3];
-    assert.equal(previous.ordinal, current.ordinal);
-    assert.equal(previous.x, current.x);
-    assert.equal(previous.ordinal % before.bandSize, current.ordinal % prepended.bandSize);
-  }
-  const loadedOrderA = layout([.55, 1, 1.8, 2.3, ...Array(76).fill(1)], 1392, 760);
-  const loadedOrderB = layout([2.3, 1.8, 1, .55, ...Array(76).fill(2)], 1392, 760);
-  assert.deepEqual(loadedOrderA.boxes, loadedOrderB.boxes);
+  const ratios = Array.from({ length: 36 }, (_, i) => [.55, 1, 1.8, 2.3][i % 4]);
+  const initial = layout(ratios, 1392, 760, false, false, 'auto', 12, 100, 24);
+  const prependRatios = [.7, 1.7, ...ratios];
+  const prepended = layout(prependRatios, 1392, 760, false, false, 'auto', 12, 100, 22,
+    { lanes: [null, null, ...initial.lanes] });
+  for (let i = 0; i < ratios.length; i++) assert.equal(prepended.lanes[i + 2], initial.lanes[i]);
+  const decoded = prependRatios.slice(); decoded[12] = 2.6;
+  const afterDecode = layout(decoded, 1392, 760, false, false, 'auto', 12, 100, 22,
+    { lanes: prepended.lanes });
+  assert.deepEqual(afterDecode.lanes, prepended.lanes, 'a late intrinsic ratio must not move the item to another column');
+  assert.ok(Math.abs((afterDecode.boxes[12].width - 12) / (afterDecode.boxes[12].height - 39) - 2.6) < .0001);
+
+  const rows = layout(ratios, 1392, 760, false, false, 'horizontal', 12, 100, 24);
+  const rowPrepend = layout([.8, 1.4, ...ratios], 1392, 760, false, false, 'horizontal', 12, 100, 22,
+    { bands: [null, null, ...rows.bandIds] });
+  for (let i = 0; i < ratios.length; i++) assert.equal(rowPrepend.bandIds[i + 2], rows.bandIds[i]);
+  const rowRatios = [.8, 1.4, ...ratios]; rowRatios[8] = .42;
+  const rowDecoded = layout(rowRatios, 1392, 760, false, false, 'horizontal', 12, 100, 22,
+    { bands: rowPrepend.bandIds });
+  assert.deepEqual(rowDecoded.bandIds, rowPrepend.bandIds, 'late ratios may resize within a row but cannot regroup its items');
+  assert.ok(Math.abs((rowDecoded.boxes[8].width - 12) / (rowDecoded.boxes[8].height - 39) - .42) < .0001);
 });
 
-test('fixed overview slots scale while retaining a stable cross-axis track', () => {
+test('adaptive overview scale preserves source ratios while cross-axis tracks respond to settings', () => {
   const { c } = context(), controls = c.ImageLens.controls;
+  const ratios = Array.from({ length: 80 }, (_, i) => [.6, 1, 1.8][i % 3]);
   for (const horizontal of [false, true]) {
-    const base = controls.overviewLayout(Array(80).fill(1), 1392, 760, horizontal, false, 'auto', 12, 100);
-    const smaller = controls.overviewLayout(Array(80).fill(2), 1392, 760, horizontal, false, 'auto', 12, 50);
-    const larger = controls.overviewLayout(Array(80).fill(.5), 1392, 760, horizontal, false, 'auto', 12, 200);
+    const base = controls.overviewLayout(ratios, 1392, 760, horizontal, false, 'auto', 12, 100);
+    const smaller = controls.overviewLayout(ratios, 1392, 760, horizontal, false, 'auto', 12, 50);
+    const larger = controls.overviewLayout(ratios, 1392, 760, horizontal, false, 'auto', 12, 200);
     assert.ok(smaller.bandSize >= base.bandSize);
     assert.ok(larger.bandSize <= base.bandSize);
     const cross = box => horizontal ? box.height : box.width;
     assert.ok(Math.abs(cross(base.boxes[0]) - cross(base.boxes[1])) < .001);
     assert.ok(Math.abs(cross(larger.boxes[0]) - cross(larger.boxes[1])) < .001);
+    for (const [index, box] of base.boxes.entries()) {
+      assert.ok(Math.abs((box.width - 12) / (box.height - 39) - ratios[index]) < .0001);
+    }
   }
 });
 
@@ -224,7 +231,7 @@ test('overview size bounds preserve 100 percent defaults and ruler mapping', () 
     assert.ok(Math.abs(controls.fromPosition(controls.toPosition(size, 100, true), 100, true) - size) < .00001);
   }
 });
-test('overview slot sequence stays ordered without cropping or cross-axis overflow', () => {
+test('adaptive overview retains source order metadata, ratio, and cross-axis bounds', () => {
   const { c } = context();
   const ratios = [1.8, .6, 1.3, 2, .8, 1, 1.6, .5, 3, 1.4, .7, 1.1, 1.8, .6, 1.3, 2, .8, 1];
   for (const horizontal of [false, true]) for (const clean of [false, true]) {
@@ -232,26 +239,26 @@ test('overview slot sequence stays ordered without cropping or cross-axis overfl
     assert.equal(result.boxes.length, ratios.length);
     const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
     result.boxes.forEach((box, n) => {
-      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - 4 / 3) < .0001);
+      assert.ok(Math.abs((box.width - inset) / (box.height - inset - caption) - ratios[n]) < .0001);
       assert.ok(box.width > 0 && box.height > 0);
       assert.ok(horizontal ? box.y + box.height <= 560.001 : box.x + box.width <= 1000.001);
       if (n) {
         const prior = result.boxes[n - 1];
-        assert.ok(horizontal ? box.ordinal > prior.ordinal : box.ordinal > prior.ordinal);
+        assert.ok(box.ordinal > prior.ordinal);
       }
     });
     assert.ok(horizontal ? result.width >= 0 : result.height >= 0);
   }
 });
 
-test('overview alignment and gap remain independent from scroll direction and decoration', () => {
+test('auto, column and row alignment keep gaps, ratios and direction independent', () => {
   const { c } = context(), ratios = [2, .45, 1, 3.2, .7, 1.5, 1, .5, 2.1, .9, 1.1, .4];
   for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) for (const gap of [0, 12, 48]) for (const clean of [false, true]) {
     const { boxes, width, height } = c.ImageLens.controls.overviewLayout(ratios, 1000, 600, horizontal, clean, alignment, gap);
     const inset = clean ? 0 : 12, caption = clean ? 0 : 27;
     assert.equal(boxes.length, ratios.length);
     boxes.forEach((a, n) => {
-      assert.ok(Math.abs((a.width - inset) / (a.height - inset - caption) - 4 / 3) < .00001);
+      assert.ok(Math.abs((a.width - inset) / (a.height - inset - caption) - ratios[n]) < .00001);
       assert.ok(a.x >= 0 && a.y >= 0 && a.x + a.width <= width + .01 && a.y + a.height <= height + .01);
       for (const b of boxes.slice(n + 1)) assert.ok(a.x + a.width + gap <= b.x + .01 || b.x + b.width + gap <= a.x + .01 || a.y + a.height + gap <= b.y + .01 || b.y + b.height + gap <= a.y + .01);
     });
@@ -558,6 +565,42 @@ test('nested repeated image rows form one bounded gallery group', () => {
   const result = c.ImageLens.gallery.collect(pictures[2].src, pictures[2]);
   assert.equal(result.entries.length, 4); assert.equal(result.index, 2);
 });
+test('lazy nested rows retain empty peer cards and widen an initially narrow scope', () => {
+  const { c, image } = context(), pictures = [];
+  const contains = function(node) { for (let n = node; n; n = n.parentElement) if (n === this) return true; return false; };
+  const branch = (tagName, className, width, height) => ({
+    tagName, className, isConnected: true, children: [], parentElement: null, attributes: [], contains,
+    getAttribute: () => null, closest: () => null,
+    getBoundingClientRect: () => ({ width, height }),
+    querySelectorAll(selector) { return selector === 'img' ? pictures.filter(p => this.contains(p)) : selector === 'a[href]' ? this.links || [] : []; },
+    querySelector(selector) { return selector.includes('img') ? pictures.find(p => this.contains(p)) || null : null; }
+  });
+  const grid = branch('DIV', 'row-collection', 1000, 1400);
+  for (let r = 0; r < 6; r++) {
+    const row = branch('DIV', 'repeated-row', 1000, 200); row.parentElement = grid; grid.children.push(row);
+    for (let n = 0; n < 3; n++) {
+      const card = branch('ARTICLE', 'image-card', 300, 200); card.parentElement = row; row.children.push(card);
+      if (r < 2) { const img = image(`https://media.example.net/lazy-row-${r}-${n}.jpg`); img.parentElement = card; card.children.push(img); pictures.push(img); }
+    }
+  }
+  const recommendations = branch('ARTICLE', 'image-card', 300, 200);
+  recommendations.parentElement = grid.children[1]; recommendations.links = [{}, {}, {}];
+  recommendations.parentElement.children.splice(1, 0, recommendations);
+  for (let n = 0; n < 3; n++) {
+    const icon = image(`https://media.example.net/recommendation-${n}.jpg`);
+    icon.parentElement = recommendations; icon.getBoundingClientRect = () => ({ width: 80, height: 60 });
+    pictures.push(icon);
+  }
+  const narrow = grid.children[0];
+  const result = c.ImageLens.gallery.collect(pictures[0].src, pictures[0], narrow);
+  assert.equal(result.scope, grid);
+  assert.equal(result.entries.length, 6);
+  assert.equal(result.slots.length, 18);
+  assert.equal(result.slots.filter(slot => slot.pending).length, 12);
+  assert.ok(!result.slots.some(slot => slot.node === recommendations));
+  assert.equal(result.slots[17].node, grid.children[5].children[2]);
+});
+
 test('same-level image cards can mix IMG elements and CSS background photos', () => {
   const { c, image } = context();
   const first = image('https://media.example.net/first.jpg');

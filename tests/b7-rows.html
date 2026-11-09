@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Imageseec nested lazy rows</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#141820;color:#dae2f3;font:14px system-ui}header{padding:18px}button{padding:8px}#viewport{height:calc(100vh - 95px);overflow:auto}.rows{padding:16px;display:flex;flex-direction:column;gap:12px}.row{display:flex;gap:12px;width:100%;height:205px}.tile{flex:1;min-width:0;background:#354454;border-radius:8px;overflow:hidden}.tile img{display:block;width:100%;height:100%;object-fit:cover}</style>
+<header><strong>Generic lazy rows</strong> <button id="publish">Publish all source images</button> <span id="receipt"></span></header>
+<main id="viewport"><div class="rows"></div><div id="sentinel"></div></main>
+<script>
+(() => {
+  const p=new URLSearchParams(location.search),grid=document.querySelector('.rows'),view=document.querySelector('#viewport'),receipt=document.querySelector('#receipt');
+  const limit=Number(p.get('count'))||60,rows=Math.ceil(limit/3),delay=Number(p.get('delay'))||700;
+  const makeImage=tile=>{if(tile.querySelector('img'))return;const n=Number(tile.dataset.id),image=new Image();image.alt='Generated row image '+n;image.decoding='async';image.src='/image/'+n+'?rows='+n+'&delay='+delay;tile.append(image);image.onload=update;image.onerror=update;update()};
+  function update(){receipt.textContent=[...grid.querySelectorAll('img')].filter(i=>i.naturalWidth>0).length+'/'+limit+' source images ready'}
+  for(let r=0;r<rows;r++){const row=document.createElement('div');row.className='row';for(let col=0;col<3&&r*3+col<limit;col++){const tile=document.createElement('article');tile.className='tile';tile.dataset.id=String(r*3+col+1);row.append(tile)}grid.append(row)}
+  [...grid.querySelectorAll('.tile')].slice(0,5).forEach(makeImage);
+  const io=new IntersectionObserver(rs=>rs.forEach(r=>{if(r.isIntersecting)setTimeout(()=>makeImage(r.target),delay)}),{root:view,rootMargin:'100px'});
+  for(const tile of grid.querySelectorAll('.tile'))io.observe(tile);
+  document.querySelector('#publish').onclick=()=>[...grid.querySelectorAll('.tile')].forEach(makeImage);
+  if(p.has('publishLate')){const watcher=new MutationObserver(()=>{if(document.querySelector('#image-lens-viewer')){setTimeout(()=>document.querySelector('#publish').click(),1800);watcher.disconnect()}});watcher.observe(document.documentElement,{subtree:true,childList:true})}
+  update();
+})();
+</script></html>
