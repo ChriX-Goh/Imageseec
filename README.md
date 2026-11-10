@@ -1,6 +1,6 @@
 # Imageseec
 
-Current development build: **2.0 b9** (Chrome version `2.0.0.9`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
+Current development build: **2.0 b10** (Chrome version `2.0.0.10`). See the [build record](docs/BUILDS.md) and [verification status](docs/STATUS.zh-CN.md). Store submission requires the owner's final acceptance of the exact build.
 
 A Chrome Manifest V3 image viewer with single-image browsing, side-by-side comparison, an adaptive masonry overview, temporary magnification, free panning and a compact zoom ruler.
 
@@ -39,7 +39,7 @@ No build step, desktop helper or background server is required. Keep the unpacke
 | Overview thumbnail cache | Automatic silently preloads one visual band before and two after; moving toward the beginning expands the before buffer to two bands. Each side can use an independent custom count |
 | Choose image mode | 1 selects single-image view; 2 selects comparison; in overview, use the focused or central thumbnail |
 | Return from an overview selection | Press G or click the overview button |
-| Leave the viewer | Esc or the close button exits immediately to the current source image or the overview's center image. Double-clicking in single or split view also exits when enabled |
+| Leave the viewer | Esc or the close button returns immediately to the current source image or overview center with a brief shrink-and-outline cue. Double-clicking in single or split view also exits when enabled |
 | Clean overview | Hide thumbnail borders and captions in settings |
 | Change thumbnail size | Use the overview ruler or Alt + wheel (Shift + wheel for 1% steps); click the percentage to reset to 100% |
 | Thumbnail strip | Move to the bottom edge; move away to hide |

@@ -13,6 +13,7 @@ Number changed source deliveries sequentially: **2.0 b1**, **2.0 b2**, and so on
 | 2.0 b7 | 2.0.0.7 | 2026-11-09 | Adaptive aspect-ratio masonry restored, reserved lazy rows discovered and filled, scanning tied to viewport demand, one silent initial before band | Source-only beta; no ZIP or store submission |
 | 2.0 b8 | 2.0.0.8 | 2026-11-10 | Reconcile discovered cards in the active overview, bound unconfirmed placeholders, scan before thumbnail buffer runs out, improve layered image grouping | Source-only beta; no ZIP or store submission |
 | 2.0 b9 | 2.0.0.9 | 2026-11-10 | Release pointer state across mode changes, exit directly at the source position, and bound directional lazy scan waits | Source-only beta; live-site matrix incomplete; no ZIP or store submission |
+| 2.0 b10 | 2.0.0.10 | 2026-11-10 | Restore the source-image shrink cue and highlight on direct exit from image and overview modes | Source-fixture visual check passed; installed extension build not refreshed; no ZIP or store submission |
 
 ## b1
 

@@ -1,6 +1,10 @@
 # Verification record
 
-## Current source: 2.0 b9
+## Current source: 2.0 b10
+
+On single, split and overview views, close with Escape and the close button. The viewer should disappear immediately; a page-layer image should shrink to the selected source or overview center and leave a brief outline. Check cancellation when the user starts moving, clicking or typing; with reduced motion the outline remains static. The cue was visually observed in the Codex in-app browser source fixture for both an image view and the overview center.
+
+## 2.0 b9
 
 Run the generated 80-image gallery to check buttonless mouse movement after release, click after a drag, G during an active drag, and direct exit. Check trusted mouse and wheel input separately from synthetic event tests. Use the lazy gallery fixture with `smooth`, with and without `nested`, for pages that specify smooth scrolling. Confirm discovered thumbnails arrive, active loading settles, and the source stays at the image being viewed when the viewer closes. Live-site acceptance remains separate.
 

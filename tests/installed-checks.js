@@ -112,7 +112,10 @@
   const end=read(),targetSource=end.panes[0]?.src||r.querySelector('.photo')?.getAttribute('src'),absolute=value=>{try{return new URL(value,location.href).href;}catch{return value;}},wanted=absolute(targetSource||''),sourceImage=[...document.images].find(image=>[image.currentSrc,image.src,image.getAttribute('data-full'),image.getAttribute('data-src')].some(value=>value&&absolute(value)===wanted)),sourceNode=sourceImage||null;
   let sourceScroller=sourceNode?.parentElement;
   while(sourceScroller&&sourceScroller!==document.documentElement&&!(sourceScroller.scrollHeight>sourceScroller.clientHeight+4&&/auto|scroll|overlay|hidden/.test(getComputedStyle(sourceScroller).overflowY)))sourceScroller=sourceScroller.parentElement;
-  await key('Escape');await delay(250);
+  await key('Escape');
+  const returnLayer=document.documentElement.querySelector(':scope > [data-imageseec-return-feedback]');
+  record('Escape animates the active image toward its source before highlighting it',!root()&&!!returnLayer&&getComputedStyle(returnLayer).position==='fixed',{closed:!root(),returnLayer:!!returnLayer});
+  await delay(250);
   const returnedBox=sourceNode?.isConnected?sourceNode.getBoundingClientRect():null,returnedCenter=returnedBox?(returnedBox.top+returnedBox.bottom)/2:null;
   const nested=sourceScroller&&sourceScroller!==document.documentElement,viewportHeight=nested?sourceScroller.clientHeight:innerHeight,viewportCenterY=(nested?sourceScroller.getBoundingClientRect().top+sourceScroller.clientTop:0)+viewportHeight/2;
   const centerDelta=returnedCenter===null?null:Math.abs(returnedCenter-viewportCenterY);
@@ -128,7 +131,7 @@
     await delay(160);
     if(await openSource(sourceNode)){
       await key('g');root().querySelector('.close').click();
-      record('close button exits directly from overview',!root()&&!document.querySelector(':popover-open'),{overviewWasOpen:true});
+      record('close button animates the overview center toward its source',!root()&&!!document.documentElement.querySelector(':scope > [data-imageseec-return-feedback]')&&!document.querySelector(':popover-open'),{overviewWasOpen:true});
     }
   }
   record('viewer exits and restores source page',!root(),{position:[scrollX,scrollY]});

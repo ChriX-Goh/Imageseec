@@ -155,10 +155,16 @@
     const layer = host.attachShadow({ mode: 'closed' });
     layer.innerHTML = `<style>
       :host { all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; }
+      .return-layer { position: fixed; inset: 0; margin: 0; padding: 0; width: auto; height: auto; overflow: visible; border: 0; background: transparent; pointer-events: none; }
+      .return-layer::backdrop { background: transparent; pointer-events: none; }
       canvas, i { position: absolute; box-sizing: border-box; object-fit: cover; pointer-events: none; }
       i { border: 2px solid #b8ceff; border-radius: 6px; box-shadow: 0 0 0 2px #142344b0, 0 0 20px #89acff80; }
-    </style>`;
-    parent.append(host);
+    </style><div class="return-layer"></div>`;
+    host.setAttribute('data-imageseec-return-feedback', '');
+    const surface = layer.querySelector('.return-layer');
+    if (!parent) surface.setAttribute('popover', 'manual');
+    (parent || document.documentElement).append(host);
+    if (!parent) { try { surface.showPopover(); } catch { surface.removeAttribute('popover'); } }
     const stop = () => feedback.abort();
     for (const type of ['wheel', 'pointerdown', 'keydown', 'resize', 'pagehide']) {
       window.addEventListener(type, stop, { capture: true, signal: feedback.signal });
@@ -167,12 +173,12 @@
     const duration = reduced || !snapshot ? 0 : 240;
     if (duration) {
       const { canvas, box } = snapshot;
-      layer.append(canvas);
+      surface.append(canvas);
       const motion = canvas.animate([{ ...frame(box), opacity: 1 }, { ...frame(target), opacity: 0 }],
         { duration, easing: 'cubic-bezier(.2,.75,.25,1)', fill: 'both' });
       motion.onfinish = () => canvas.remove();
     }
-    const outline = document.createElement('i'); Object.assign(outline.style, frame(target)); layer.append(outline);
+    const outline = document.createElement('i'); Object.assign(outline.style, frame(target)); surface.append(outline);
     if (duration) outline.animate([{ opacity: 0 }, { opacity: 1, offset: .28 }, { opacity: 1, offset: .76 }, { opacity: 0 }],
       { duration: duration + 800, fill: 'both' });
     const timer = setTimeout(stop, duration + 800);
@@ -362,6 +368,9 @@
 
     function close(event) {
       if (closed) return;
+      const snapshot = !standalone && event?.type !== 'pagehide'
+        ? overviewOpen ? overviewSnapshot() : activeSnapshot()
+        : null;
       const target = entries[overviewOpen ? centralOverviewIndex() : activeIndex()];
       if (target && !standalone && event?.type !== 'pagehide') rememberSourceAnchors([target]);
       const targetPosition = target && sourceAnchors.get(target.key);
@@ -383,7 +392,7 @@
       dialog.close(); host.remove();
       restorePageCoordinates(); restorePageStyles();
       focused?.focus?.({ preventScroll: true });
-      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition, leavingFullscreen);
+      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition, snapshot, leavingFullscreen);
       if (lens.close === close) lens.close = null;
       if (standalone) window.close();
     }
@@ -406,7 +415,33 @@
     function centerSourceNode(node) {
       node.scrollIntoView({ block: 'center', inline: scanHorizontal ? 'center' : 'nearest', behavior: 'instant' });
     }
-    async function revealSource(target, position, leavingFullscreen) {
+    function visibleSourceBox(node) {
+      let box = clipBox(node.getBoundingClientRect(), { left: 0, top: 0, right: innerWidth, bottom: innerHeight });
+      for (let parent = node.parentElement; box && parent && parent !== document.body && parent !== document.documentElement; parent = parent.parentElement) {
+        const style = getComputedStyle(parent);
+        const clips = value => /auto|scroll|overlay|hidden|clip/.test(value);
+        if (!clips(style.overflowX) && !clips(style.overflowY)) continue;
+        const rect = parent.getBoundingClientRect();
+        const left = rect.left + parent.clientLeft, top = rect.top + parent.clientTop;
+        box = clipBox(box, {
+          left: clips(style.overflowX) ? left : box.left,
+          right: clips(style.overflowX) ? left + parent.clientWidth : box.right,
+          top: clips(style.overflowY) ? top : box.top,
+          bottom: clips(style.overflowY) ? top + parent.clientHeight : box.bottom
+        });
+      }
+      return box;
+    }
+    function finishSourceReturn(node, snapshot) {
+      if (!node?.isConnected) return;
+      centerSourceNode(node);
+      returnFeedback(snapshot, visibleSourceBox(node), null, reducedMotion.matches);
+    }
+    function overviewSnapshot() {
+      const card = overviewCards.get(centralOverviewItem()?.key);
+      return card ? pictureSnapshot(card.querySelector('img'), overview.getBoundingClientRect()) : null;
+    }
+    async function revealSource(target, position, snapshot, leavingFullscreen) {
       if (!target) return;
       const recovery = new AbortController(); lens.returnController?.abort(); lens.returnController = recovery;
       const stop = () => recovery.abort();
@@ -438,7 +473,7 @@
             const fresh = lens.gallery.collect(target.thumb, null, collection.scope);
             node = fresh.entries.find(entry => lens.gallery.sameEntry(target, entry))?.node;
           }
-          if (node) { centerSourceNode(node); return; }
+          if (node) { finishSourceReturn(node, snapshot); return; }
           await scanDelay(120, recovery.signal);
         } while (performance.now() < deadline);
         if (!recovery.signal.aborted) {
@@ -446,7 +481,7 @@
           const nearby = entries.map((entry, n) => ({ entry, distance: Math.abs(n - index) }))
             .map(item => ({ ...item, node: lens.gallery.connectedEntryNode(item.entry, collection.scope) }))
             .filter(item => item.node).sort((a, b) => a.distance - b.distance)[0];
-          if (nearby) centerSourceNode(nearby.node);
+          if (nearby) finishSourceReturn(nearby.node, snapshot);
         }
       } finally { recovery.abort(); if (lens.returnController === recovery) lens.returnController = null; }
     }
