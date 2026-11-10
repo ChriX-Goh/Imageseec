@@ -115,6 +115,59 @@ test('compare and overview controls are wired to group-scoped lazy scanning', ()
   assert.match(viewer, /settings\.dividerMin/);
   assert.doesNotMatch(viewer, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)/i);
 });
+test('overview scanner bounds placeholder waits and assigns visible holes to the active scroll direction', () => {
+  const node = {};
+  const c = vm.createContext({
+    overviewOpen: true,
+    projectedSlots: new Map([['slot-1', { key: 'reserved:slot-1', entry: null, slotKey: 'slot-1', slotNode: node }]]),
+    scanStates: {
+      '-1': { slotAttempts: new Map([['slot-1', 3]]) },
+      '1': { slotAttempts: new Map() }
+    }
+  });
+  vm.runInContext([
+    viewerFunction('overviewSlotPending'),
+    viewerFunction('scanSlotPending'),
+    viewerFunction('overviewPendingForSide'),
+    `globalThis.slotPending = (slot, side) => scanSlotPending(slot, side, projectedSlots);`,
+    `globalThis.sidePending = (side, before, visible, after, direction) => overviewPendingForSide(side, before, visible, after, direction);`
+  ].join('\n'), c);
+  const slot = { key: 'slot-1', node, pending: true };
+  assert.equal(c.slotPending(slot, -1), false, 'an exhausted placeholder must stop holding backward loading');
+  assert.equal(c.slotPending(slot, 1), true, 'retry state remains independent for a genuinely opposite-side scan');
+  assert.equal(c.sidePending(-1, false, true, false, 1), false, 'a visible hole must not start a second, reverse scan');
+  assert.equal(c.sidePending(1, false, true, false, 1), true, 'the current scroll direction services the visible hole');
+  assert.equal(c.sidePending(-1, false, true, false, -1), true, 'reversing scroll direction transfers visible-hole demand');
+  assert.equal(c.slotPending({ ...slot, node: {} }, 1), false, 'a recycled slot node must not match the old projection');
+  c.projectedSlots.clear();
+  assert.equal(c.slotPending(slot, 1), false, 'a source slot outside the rendered overview must not spin as active cache work');
+});
+test('scanner jumps are instant for CSS-smooth document roots and nested scrollers', () => {
+  const sourceScroll = viewerFunction('scrollSourceTo');
+  const rootState = { x: 7, y: 11, call: null };
+  const root = vm.createContext({
+    scanScroller: null, scanHorizontal: false, pagePosition: { x: rootState.x },
+    sourcePosition: () => rootState.y,
+    window: { scrollTo(options) { rootState.call = options; rootState.x = options.left; rootState.y = options.top; } }
+  });
+  vm.runInContext(`${sourceScroll}\nglobalThis.move = position => scrollSourceTo(position);`, root);
+  assert.equal(root.move(420), 420);
+  assert.deepEqual(plain(rootState.call), { left: 7, top: 420, behavior: 'instant' });
+
+  const nestedState = { call: null };
+  const scroller = {
+    scrollLeft: 13, scrollTop: 17,
+    scrollTo(options) { nestedState.call = options; this.scrollLeft = options.left; this.scrollTop = options.top; }
+  };
+  const nested = vm.createContext({
+    scanScroller: scroller, scanHorizontal: false, pagePosition: { x: 0 },
+    sourcePosition: () => scroller.scrollTop,
+    window: { scrollTo() { assert.fail('nested scanning must not scroll the document root'); } }
+  });
+  vm.runInContext(`${sourceScroll}\nglobalThis.move = position => scrollSourceTo(position);`, nested);
+  assert.equal(nested.move(860), 860);
+  assert.deepEqual(plain(nestedState.call), { left: 13, top: 860, behavior: 'instant' });
+});
 function context(hostname = 'example.com') {
   const images = [];
   const document = { baseURI: `https://${hostname}/album/`, images, body: null, querySelectorAll: s => s === 'img' ? images : [] };

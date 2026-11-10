@@ -132,23 +132,6 @@
     const width = Math.min(box.right, bounds.right) - left, height = Math.min(box.bottom, bounds.bottom) - top;
     return width > 1 && height > 1 ? { left, top, width, height, right: left + width, bottom: top + height } : null;
   }
-  function visibleSourceBox(node) {
-    let box = clipBox(node.getBoundingClientRect(), { left: 0, top: 0, right: innerWidth, bottom: innerHeight });
-    for (let parent = node.parentElement; box && parent && parent !== document.body && parent !== document.documentElement; parent = parent.parentElement) {
-      const style = getComputedStyle(parent);
-      const clips = value => /auto|scroll|overlay|hidden|clip/.test(value);
-      if (!clips(style.overflowX) && !clips(style.overflowY)) continue;
-      const rect = parent.getBoundingClientRect();
-      const left = rect.left + parent.clientLeft, top = rect.top + parent.clientTop;
-      box = clipBox(box, {
-        left: clips(style.overflowX) ? left : box.left,
-        right: clips(style.overflowX) ? left + parent.clientWidth : box.right,
-        top: clips(style.overflowY) ? top : box.top,
-        bottom: clips(style.overflowY) ? top + parent.clientHeight : box.bottom
-      });
-    }
-    return box;
-  }
   function pictureSnapshot(image, bounds) {
     if (!image || image.hidden || !image.naturalWidth || !image.naturalHeight) return null;
     const full = image.getBoundingClientRect(), box = clipBox(full, bounds);
@@ -164,7 +147,7 @@
   }
   function returnFeedback(snapshot, target, parent, reduced) {
     lens.feedbackController?.abort();
-    if (!target && (!snapshot || reduced)) return;
+    if (!target) return;
     const feedback = new AbortController();
     lens.feedbackController = feedback;
     const host = document.createElement('div');
@@ -172,34 +155,27 @@
     const layer = host.attachShadow({ mode: 'closed' });
     layer.innerHTML = `<style>
       :host { all: initial !important; position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; pointer-events: none !important; }
-      .return-layer { position: fixed; inset: 0; margin: 0; padding: 0; width: auto; height: auto; overflow: visible; border: 0; background: transparent; pointer-events: none; }
-      .return-layer::backdrop { background: transparent; pointer-events: none; }
       canvas, i { position: absolute; box-sizing: border-box; object-fit: cover; pointer-events: none; }
       i { border: 2px solid #b8ceff; border-radius: 6px; box-shadow: 0 0 0 2px #142344b0, 0 0 20px #89acff80; }
-    </style><div class="return-layer"></div>`;
-    const surface = layer.querySelector('.return-layer');
-    if (!parent) surface.setAttribute('popover', 'manual');
-    (parent || document.documentElement).append(host);
-    if (!parent) { try { surface.showPopover(); } catch { surface.removeAttribute('popover'); } }
+    </style>`;
+    parent.append(host);
     const stop = () => feedback.abort();
     for (const type of ['wheel', 'pointerdown', 'keydown', 'resize', 'pagehide']) {
       window.addEventListener(type, stop, { capture: true, signal: feedback.signal });
     }
     const frame = box => ({ left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` });
-    const duration = reduced || !snapshot ? 0 : target ? 240 : 140;
+    const duration = reduced || !snapshot ? 0 : 240;
     if (duration) {
       const { canvas, box } = snapshot;
-      surface.append(canvas);
-      const motion = canvas.animate([{ ...frame(box), opacity: 1 }, { ...frame(target || box), opacity: 0 }],
+      layer.append(canvas);
+      const motion = canvas.animate([{ ...frame(box), opacity: 1 }, { ...frame(target), opacity: 0 }],
         { duration, easing: 'cubic-bezier(.2,.75,.25,1)', fill: 'both' });
       motion.onfinish = () => canvas.remove();
     }
-    if (target) {
-      const outline = document.createElement('i'); Object.assign(outline.style, frame(target)); surface.append(outline);
-      if (duration) outline.animate([{ opacity: 0 }, { opacity: 1, offset: .28 }, { opacity: 1, offset: .76 }, { opacity: 0 }],
-        { duration: duration + 800, fill: 'both' });
-    }
-    const timer = setTimeout(stop, duration + (target ? 800 : 0));
+    const outline = document.createElement('i'); Object.assign(outline.style, frame(target)); layer.append(outline);
+    if (duration) outline.animate([{ opacity: 0 }, { opacity: 1, offset: .28 }, { opacity: 1, offset: .76 }, { opacity: 0 }],
+      { duration: duration + 800, fill: 'both' });
+    const timer = setTimeout(stop, duration + 800);
     feedback.signal.addEventListener('abort', () => {
       clearTimeout(timer); host.remove();
       if (lens.feedbackController === feedback) lens.feedbackController = null;
@@ -294,8 +270,10 @@
     }]));
     const sourceAnchors = new Map();
     const restorePageCoordinates = () => {
-      window.scrollTo(pagePosition.x, pagePosition.y);
-      for (const item of pagePosition.elements) if (item.node.isConnected) { item.node.scrollTop = item.top; item.node.scrollLeft = item.left; }
+      window.scrollTo({ left: pagePosition.x, top: pagePosition.y, behavior: 'instant' });
+      for (const item of pagePosition.elements) if (item.node.isConnected) {
+        item.node.scrollTo({ left: item.left, top: item.top, behavior: 'instant' });
+      }
     };
     const lockPage = () => {
       if (reserveScrollbarGutter) document.documentElement.style.setProperty('scrollbar-gutter', 'stable', 'important');
@@ -366,13 +344,13 @@
     let preset = null, rulerMaximum = 100, sliding = false;
     let compareEnabled = settings.compareEnabled, compareLeft = index, compareRight = index + 1, activePane = 0, lockedPane = null, pairNeedsAnchor = false;
     let compareScale = 1, comparePanX = [0, 0], comparePanY = [0, 0], compareDims = [null, null], dividerPosition = .5, dividerDragging = false;
-    let overviewOpen = false, overviewReturn = null, overviewRecent = null, overviewAnchor = null, fromOverview = false, overviewBandSize = 1;
+    let overviewOpen = false, overviewRecent = null, overviewAnchor = null, overviewBandSize = 1;
     let overviewBackwardExpanded = false, overviewBackwardProbeStarted = false, overviewBackwardProbeCompleted = false;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const overviewCards = new Map();
     let overviewItems = [], overviewStartOrdinal = 0, overviewGeometry = '', overviewLayoutConfig = '', rebuildOverviewItems = false;
     let overviewPress = null, overviewCommitTimer = 0, overviewCommitStarted = 0, overviewDirty = false, pictureClick = 0;
-    let overviewGesture = null;
+    let overviewClickGuard = null;
     let overviewLayoutAnchor = null;
     let scanPromise = null, scanController = null, scanRestore = null, overviewScrollFrame = 0, overviewCacheCheckTimer = 0, scanningDirection = 1, overviewDirection = 1, lastOverviewOffset = 0;
     let edgeSide = 0, edgePull = 0, edgeTimer = 0, edgeAnimation = null;
@@ -384,13 +362,13 @@
 
     function close(event) {
       if (closed) return;
-      const snapshot = !standalone && event?.type !== 'pagehide' ? activeSnapshot() : null;
       const target = entries[overviewOpen ? centralOverviewIndex() : activeIndex()];
-      rememberSourceAnchors();
+      if (target && !standalone && event?.type !== 'pagehide') rememberSourceAnchors([target]);
       const targetPosition = target && sourceAnchors.get(target.key);
-      closed = true; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
-      scanController?.abort(); scanRestore?.(); scanRestore = null;
-      endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      closed = true; overviewOpen = false; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
+      scanController?.abort(); scanRestore = null;
+      clearOverviewPress(); endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      cancelAnimationFrame(overviewScrollFrame);
       clearTimeout(overviewEdgeIntentState.timer);
       for (const job of overviewThumbJobs.values()) {
         clearTimeout(job.timeout);
@@ -405,15 +383,15 @@
       dialog.close(); host.remove();
       restorePageCoordinates(); restorePageStyles();
       focused?.focus?.({ preventScroll: true });
-      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition, snapshot, leavingFullscreen);
+      if (event?.type !== 'pagehide' && !standalone) revealSource(target, targetPosition, leavingFullscreen);
       if (lens.close === close) lens.close = null;
       if (standalone) window.close();
     }
     lens.close = close;
 
-    function rememberSourceAnchors() {
+    function rememberSourceAnchors(items = entries) {
       const container = scanScroller?.getBoundingClientRect();
-      for (const entry of entries) {
+      for (const entry of items) {
         const node = lens.gallery.connectedEntryNode(entry, collection.scope);
         if (!node?.isConnected) continue;
         const box = node.getBoundingClientRect();
@@ -426,32 +404,32 @@
       }
     }
     function centerSourceNode(node) {
-      try { node.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' }); }
-      catch { node.scrollIntoView({ block: 'center', inline: 'nearest' }); }
+      node.scrollIntoView({ block: 'center', inline: scanHorizontal ? 'center' : 'nearest', behavior: 'instant' });
     }
-    async function revealSource(target, position, snapshot, leavingFullscreen) {
-      if (!target) { returnFeedback(snapshot, null, null, reducedMotion.matches); return; }
+    async function revealSource(target, position, leavingFullscreen) {
+      if (!target) return;
       const recovery = new AbortController(); lens.returnController?.abort(); lens.returnController = recovery;
       const stop = () => recovery.abort();
       for (const type of ['wheel', 'pointerdown', 'keydown']) window.addEventListener(type, stop, { capture: true, once: true, signal: recovery.signal });
       const restoreAnchor = () => {
         if (!position) return;
-        window.scrollTo(position.pageX, position.pageY);
+        window.scrollTo({ left: position.pageX, top: position.pageY, behavior: 'instant' });
         const elements = position.elements || [];
         for (const item of [...elements].reverse()) if (item.node.isConnected && item.node !== scanScroller) {
-          item.node.scrollTop = item.top; item.node.scrollLeft = item.left;
+          item.node.scrollTo({ top: item.top, left: item.left, behavior: 'instant' });
         }
         if (scanScroller?.isConnected && elements.some(item => item.node === scanScroller)) {
-          scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = position.position - (scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight) / 2;
+          const axis = scanHorizontal ? 'left' : 'top';
+          scanScroller.scrollTo({ [axis]: position.position - (scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight) / 2, behavior: 'instant' });
         } else {
-          window.scrollTo(position.pageX, position.position - innerHeight / 2);
+          window.scrollTo({ left: position.pageX, top: position.position - innerHeight / 2, behavior: 'instant' });
         }
       }
       try {
         if (leavingFullscreen) await leavingFullscreen;
         if (recovery.signal.aborted) return;
         let node = lens.gallery.connectedEntryNode(target, collection.scope);
-        if (!node) { restoreAnchor(); returnFeedback(snapshot, null, null, reducedMotion.matches); snapshot = null; }
+        if (!node) restoreAnchor();
         const deadline = performance.now() + 2200;
         do {
           if (recovery.signal.aborted) return;
@@ -460,10 +438,7 @@
             const fresh = lens.gallery.collect(target.thumb, null, collection.scope);
             node = fresh.entries.find(entry => lens.gallery.sameEntry(target, entry))?.node;
           }
-          if (node) {
-            centerSourceNode(node);
-            returnFeedback(snapshot, visibleSourceBox(node), null, reducedMotion.matches); return;
-          }
+          if (node) { centerSourceNode(node); return; }
           await scanDelay(120, recovery.signal);
         } while (performance.now() < deadline);
         if (!recovery.signal.aborted) {
@@ -818,6 +793,28 @@
     function overviewSlotPending(item, side) {
       return Boolean(item && !item.entry && item.slotKey && (scanStates[side]?.slotAttempts.get(item.slotKey) || 0) < 3);
     }
+    function scanSlotPending(slot, side, projectedSlots) {
+      if (!slot?.pending) return false;
+      if (!overviewOpen) return true;
+      const item = projectedSlots.get(slot.key);
+      // Only unresolved slots represented in the active overview projection
+      // are cache demand. Older or truncated source slots must not hold the
+      // current viewport in a loading state indefinitely.
+      return item?.slotNode === slot.node && overviewSlotPending(item, side);
+    }
+    function overviewPendingForSide(side, pendingBefore, pendingVisible, pendingAfter, activeDirection) {
+      return side < 0 ? pendingBefore || (pendingVisible && activeDirection < 0)
+        : pendingAfter || (pendingVisible && activeDirection > 0);
+    }
+    function scrollSourceTo(position) {
+      if (scanScroller) scanScroller.scrollTo({
+        left: scanHorizontal ? position : scanScroller.scrollLeft,
+        top: scanHorizontal ? scanScroller.scrollTop : position,
+        behavior: 'instant'
+      });
+      else window.scrollTo({ left: pagePosition.x, top: position, behavior: 'instant' });
+      return sourcePosition();
+    }
     function scanResolvedSnapshot() {
       const entryKeys = new Set(), sources = new Set(), slotKeys = new Set(), positions = [];
       for (const entry of entries) {
@@ -884,13 +881,13 @@
         const label = $(`.overview-status[data-side="${side}"]`);
         const state = scanStates[side];
         const loading = Boolean(scanController && !scanController.signal.aborted && scanningDirection === side);
-      const silentBackward = side < 0 && settings.overviewCacheBeforeMode === 'auto' && !overviewBackwardExpanded && !state.ended;
+        const silentBackward = side < 0 && settings.overviewCacheBeforeMode === 'auto' && !overviewBackwardExpanded && !state.ended;
         const nearThumbnailError = overviewThumbnailFailures(window, side).length > 0;
         const pending = overviewHasPendingSlots(side, window);
         const sourceLoading = overviewSourceLoads(side, window);
         const thumbnailLoading = overviewThumbnailLoads(window, side);
         const key = state.ended ? (side < 0 ? 'overviewStart' : 'overviewEnd')
-        : silentBackward ? ''
+          : silentBackward ? ''
           : loading && thumbnailLoading ? 'overviewLoading'
           : loading && sourceLoading ? 'overviewLoading'
           : loading ? 'overviewDiscovering'
@@ -904,7 +901,7 @@
           : '';
         label.hidden = !key;
         const text = key ? t(key) : '';
-        const showFlower = loading || (key === 'overviewLoading' && (sourceLoading || thumbnailLoading));
+        const showFlower = key === 'overviewDiscovering' || key === 'overviewLoading';
         if (label.textContent !== text || Boolean(label.querySelector('.loading-flower')) !== showFlower) {
           label.replaceChildren();
           if (showFlower) label.insertAdjacentHTML('afterbegin', flower);
@@ -1448,17 +1445,20 @@
       const band = Math.max(1, overviewBandSize);
       const pendingBefore = overviewItems.slice(window.start, Math.max(window.start, window.first)).some(item => overviewSlotPending(item, -1));
       const pendingAfter = overviewItems.slice(Math.min(overviewItems.length, window.last + 1), window.end + 1).some(item => overviewSlotPending(item, 1));
-      const pendingVisible = overviewItems.slice(window.first, window.last + 1).some(item => overviewSlotPending(item, 1));
+      const pendingVisible = overviewItems.slice(window.first, window.last + 1).some(item => overviewSlotPending(item, overviewDirection));
       const shortBefore = overviewNeedsDiscovery(-1, window);
       const shortAfter = overviewNeedsDiscovery(1, window);
-      const wantsScan = { [-1]: shortBefore || pendingBefore || pendingVisible, [1]: shortAfter || pendingAfter || pendingVisible };
+      const wantsScan = {
+        [-1]: shortBefore || overviewPendingForSide(-1, pendingBefore, pendingVisible, pendingAfter, overviewDirection),
+        [1]: shortAfter || overviewPendingForSide(1, pendingBefore, pendingVisible, pendingAfter, overviewDirection)
+      };
       if (overviewEdgeIntentState.side && overviewEdgeDistance(overviewEdgeIntentState.side) > 2) {
         overviewEdgeIntentState.side = 0; overviewEdgeIntentState.distance = 0; overviewEdgeIntentState.retried = false;
       }
       const directions = overviewDirection < 0 ? [-1, 1] : [1, -1];
       for (const direction of directions) {
         const state = scanStates[direction];
-        const pendingDemand = direction < 0 ? pendingBefore || pendingVisible : pendingAfter || pendingVisible;
+        const pendingDemand = overviewPendingForSide(direction, pendingBefore, pendingVisible, pendingAfter, overviewDirection);
         if (overviewScanDemandSatisfied(direction) && !pendingDemand) continue;
         if (direction < 0 && settings.overviewCacheBeforeMode === 'auto' && !overviewBackwardExpanded) {
           if (state.ended || overviewBackwardProbeStarted || state.paused || state.failed) continue;
@@ -1491,12 +1491,19 @@
       const coordinate = node => { const box = node.getBoundingClientRect(); return sourcePosition() + (scanHorizontal ? box.left - (origin?.left || 0) : box.top - (origin?.top || 0)); };
       const slots = collection.slots || [];
       const cacheWindow = overviewOpen ? overviewCacheWindow() : null;
-      const pendingNearby = () => (collection.slots || []).some(slot => {
-        if (!slot.pending || !slot.node?.isConnected) return false;
-        const position = coordinate(slot.node);
-        return direction < 0 ? position >= state.cursor - viewport * 1.5 && position <= state.cursor + viewport * .65
-          : position >= state.cursor - viewport * .65 && position <= state.cursor + viewport * 1.5;
-      });
+      let mappedItems, projectedSlots;
+      const pendingNearby = () => {
+        if (overviewOpen && mappedItems !== overviewItems) {
+          mappedItems = overviewItems;
+          projectedSlots = new Map(mappedItems.filter(item => !item.entry && item.slotKey).map(item => [item.slotKey, item]));
+        }
+        return (collection.slots || []).some(slot => {
+          if (!slot.node?.isConnected || !scanSlotPending(slot, direction, projectedSlots)) return false;
+          const position = coordinate(slot.node);
+          return direction < 0 ? position >= state.cursor - viewport * 1.5 && position <= state.cursor + viewport * .65
+            : position >= state.cursor - viewport * .65 && position <= state.cursor + viewport * 1.5;
+        });
+      };
       const hasPendingVisibleOrCache = () => overviewOpen && (() => {
         return overviewItems.slice(cacheWindow.start, cacheWindow.end + 1).filter(item => overviewSlotPending(item, direction)).some(item => {
           const box = item.slotNode?.getBoundingClientRect();
@@ -1539,10 +1546,8 @@
           if (records.some(record => collection.scope?.contains(record.target) || record.target === scopeParent)) observedChanges++;
         });
         localObserver.observe(collection.scope, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
-        if (scanScroller) scanScroller[scanHorizontal ? 'scrollLeft' : 'scrollTop'] = next;
-        else window.scrollTo(pagePosition.x, next);
-        state.cursor = sourcePosition();
-        const started = performance.now(), timeout = pendingNearby() || edge ? 4200 : 1800;
+        state.cursor = scrollSourceTo(next);
+        const started = performance.now(), timeout = pendingNearby() ? 4200 : edge ? 900 : 1800;
         let stableSince = started, signature = beforeSignature;
         try {
           while (!signal.aborted && !closed && performance.now() - started < timeout) {
@@ -1562,7 +1567,7 @@
             const settled = performance.now() - stableSince >= 420;
             if (overviewOpen && overviewScanDemandSatisfied(direction) && !hasPendingVisibleOrCache()) break;
             if (progressed && settled && !pendingNow) break;
-            if (!progressed && !pendingNow && !state.sourceLoading && !edge && elapsed >= 720) break;
+            if (!progressed && !pendingNow && !state.sourceLoading && elapsed >= 720) break;
           }
         } finally { localObserver.disconnect(); }
         if (!signal.aborted && !closed) { refresh(direction); rememberSourceAnchors(); }
@@ -1648,8 +1653,9 @@
         }
       })().finally(() => {
         scanPromise = null; scanController = null;
+        if (closed) return;
         updateNavigationButtons();
-        if (!closed && overviewOpen) {
+        if (overviewOpen) {
           if (edgeSide === direction && !state.ended) resetOverviewEdge(true);
           updateOverviewStatus(); queueOverviewCommit(); updateOverviewThumbnails();
           const window = overviewCacheWindow();
@@ -1663,7 +1669,7 @@
       return {
         compareEnabled, index, indexKey: entries[index]?.key, left: compareLeft, right: compareRight,
         leftKey: entries[compareLeft]?.key, rightKey: entries[compareRight]?.key, activePane, lockedPane, pairNeedsAnchor,
-        scale, panX, panY, compareScale, comparePanX: [...comparePanX], comparePanY: [...comparePanY], dividerPosition, fromOverview
+        scale, panX, panY, compareScale, comparePanX: [...comparePanX], comparePanY: [...comparePanY], dividerPosition
       };
     }
     function enterOverview() {
@@ -1676,7 +1682,6 @@
         if (selected) overviewAnchor = { key: selected.key, x: .5, y: .5 };
       }
       overviewRecent = pictureState();
-      if (!fromOverview || !overviewReturn) overviewReturn = overviewRecent;
       overviewOpen = true; pictureClick = 0;
       overviewShell.hidden = false;
       overview.classList.add('active'); overview.setAttribute('aria-hidden', 'false');
@@ -1699,12 +1704,11 @@
         returnFeedback(snapshot, target, viewer, reducedMotion.matches);
       }
     }
-    async function exitOverview(selectImage = false, selectedIndex = -1, explicitMode = null, restoreParent = false) {
+    async function exitOverview(selectImage = false, selectedIndex = -1, explicitMode = null) {
       if (!overviewOpen) return;
       overviewAnchor = captureOverviewAnchor();
-      const state = restoreParent ? overviewReturn : overviewRecent;
-      overviewPress?.animations.forEach(animation => animation.cancel());
-      overviewOpen = false; overviewPress = null; pictureClick = 0;
+      const state = overviewRecent;
+      overviewOpen = false; clearOverviewPress(); pictureClick = 0;
       overviewLayoutAnchor = null;
       lens.feedbackController?.abort();
       clearTimeout(overviewCommitTimer);
@@ -1719,7 +1723,6 @@
         return found >= 0 ? found : Math.max(0, Math.min(entries.length - 1, fallback));
       };
       if (selectImage && selectedIndex >= 0) {
-        fromOverview = true;
         const selected = Math.max(0, Math.min(entries.length - 1, selectedIndex));
         compareEnabled = explicitMode === null ? Boolean(state?.compareEnabled) : explicitMode;
         settings.compareEnabled = compareEnabled;
@@ -1730,7 +1733,6 @@
           await showPair(selected, right);
         } else { lockedPane = null; await showSingle(selected); }
       } else if (state) {
-        fromOverview = restoreParent ? false : Boolean(state.fromOverview);
         const left = resolveIndex(state.leftKey, state.left), right = state.rightKey ? resolveIndex(state.rightKey, state.right) : state.right;
         compareEnabled = state.compareEnabled; index = resolveIndex(state.indexKey, state.index);
         compareLeft = left; compareRight = right;
@@ -1743,7 +1745,6 @@
         } else { scale = state.scale; panX = state.panX; panY = state.panY; }
         transform(); updateCompareControls();
       }
-      if (!fromOverview) overviewReturn = null;
       updateCompareControls();
       viewer.focus({ preventScroll: true });
     }
@@ -1956,8 +1957,34 @@
     on($('.prev'), 'click', () => navigate(-1)); on($('.next'), 'click', () => navigate(1));
     on($('.compare-toggle'), 'click', () => setCompare(!compareEnabled));
     on($('.overview-toggle'), 'click', () => overviewOpen ? exitOverview(false) : enterOverview());
+    function clearOverviewPress() {
+      const press = overviewPress;
+      overviewPress = null;
+      overviewClickGuard = null;
+      overview.classList.remove('dragging');
+      if (!press) return;
+      if (press.capture?.hasPointerCapture(press.pointer)) press.capture.releasePointerCapture(press.pointer);
+      for (const animation of press.animations) {
+        if (!overviewOpen) animation.cancel();
+        else if (animation.playState === 'paused') animation.play();
+      }
+    }
+    function releaseOverviewPress(event) {
+      const press = overviewPress;
+      if (!press || (event.pointerId !== undefined && press.pointer !== event.pointerId)) return;
+      clearOverviewPress();
+      if (event.type === 'pointerup' || press.dragging) {
+        overviewClickGuard = { key: press.key, dragging: press.dragging };
+      }
+      if (edgeSide && (!scanController || scanningDirection !== edgeSide || overviewEdgeDistance(edgeSide) > 2)) {
+        resetOverviewEdge(true, scanStates[edgeSide].ended || !collection.scope);
+      }
+      if (overviewDirty) queueOverviewCommit();
+      if (press.dragging && overviewOpen) checkOverviewCache(false);
+    }
     on(overview, 'pointerdown', event => {
       if (!event.isPrimary || event.button !== 0) return;
+      clearOverviewPress();
       const card = event.target.closest('.overview-card');
       const animations = [...(card?.getAnimations() || []), ...(edgeAnimation ? [edgeAnimation] : [])].filter(animation => animation.playState === 'running');
       animations.forEach(animation => animation.pause());
@@ -1965,21 +1992,19 @@
         pointer: event.pointerId, key: card?.dataset.key || null, animations,
         startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY,
         axis: settings.overviewDirection === 'horizontal' ? 'x' : 'y', dragging: false,
-        mousePan: event.pointerType === 'mouse'
+        mousePan: event.pointerType === 'mouse', capture: card || overview
       };
-      overviewGesture = overviewPress.mousePan ? overviewPress : null;
-      if (overviewPress.mousePan) {
-        try { (card || overview).setPointerCapture(event.pointerId); } catch { /* The pointer may already have been cancelled. */ }
-      }
     });
     on(overview, 'pointermove', event => {
-      const press = overviewGesture;
+      const press = overviewPress;
       if (!press?.mousePan || event.pointerId !== press.pointer || !event.isPrimary) return;
+      if (!(event.buttons & 1)) { releaseOverviewPress(event); return; }
       const dx = event.clientX - press.startX, dy = event.clientY - press.startY;
       const axisDistance = press.axis === 'x' ? Math.abs(dx) : Math.abs(dy);
       if (!press.dragging && axisDistance < 6) return;
       if (!press.dragging) {
         press.dragging = true;
+        if (event.isTrusted && press.capture.isConnected) press.capture.setPointerCapture(event.pointerId);
         overview.classList.add('dragging');
       }
       const delta = press.axis === 'x' ? event.clientX - press.lastX : event.clientY - press.lastY;
@@ -1987,6 +2012,7 @@
       event.preventDefault();
       if (!delta) return;
       // Dragging the content toward its start is explicit backward browsing intent.
+      overviewDirection = delta > 0 ? -1 : 1;
       if (delta > 0) activateOverviewBackward();
       const property = press.axis === 'x' ? 'scrollLeft' : 'scrollTop';
       const before = overview[property];
@@ -1998,33 +2024,18 @@
       if (Math.abs(unconsumed) > .5) overviewEdgeIntent(Math.sign(unconsumed), Math.abs(unconsumed), 'drag');
       else checkOverviewCache(false);
     });
-    const releaseOverviewPress = event => {
-      const press = overviewPress;
-      if (!press || (event.pointerId !== undefined && press.pointer !== event.pointerId)) return;
-      setTimeout(() => {
-        if (overviewPress !== press) return;
-        overviewPress = null;
-        overviewGesture = null;
-        if (press.dragging) overview.classList.remove('dragging');
-        press.animations.forEach(animation => { if (animation.playState === 'paused') animation.play(); });
-        if (edgeSide && (!scanController || scanningDirection !== edgeSide || overviewEdgeDistance(edgeSide) > 2)) {
-          resetOverviewEdge(true, scanStates[edgeSide].ended || !collection.scope);
-        }
-        if (overviewDirty) queueOverviewCommit();
-        if (press.dragging) checkOverviewCache(false);
-      }, 0);
-    };
     on(window, 'pointerup', releaseOverviewPress, { capture: true });
     on(window, 'pointercancel', releaseOverviewPress, { capture: true });
     on(window, 'blur', releaseOverviewPress);
     on(window, 'lostpointercapture', releaseOverviewPress, { capture: true });
-    on(overview, 'lostpointercapture', releaseOverviewPress);
     on(overviewGrid, 'click', event => {
-      if (event.detail && overviewPress?.dragging) {
+      const press = overviewClickGuard || overviewPress;
+      if (event.detail) overviewClickGuard = null;
+      if (event.detail && press?.dragging) {
         event.preventDefault(); event.stopImmediatePropagation(); return;
       }
       const key = event.target.closest('.overview-card')?.dataset.key;
-      if (!key || (event.detail && overviewPress && key !== overviewPress.key)) return;
+      if (!key || (event.detail && press && key !== press.key)) return;
       const item = overviewItems[Number(event.target.closest('.overview-card').dataset.index)];
       const selected = item?.entry ? entries.findIndex(entry => entry.key === item.entry.key) : -1;
       if (selected >= 0) exitOverview(true, selected);
@@ -2045,6 +2056,7 @@
     }, { passive: true });
     on(overview, 'wheel', event => {
       if (event.ctrlKey || event.metaKey || event.composedPath().includes(form)) return;
+      if (overviewPress?.mousePan && !(event.buttons & 1)) releaseOverviewPress(event);
       const horizontal = settings.overviewDirection === 'horizontal';
       const delta = (horizontal || event.altKey || event.shiftKey) && Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       if (!delta) return;
@@ -2054,11 +2066,11 @@
       }
       const amount = delta * (event.deltaMode === 1 ? 32 : event.deltaMode === 2 ? (horizontal ? overview.clientWidth : overview.clientHeight) : 1);
       const side = delta < 0 ? -1 : 1, property = horizontal ? 'scrollLeft' : 'scrollTop';
+      overviewDirection = side;
       if (side < 0) activateOverviewBackward();
       if (overviewEdgeIntentState.side && side !== overviewEdgeIntentState.side) {
         overviewEdgeIntentState.side = 0; overviewEdgeIntentState.samples = []; overviewEdgeIntentState.retried = false;
       }
-      overviewDirection = side;
       if (edgeSide && side !== edgeSide) resetOverviewEdge();
       if (edgeAnimation) resetOverviewEdge();
       const before = overview[property], maximum = Math.max(0, overview[horizontal ? 'scrollWidth' : 'scrollHeight'] - overview[horizontal ? 'clientWidth' : 'clientHeight']);
@@ -2182,7 +2194,8 @@
       event.preventDefault(); event.stopPropagation();
       const delta = event.deltaY || event.deltaX;
       if (!delta) return;
-      if (hold) return;
+      if (hold && (event.buttons & 1)) return;
+      if (hold) endHold();
       // One ordinary wheel notch is one step; trackpad movement scales smoothly.
       const mode = lens.controls.wheelMode(event), now = performance.now();
       if (mode === 'navigate') {
@@ -2232,9 +2245,9 @@
           clientX: event.clientX, clientY: event.clientY,
           anchorX: event.clientX - rect.left - rect.width / 2, anchorY: event.clientY - rect.top - rect.height / 2 };
         if (mode === 'zoom') scale *= settings.holdZoom / 100;
-        followHold(event);
+        moveHeldImage(event);
       }
-      target.setPointerCapture(event.pointerId);
+      if (event.isTrusted) target.setPointerCapture(event.pointerId);
       target.classList.add(mode === 'drag' ? 'dragging' : 'holding'); viewer.classList.add('moving');
       showStrip(false); event.preventDefault();
     }
@@ -2242,6 +2255,10 @@
     on(compare, 'pointerdown', event => startHold(event, compare));
     function followHold(event) {
       if (!hold || event.pointerId !== hold.pointerId) return;
+      if (!(event.buttons & 1)) { endHold(); return; }
+      moveHeldImage(event);
+    }
+    function moveHeldImage(event) {
       const dx = event.clientX - hold.clientX, dy = event.clientY - hold.clientY;
       if (hold.compare) {
         for (let side = 0; side < 2; side++) {
@@ -2276,18 +2293,19 @@
     }
     for (const target of [stage, compare]) {
       on(target, 'pointermove', followHold);
-      on(target, 'pointerup', endHold); on(target, 'pointercancel', endHold); on(target, 'lostpointercapture', endHold);
       on(target, 'click', event => {
         if (event.altKey || event.composedPath().some(node => node?.tagName === 'BUTTON')) { pictureClick = 0; return; }
         pictureClick = event.detail === 1 || !pictureClick ? 1 : pictureClick + 1;
       });
     }
+    for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) on(window, type, event => {
+      if (event.pointerId === hold?.pointerId) endHold();
+    }, { capture: true });
     on(window, 'blur', endHold);
     on(viewer, 'dblclick', event => {
       if (overviewOpen) { event.preventDefault(); event.stopPropagation(); return; }
       if (event.altKey || event.composedPath().some(node => node === divider || node === form || node?.tagName === 'BUTTON')) return;
-      if (fromOverview && overviewReturn) { if (pictureClick >= 2) { event.preventDefault(); enterOverview(); } }
-      else if (settings.doubleClickExit) { event.preventDefault(); close(); }
+      if (settings.doubleClickExit && pictureClick >= 2) { event.preventDefault(); close(); }
     });
     on(viewer, 'pointermove', event => {
       if (hold) return;
@@ -2320,8 +2338,8 @@
         event.preventDefault(); event.stopImmediatePropagation();
         const horizontal = overviewHorizontal, axis = horizontal ? 'left' : 'top';
         const backwardKey = event.key === 'Home' || (horizontal ? event.key === 'ArrowLeft' : event.key === 'ArrowUp');
-        if (backwardKey && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) activateOverviewBackward();
         overviewDirection = backwardKey ? -1 : 1;
+        if (backwardKey && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) activateOverviewBackward();
         if (edgeSide && overviewDirection !== edgeSide) resetOverviewEdge();
         if (edgeAnimation) resetOverviewEdge();
         if (overviewEdgeDistance(overviewDirection) <= 1) {

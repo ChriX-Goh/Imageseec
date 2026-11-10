@@ -52,6 +52,10 @@
   divider.dispatchEvent(new MouseEvent('dblclick',{bubbles:true,cancelable:true}));record('divider reset',Math.abs(parseFloat(divider.style.left)/box.width-.5)<.004,divider.style.left);
   const before=read();emit(compare,'pointerdown',box.width/4,300);const held=read();emit(compare,'pointermove',box.width/4+80,330);emit(compare,'pointerup',box.width/4+80,330);const after=read();
   record('sync hold and release',held.zoom==='200%'&&after.zoom==='100%'&&after.panes.every((p,n)=>p.transform===before.panes[n].transform),{held:held.zoom,released:after.zoom});
+  emit(compare,'pointerdown',box.width/4,300);
+  compare.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,composed:true,pointerId:1,buttons:0,clientX:box.width/4+5,clientY:305}));
+  record('buttonless motion releases compare hold after a missed pointerup',read().zoom==='100%'&&!compare.classList.contains('holding'),read().zoom);
+  emit(compare,'pointerup',box.width/4+5,305);
   emit(compare,'pointerdown',box.width/4,300,true);emit(compare,'pointermove',box.width/4+100,350,true);emit(compare,'pointerup',box.width/4+100,350,true);
   record('sync alt drag',read().panes.every(p=>p.transform.includes('translate(100px, 50px)')),read().panes.map(p=>p.transform));
   await key('Home');
@@ -68,6 +72,26 @@
   record('vertical masonry lane order and single axis',!vertical.horizontal&&ordered(vertical.cards,false)&&vertical.width<=vertical.viewWidth+1,{count:vertical.total,width:vertical.width,view:vertical.viewWidth});
   record('overview dedup and bidirectional preload',vertical.total>=total&&vertical.total===vertical.unique&&vertical.visibleCount>0&&vertical.preloadedBefore>0&&vertical.preloadedAfter>0,{total:vertical.total,before:vertical.preloadedBefore,after:vertical.preloadedAfter,visible:vertical.visibleCount});
   await key('ArrowDown');await delay(240);record('vertical scroll geometry',read().height>=read().viewHeight&&read().viewHeight>0,{height:read().height,viewport:read().viewHeight,trustedKeyboardCheckedSeparately:true});
+  const dragOverview=r.querySelector('.overview'),dragCard=[...r.querySelectorAll('.overview-card[aria-disabled="false"]')].find(card=>Number(card.dataset.index)<read().total-1),dragRect=dragCard.getBoundingClientRect(),dragX=dragRect.left+dragRect.width/2,dragY=dragRect.top+dragRect.height/2,dragPair=read().pair;
+  const overviewPointer=(target,type,x,y,pointerId=7,buttons=type==='pointerup'?0:1)=>target.dispatchEvent(new PointerEvent(type,{bubbles:true,composed:true,cancelable:true,pointerId,pointerType:'mouse',isPrimary:true,button:0,buttons,clientX:x,clientY:y}));
+  overviewPointer(dragCard,'pointerdown',dragX,dragY);overviewPointer(dragCard,'pointermove',dragX,dragY-24);overviewPointer(dragCard,'pointerup',dragX,dragY-24);
+  const beforeButtonlessMove=dragOverview.scrollTop;overviewPointer(dragOverview,'pointermove',dragX,dragY-60,7,0);const afterButtonlessMove=dragOverview.scrollTop;
+  record('overview pointerup stops buttonless motion synchronously',afterButtonlessMove===beforeButtonlessMove&&!dragOverview.classList.contains('dragging'),{before:beforeButtonlessMove,after:afterButtonlessMove,draggingClass:dragOverview.classList.contains('dragging')});
+  const dragClick=new MouseEvent('click',{bubbles:true,composed:true,cancelable:true,detail:1,button:0});dragCard.dispatchEvent(dragClick);await delay(30);
+  record('overview drag release suppresses captured-card click',dragOverview.classList.contains('active')&&read().overview&&read().pair===dragPair&&dragClick.defaultPrevented,{pairBefore:dragPair,pairAfter:read().pair,prevented:dragClick.defaultPrevented,draggingClass:dragOverview.classList.contains('dragging')});
+  record('overview drag releases its pointer state',!dragOverview.classList.contains('dragging'),{draggingClass:dragOverview.classList.contains('dragging')});
+  dragCard.click();await ready();
+  const pickedIndex=Number(dragCard.dataset.index);
+  record('overview remains selectable after drag capture release',!read().overview&&read().pair.startsWith(`${pickedIndex+1} | ${pickedIndex+2} / `),{pickedIndex,pair:read().pair});
+  await key('g');
+  const roundTripOverview=root().querySelector('.overview'),roundTripCard=[...root().querySelectorAll('.overview-card[aria-disabled="false"]')][0],roundTripBox=roundTripCard.getBoundingClientRect();
+  overviewPointer(roundTripCard,'pointerdown',roundTripBox.left+roundTripBox.width/2,roundTripBox.top+roundTripBox.height/2,13);
+  overviewPointer(roundTripCard,'pointermove',roundTripBox.left+roundTripBox.width/2,roundTripBox.top+roundTripBox.height/2-18,13);
+  await key('g');await key('g');
+  const overviewAfterRoundTrip=root().querySelector('.overview'),roundTripOffset=overviewAfterRoundTrip.scrollTop;
+  overviewPointer(roundTripCard,'pointermove',roundTripBox.left+roundTripBox.width/2,roundTripBox.top+roundTripBox.height/2-54,13,0);
+  record('G roundtrip cancels held overview drag',overviewAfterRoundTrip.scrollTop===roundTripOffset&&!overviewAfterRoundTrip.classList.contains('dragging'),{before:roundTripOffset,after:overviewAfterRoundTrip.scrollTop,draggingClass:overviewAfterRoundTrip.classList.contains('dragging')});
+  overviewPointer(roundTripCard,'pointerup',roundTripBox.left+roundTripBox.width/2,roundTripBox.top+roundTripBox.height/2-54,13,0);await delay(30);
   await set({overviewDirection:'horizontal',overviewClean:true});let horizontal=read();
   record('horizontal masonry lane order and single axis',horizontal.horizontal&&ordered(horizontal.cards,true)&&horizontal.height<=horizontal.viewHeight+1,{count:horizontal.total,height:horizontal.height,view:horizontal.viewHeight});
   record('borderless without captions',horizontal.cards.every(c=>c.border==='0px'&&c.caption==='none'),horizontal.cards.slice(0,1));
@@ -93,12 +117,18 @@
   const nested=sourceScroller&&sourceScroller!==document.documentElement,viewportHeight=nested?sourceScroller.clientHeight:innerHeight,viewportCenterY=(nested?sourceScroller.getBoundingClientRect().top+sourceScroller.clientTop:0)+viewportHeight/2;
   const centerDelta=returnedCenter===null?null:Math.abs(returnedCenter-viewportCenterY);
   record('Escape from selected image exits to its source',!root()&&centerDelta!==null&&centerDelta<=viewportHeight*.15,{position:[scrollX,scrollY],targetFound:Boolean(sourceNode),targetCenterY:returnedCenter,viewportCenterY,centerDelta,tolerance:viewportHeight*.15,targetCheckedWithTrustedInputSeparately:true});
-  if(document.querySelector('#open-viewer')&&await openSource(sourceNode)){
-    await key('g');const overviewEscapeKey=root().querySelector('.overview');await key('Escape');await delay(160);
-    record('Escape from overview exits directly to source',!root(),{overviewWasOpen:Boolean(overviewEscapeKey)});
+  if(await openSource(sourceNode)){
+    await key('g');
+    const exitOverview=root().querySelector('.overview'),exitCard=[...root().querySelectorAll('.overview-card[aria-disabled="false"]')][0],exitBox=exitCard.getBoundingClientRect();
+    overviewPointer(exitCard,'pointerdown',exitBox.left+exitBox.width/2,exitBox.top+exitBox.height/2,9);
+    overviewPointer(exitCard,'pointermove',exitBox.left+exitBox.width/2,exitBox.top+exitBox.height/2-8,9);
+    const escapeDuringDrag=new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true});window.dispatchEvent(escapeDuringDrag);
+    record('Escape exits synchronously during an overview drag',!root()&&escapeDuringDrag.defaultPrevented&&!exitOverview.classList.contains('dragging'),{prevented:escapeDuringDrag.defaultPrevented,dragging:exitOverview.classList.contains('dragging')});
+    overviewPointer(exitCard,'pointerup',exitBox.left+exitBox.width/2,exitBox.top+exitBox.height/2-8,9);
+    await delay(160);
     if(await openSource(sourceNode)){
-      await key('g');root().querySelector('.close').click();await delay(160);
-      record('close button exits directly from overview',!root(),{overviewWasOpen:true});
+      await key('g');root().querySelector('.close').click();
+      record('close button exits directly from overview',!root()&&!document.querySelector(':popover-open'),{overviewWasOpen:true});
     }
   }
   record('viewer exits and restores source page',!root(),{position:[scrollX,scrollY]});

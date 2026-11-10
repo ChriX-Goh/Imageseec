@@ -1,6 +1,10 @@
 # Verification record
 
-## Current source: 2.0 b7
+## Current source: 2.0 b9
+
+Run the generated 80-image gallery to check buttonless mouse movement after release, click after a drag, G during an active drag, and direct exit. Check trusted mouse and wheel input separately from synthetic event tests. Use the lazy gallery fixture with `smooth`, with and without `nested`, for pages that specify smooth scrolling. Confirm discovered thumbnails arrive, active loading settles, and the source stays at the image being viewed when the viewer closes. Live-site acceptance remains separate.
+
+## 2.0 b7
 
 The unpacked development extension in the Codex in-app browser restored varied aspect ratios in the 80-image fixture. In a five-column view opened at mid-gallery, the initial before/after decoded counts were 5/10 with no leading status, and a real backward key expanded them to 10/10. A nested delayed fixture recognized all 60 images once the source inserted them and cleared the waiting state. Unit checks and the installed handler sweep passed. The real-site compatibility matrix remains incomplete; site details stay private.
 

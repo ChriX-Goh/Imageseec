@@ -9,6 +9,7 @@
   const middle = mode === 'middle', loaded = new Set(), requested = new Set();
   if (mode === 'infinite' || mode === 'loaded') gallery.classList.add('grid');
   if (query.has('nested')) region.classList.add('nested');
+  if (query.has('smooth')) (query.has('nested') ? region : document.documentElement).style.scrollBehavior = 'smooth';
   const update = () => { document.querySelector('#receipt').textContent = `${loaded.size}/${gallery.children.length} loaded`; };
   async function load(slot, immediately = false) {
     const id = Number(slot.dataset.id);
