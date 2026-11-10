@@ -14,14 +14,14 @@
     ],
     "frameworks": [],
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、稳定比例和顺序的自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-09T13:31:56.929Z",
-    "gitCommitHash": "f026405c42e3806b57005cbd0c1eed2b96e373cb"
+    "analyzedAt": "2026-11-10T00:02:47.299Z",
+    "gitCommitHash": "a55267a02b3b784e8c064d08448540b468e6abe8"
   },
   "sourceState": {
-    "trackedAndUntrackedFiles": 101,
+    "trackedAndUntrackedFiles": 102,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b7",
+    "versionName": "2.0 b8",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -62,7 +62,7 @@
       "type": "file",
       "name": "unit.cjs",
       "filePath": "tests/unit.cjs",
-      "summary": "检查 11 种语言、设置范围、自适应全览稳定轨道和比例、图片顺序、懒加载扫描及扩展入口。",
+      "summary": "检查 11 种语言与设置、自适应布局、图片身份和顺序、稳定槽位、插图、空槽缓存及扩展行为。",
       "tags": [
         "test",
         "unit",
@@ -70,7 +70,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "bbbefa56290205affac2aca4bfa61d9cf5037fa0020d9e61616af76b2bb7fc87",
+      "sourceHash": "a79ab8ad8848f14b4483470d33894ffbf8484c03ddac75ce84109a378f340a7c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -177,7 +177,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "5ff3eea377315e8a725b2c527cc13a5af1b5a6db003118e3a801306378916fa4",
+      "sourceHash": "a79ab8ad8848f14b4483470d33894ffbf8484c03ddac75ce84109a378f340a7c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -217,7 +217,7 @@
       "type": "document",
       "name": "README.md",
       "filePath": "README.md",
-      "summary": "介绍 Imageseec b6 的桌面式单图／双图、固定槽位阅览、独立双向缩略图缓存、拖拽与通用兼容边界。",
+      "summary": "介绍 Imageseec 2.0 b8 的单图浏览、双图对照、自适应全览与本地隐私边界。",
       "tags": [
         "documentation",
         "entry-point",
@@ -226,7 +226,7 @@
         "compatibility"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c3d6913440c0efb61bc9de9c62e9206528344fa0a8a8d9a09f5ceb7fde2010",
+      "sourceHash": "5ba77bd9c102d1d795ef946ea5699d6ec2775e86d8bb9c92d09b735702f20053",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -250,7 +250,7 @@
       "type": "config",
       "name": "manifest.json",
       "filePath": "manifest.json",
-      "summary": "声明 Chrome Manifest V3 扩展入口、权限和设置页；当前测试构建为 2.0.0.6（2.0 b6）。",
+      "summary": "声明 Chrome Manifest V3 扩展入口、权限和设置页；当前测试构建为 2.0.0.8（2.0 b8）。",
       "tags": [
         "configuration",
         "manifest-v3",
@@ -259,7 +259,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "3f9a3af443f413664af379052a3b6b2520dcf8fa8636a521f201d66fe9acd691",
+      "sourceHash": "3db060bc81235a9068421dc3ff04c43ba9d8543b4a202137d0e164ad08a53f57",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -332,14 +332,14 @@
       "type": "document",
       "name": "BUILDS.md",
       "filePath": "docs/BUILDS.md",
-      "summary": "按顺序记录 2.0 测试版编号、扩展版本、交付范围、验证证据、校验摘要和所有者验收状态。",
+      "summary": "按顺序记录 2.0 b1 至 b8 测试版、交付范围和发布验收状态。",
       "tags": [
         "release",
         "build-record",
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "bac59b532cdfe7621ce45d863dfd836ebde2a74d6dbd129bdce3a5e98193b8b4",
+      "sourceHash": "90ac38525c404321bfb002e224ed4464a78e250c345f73f7886b30531df6b52b",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -422,14 +422,14 @@
       "type": "document",
       "name": "STATUS.zh-CN.md",
       "filePath": "docs/STATUS.zh-CN.md",
-      "summary": "记录 b6 已验证的固定几何、双向缓存、拖拽和直接返回行为，并明确未完成的真实站点矩阵。",
+      "summary": "记录 b8 稳定插图、占位与缓存扫描的通用夹具情况，并区分尚未完成的实站验收。",
       "tags": [
         "status",
         "beta",
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "24a3dc3e73ba40951fb711bb00db6f6d77fb059dbc79dbc8d49049e9dea305ab",
+      "sourceHash": "6ffef842c5e3d2844da96fbc37c6ff3c920afb690ac7dcf9e4ba2fdf60d129cc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1282,14 +1282,14 @@
       "type": "file",
       "name": "controls.js",
       "filePath": "controls.js",
-      "summary": "提供缩放规则、双向缓存窗口、稳定顺序和轨道的自适应全览几何及端点重试阈值。",
+      "summary": "提供缩放规则、稳定比例的自适应全览几何、忽略无图空槽的前后缩略图缓存及端点重试规则。",
       "tags": [
         "utility",
         "zoom",
         "overview-layout"
       ],
       "complexity": "moderate",
-      "sourceHash": "c6502a1f3456fb111e8b365ec9f4153f3e19b33fd9d848ed8dee27ebbcb8a672",
+      "sourceHash": "688fd9014fe494708d44136085a25f2feafa93936c1f7d88eecdc1d17e2bf564",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1297,14 +1297,14 @@
       "type": "file",
       "name": "gallery.js",
       "filePath": "gallery.js",
-      "summary": "按通用 DOM 语义、重复行和稳定槽位发现同组图库；保留无图地址卡片、完整来源身份、待加载项及可靠比例。",
+      "summary": "按通用 DOM 语义、重复卡片和唯一 ARIA 序号发现同组图库与空槽，保留图片身份、待加载项和可信比例。",
       "tags": [
         "gallery-discovery",
         "image-sources",
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "12445acfeb71e96ea2d9c6ba43e16baa2c517140e47c28d10c23c22d3e2aa596",
+      "sourceHash": "5c7b78c68d3645bea05577c3312b8ebe824fbb0cd8b8fdc7ce470e7bd19b087b",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1569,10 +1569,10 @@
       "name": "overviewCacheRange",
       "filePath": "controls.js",
       "lineRange": [
-        131,
-        131
+        133,
+        133
       ],
-      "summary": "按可见槽位和前后独立数量求缩略图缓存窗口，并裁剪到当前已发现图库。",
+      "summary": "按可见图片和前后独立数量扩展缩略图缓存范围，空槽不计数并裁剪到已发现图库。",
       "tags": [
         "overview",
         "thumbnail-cache",
@@ -1657,7 +1657,7 @@
         285,
         285
       ],
-      "summary": "从重复卡片、行结构和可靠 ARIA 顺序识别同组槽位；没有图片地址的卡片仍作为懒加载预留项。",
+      "summary": "从重复卡片和行结构发现同组槽位；图片候选与空槽共用唯一 ARIA 顺序。",
       "tags": [
         "gallery-discovery",
         "stable-slots",
@@ -2145,7 +2145,7 @@
         "scroll-restoration"
       ],
       "complexity": "complex",
-      "sourceHash": "e7feb9b36be5de3da2bc712e260fa65efa4863c38f2c73165cf0645080f20bbd",
+      "sourceHash": "c25b740ce6342ce93129349d9bed40a0b9a8c320a3284a4bc3f86dcb0ec2bea7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2213,7 +2213,7 @@
       "type": "file",
       "name": "viewer.js",
       "filePath": "viewer.js",
-      "summary": "管理单／双图与顺序固定的自适应全览，协调空槽、稳定尺寸、双向懒加载扫描、按需缓存、拖拽和返回来源页。",
+      "summary": "管理单／双图与自适应全览；协调稳定槽位、动态插图、前后按需缓存、懒加载扫描、拖拽和来源定位。",
       "tags": [
         "viewer-runtime",
         "image-navigation",
@@ -2221,7 +2221,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "e765e98e42ce8a5722d4af804e7cb4bd7ded82fa6991c0bd650d306c4b67776d",
+      "sourceHash": "5ac71720734e4eaceb81385525a1c5b0209320d8c02baf8faeb6f69ffc209515",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2983,10 +2983,10 @@
       "name": "scanSegment",
       "filePath": "viewer.js",
       "lineRange": [
-        1462,
-        1462
+        1485,
+        1485
       ],
-      "summary": "按需求沿来源滚动容器触发同组图库懒加载，等待网络／槽位变化并限制每个稳定槽位的重复尝试。",
+      "summary": "沿同组图库滚动轴分段触发懒加载，方向筛选目标空槽并等待邻近内容变化。",
       "tags": [
         "lazy-loading",
         "nested-scroll",
@@ -3460,10 +3460,10 @@
       "name": "overviewCacheCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1241,
-        1241
+        1252,
+        1252
       ],
-      "summary": "自动前缓存初始一视觉带，用户向前操作后扩为两带；自动后缓存两带，自定义值保持不变。",
+      "summary": "按视觉带和设置计算前后目标图片数量；自动前缓存初始一带，向前操作后扩为两带。",
       "tags": [
         "overview",
         "thumbnail-cache",
@@ -3529,10 +3529,10 @@
       "name": "checkOverviewCache",
       "filePath": "viewer.js",
       "lineRange": [
-        1419,
-        1419
+        1442,
+        1442
       ],
-      "summary": "依据可见内容、已排队缩略图及配置缓存窗口计算扫描需求；没有待解析图库内容时不继续探测页面。",
+      "summary": "根据可见图片和前后缓存余量提前触发对应方向的扫描。",
       "tags": [
         "overview",
         "prefetch",
@@ -3890,7 +3890,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "e1c0ac5667e154948b69f8822148d917b0c8278bfca816f60a9dfcfb825f7b89",
+      "sourceHash": "5c7b78c68d3645bea05577c3312b8ebe824fbb0cd8b8fdc7ce470e7bd19b087b",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3933,10 +3933,10 @@
       "name": "collectOverviewItems",
       "filePath": "viewer.js",
       "lineRange": [
-        1102,
-        1102
+        1101,
+        1101
       ],
-      "summary": "按稳定图库槽位合并真实图片与待加载占位项；保留原始次序和已分配轨道，避免迟到图片改写相邻项目位置。",
+      "summary": "按稳定槽位合并真实图片与待加载占位；保留已分配轨道，填入中间新图并删除失效占位。",
       "tags": [
         "overview",
         "stable-slots",
@@ -3960,7 +3960,7 @@
         "gesture"
       ],
       "complexity": "moderate",
-      "sourceHash": "b178e6bc97c95e95f5f58a343b2eff793f097633f2ad183ce4bdc7ac03966de0",
+      "sourceHash": "688fd9014fe494708d44136085a25f2feafa93936c1f7d88eecdc1d17e2bf564",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3979,7 +3979,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "12c2bdc6c71203b9d842f4255bd8339542eb27f7288e8ec0c6bfb59bf2c51bb5",
+      "sourceHash": "5ac71720734e4eaceb81385525a1c5b0209320d8c02baf8faeb6f69ffc209515",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4021,10 +4021,10 @@
       "name": "overviewScanDemandSatisfied",
       "filePath": "viewer.js",
       "lineRange": [
-        802,
-        802
+        803,
+        803
       ],
-      "summary": "依据可见图、已排队缩略图和待扫描图库槽位判断是否还有真实扫描需求。",
+      "summary": "检查当前缓存范围的缩略图任务、待解析槽位与额外图片发现缺口；任务在队列中不代表已解码。",
       "tags": [
         "overview",
         "demand-limited",
@@ -4184,8 +4184,75 @@
         "gallery-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "0bfe4f6de09e132679aa84546a0d3c06c7264bb42389e2d0a2f4085949730e71",
+      "sourceHash": "5ac71720734e4eaceb81385525a1c5b0209320d8c02baf8faeb6f69ffc209515",
       "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/overview-insert.html",
+      "type": "file",
+      "name": "overview-insert.html",
+      "filePath": "tests/overview-insert.html",
+      "summary": "通用网格手动夹具：初始显示奇数序号图片并保留无图长尾，按 M 在中间插入图片并清除长尾。",
+      "tags": [
+        "test-fixture",
+        "overview-order",
+        "insertion",
+        "pending-slots"
+      ],
+      "complexity": "simple",
+      "sourceHash": "1d59a7d684b331006322406deb6af753612c486d21b9573671553984dd16dbe6",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:ordered",
+      "type": "function",
+      "name": "ordered",
+      "filePath": "gallery.js",
+      "lineRange": [
+        388,
+        388
+      ],
+      "summary": "当所有候选均有唯一有效 ARIA 序号时，按该序号排列图片节点和图库槽位。",
+      "tags": [
+        "gallery-order",
+        "aria",
+        "stable-slots"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:viewer.js:overviewImageRange",
+      "type": "function",
+      "name": "overviewImageRange",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1277,
+        1277
+      ],
+      "summary": "按真实图片来源统计前后缩略图缓存；空白预留槽不消耗目标图片数量。",
+      "tags": [
+        "overview",
+        "thumbnail-cache",
+        "pending-slots"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:viewer.js:overviewNeedsDiscovery",
+      "type": "function",
+      "name": "overviewNeedsDiscovery",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1281,
+        1281
+      ],
+      "summary": "在图片缓存余量前检查一个视觉带，决定何时继续发现同组图库图片。",
+      "tags": [
+        "overview",
+        "lazy-discovery",
+        "preload"
+      ],
+      "complexity": "simple"
     }
   ],
   "edges": [
@@ -8386,7 +8453,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "核对固定占位框与虚拟窗口条目顺序。"
+      "description": "旧 b6 固定占位布局夹具；后续版本恢复保比例自适应轨道。"
     },
     {
       "source": "function:gallery.js:slotsFor",
@@ -8430,7 +8497,7 @@
       "source": "function:viewer.js:collectOverviewItems",
       "target": "function:gallery.js:slotsFor",
       "type": "depends_on",
-      "description": "消费图库发现模块提供的稳定槽位与待加载状态。"
+      "description": "将源图库槽位与图片条目合并成全览模型。"
     },
     {
       "source": "file:viewer.js",
@@ -8532,7 +8599,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "检查自动前缓存的初始一带与输入后扩展语义；自定义缓存保持独立。"
+      "description": "检查自动前缓存初始一视觉带、向前输入后扩展及自定义缓存；旧 b7 行夹具。"
     },
     {
       "source": "function:viewer.js:activateOverviewBackward",
@@ -8749,6 +8816,94 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "验证源图 load/error 事件统一更新图库模型和阅览。"
+    },
+    {
+      "source": "function:gallery.js:slotsFor",
+      "target": "function:gallery.js:ordered",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "按完整且唯一的 ARIA 序号排序后返回图库槽位。"
+    },
+    {
+      "source": "function:viewer.js:overviewImageRange",
+      "target": "function:controls.js:overviewCacheRange",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "只按已发现的真实图片计数并计算前后缩略图缓冲。"
+    },
+    {
+      "source": "function:viewer.js:overviewNeedsDiscovery",
+      "target": "function:viewer.js:overviewImageRange",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "计算缓存窗口外一个视觉带的真实图片发现余量。"
+    },
+    {
+      "source": "function:viewer.js:checkOverviewCache",
+      "target": "function:viewer.js:overviewNeedsDiscovery",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "缓存接近下限时按阅读方向开始扫描。"
+    },
+    {
+      "source": "function:viewer.js:overviewScanDemandSatisfied",
+      "target": "function:viewer.js:overviewNeedsDiscovery",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "把额外视觉带的图片发现缺口纳入扫描停止条件。"
+    },
+    {
+      "source": "function:gallery.js:ordered",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "单元夹具检查 DOM 卡片逆序时，ARIA 槽位仍按图片序号排列。"
+    },
+    {
+      "source": "function:viewer.js:collectOverviewItems",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "单元覆盖中间迟到图片填槽、失效占位删除、稳定槽位中间先到及不稳定长尾限制。"
+    },
+    {
+      "source": "function:gallery.js:slotsFor",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "单元检查图片条目与空白槽位共享唯一 ARIA 顺序。"
+    },
+    {
+      "source": "function:controls.js:overviewCacheRange",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "单元确认无图片地址的空槽不占用前后缓存目标图片数量。"
+    },
+    {
+      "source": "function:viewer.js:overviewNeedsDiscovery",
+      "target": "file:tests/overview-insert.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "手动网格夹具用于观察卡片插入与尾部删除，不作为自动化回归或验收通过的证据。"
+    },
+    {
+      "source": "function:viewer.js:collectOverviewItems",
+      "target": "file:tests/overview-insert.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "手动网格夹具用于观察卡片插入与尾部删除，不作为自动化回归或验收通过的证据。"
     }
   ],
   "layers": [
@@ -8814,7 +8969,8 @@
         "file:tests/lazy-gallery.js",
         "file:tests/quick-demo.js",
         "file:tests/b6-virtual.html",
-        "file:tests/b7-rows.html"
+        "file:tests/b7-rows.html",
+        "file:tests/overview-insert.html"
       ]
     },
     {
@@ -9020,7 +9176,8 @@
         "function:viewer.js:scanSlotSignature",
         "function:viewer.js:explicitScanBoundary",
         "function:viewer.js:scanSourceFailureCount",
-        "function:viewer.js:queueGalleryRefresh"
+        "function:viewer.js:queueGalleryRefresh",
+        "file:tests/overview-insert.html"
       ]
     },
     {
