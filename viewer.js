@@ -365,6 +365,7 @@
     const overviewCards = new Map();
     let overviewItems = [], overviewStartOrdinal = 0, overviewGeometry = '', overviewLayoutConfig = '', rebuildOverviewItems = false;
     let overviewRangeMemo = null;
+    let overviewSpatialIndex = [];
     let overviewPress = null, overviewCommitTimer = 0, overviewCommitStarted = 0, overviewDirty = false, pictureClick = 0;
     let overviewClickGuard = null;
     let overviewLayoutAnchor = null;
@@ -372,6 +373,8 @@
     let edgeSide = 0, edgePull = 0, edgeTimer = 0, edgeAnimation = null;
     const overviewThumbJobs = new Map();
     const overviewThumbQueue = [];
+    let overviewThumbWindow = new Map();
+    const overviewThumbRetained = new Map();
     const overviewEdgeIntentState = { side: 0, distance: 0, lastAt: 0, lastRetryAt: -Infinity, retried: false, timer: 0 };
     let overviewThumbActive = 0;
     const on = (node, type, handler, options = {}) => node.addEventListener(type, handler, { ...options, signal });
@@ -1265,6 +1268,7 @@
       const layout = lens.controls.overviewLayout(overviewItems.map(item => item.layoutRatio), width, height, horizontal,
         settings.overviewClean, settings.overviewAlignment, settings.overviewGap, settings.overviewScale, overviewStartOrdinal,
         { lanes: overviewItems.map(item => item.lane), bands: overviewItems.map(item => item.bandKey) });
+      overviewSpatialIndex = lens.controls.overviewSpatialIndex(layout.boxes, horizontal);
       overviewBandSize = layout.bandSize || 1;
       [...overviewGrid.children].forEach((card, n) => {
         const box = layout.boxes[n];
@@ -1283,17 +1287,9 @@
       if (previous && previous.geometry === overviewGeometry && previous.count === overviewGrid.children.length &&
           previous.left === rect.left && previous.right === rect.right && previous.top === rect.top && previous.bottom === rect.bottom &&
           previous.gridLeft === grid.left && previous.gridTop === grid.top) return { first: previous.first, last: previous.last };
-      let first = -1, last = -1;
-      // Adaptive masonry has variable main-axis lengths and interleaves lane
-      // indexes, so use actual rectangles and a contiguous conservative range.
-      for (const card of overviewGrid.children) {
-        const box = overviewCardBox(card, grid);
-        if (box.right <= rect.left || box.left >= rect.right || box.bottom <= rect.top || box.top >= rect.bottom) continue;
-        const index = Number(card.dataset.index);
-        if (!Number.isInteger(index)) continue;
-        first = first < 0 ? index : Math.min(first, index);
-        last = Math.max(last, index);
-      }
+      const { first, last } = lens.controls.overviewIndexedRange(overviewSpatialIndex,
+        { left: rect.left - grid.left, right: rect.right - grid.left, top: rect.top - grid.top, bottom: rect.bottom - grid.top },
+        settings.overviewDirection === 'horizontal');
       overviewRangeMemo = { geometry: overviewGeometry, count: overviewGrid.children.length, left: rect.left, right: rect.right,
         top: rect.top, bottom: rect.bottom, gridLeft: grid.left, gridTop: grid.top, first, last };
       return { first, last };
@@ -1441,46 +1437,50 @@
     }
     function updateOverviewThumbnails(force = false) {
       if (!overviewOpen || (overviewPress && overviewDirty)) return;
-      const cards = [...overviewGrid.children], window = overviewCacheWindow(), visible = { first: window.first, last: window.last };
+      const window = overviewCacheWindow(), visible = { first: window.first, last: window.last };
       const queued = [];
-      const desiredKeys = new Set();
-      for (const card of cards) {
-        const index = Number(card.dataset.index), item = overviewItems[index];
-        const image = card.querySelector('img'), source = item?.thumb || '';
-        const shouldLoad = Boolean(item && index >= window.start && index <= window.end);
-        image.loading = shouldLoad ? 'eager' : 'lazy';
-        if (shouldLoad && item) desiredKeys.add(item.key);
-        const job = overviewThumbJobs.get(item?.key);
-        if (!shouldLoad || !source) {
-          if (job) {
-            if (job.active) {
-              job.cancelled = true; job.status = 'canceled'; job.canceledAttempts = (job.canceledAttempts || 0) + 1;
-              card.dataset.thumbCancelCount = String(job.canceledAttempts);
-              job.image.onload = job.image.onerror = null;
-              if (job.active) { overviewThumbActive = Math.max(0, overviewThumbActive - 1); job.active = false; }
-              if (job.image.getAttribute('src') === job.source) job.image.removeAttribute('src');
+      const desired = new Map();
+      for (let index = window.start; index <= window.end; index++) {
+        const item = overviewItems[index], card = item && overviewCards.get(item.key);
+        if (card) desired.set(item.key, { card, item, index });
+      }
+      for (const [key, card] of overviewThumbWindow) {
+        if (!desired.has(key) || desired.get(key).card !== card) {
+          const image = card.querySelector('img'), job = overviewThumbJobs.get(key);
+          image.loading = 'lazy';
+          const keep = card.isConnected && job?.status === 'ready' && image.getAttribute('src') === job.source;
+          if (job) dropOverviewThumbnail(job, !keep);
+          if (keep) {
+            overviewThumbRetained.delete(key); overviewThumbRetained.set(key, card);
+            while (overviewThumbRetained.size > 64) {
+              const oldest = overviewThumbRetained.keys().next().value, oldCard = overviewThumbRetained.get(oldest);
+              oldCard.querySelector('img').removeAttribute('src'); oldCard.dataset.thumbState = 'idle'; overviewThumbRetained.delete(oldest);
             }
-            dropOverviewThumbnail(job);
+          } else {
+            overviewThumbRetained.delete(key);
+            if (image.hasAttribute('src')) image.removeAttribute('src');
+            card.dataset.thumbState = 'idle';
           }
-          if (image.hasAttribute('src')) image.removeAttribute('src');
-          card.dataset.thumbState = item && !source ? 'waiting' : 'idle';
-          continue;
         }
+      }
+      overviewThumbWindow = new Map([...desired].map(([key, value]) => [key, value.card]));
+      for (const { card, item, index } of desired.values()) {
+        overviewThumbRetained.delete(item.key);
+        const image = card.querySelector('img');
+        image.loading = 'eager';
         queueOverviewThumbnail(item, card, force);
         const currentJob = overviewThumbJobs.get(item.key);
         if (currentJob?.status === 'queued') queued.push({ job: currentJob, visible: index >= visible.first && index <= visible.last,
           distance: index < visible.first ? visible.first - index : index > visible.last ? index - visible.last : 0 });
       }
-      for (const [key, job] of overviewThumbJobs) if (!desiredKeys.has(key)) dropOverviewThumbnail(job);
+      for (const [key, job] of overviewThumbJobs) if (!desired.has(key) || !desired.get(key).item.thumb) dropOverviewThumbnail(job);
       for (let index = overviewThumbQueue.length - 1; index >= 0; index--) {
         const job = overviewThumbQueue[index];
-        if (!desiredKeys.has(job.key) || overviewThumbJobs.get(job.key) !== job) overviewThumbQueue.splice(index, 1);
+        if (!desired.has(job.key) || overviewThumbJobs.get(job.key) !== job) overviewThumbQueue.splice(index, 1);
       }
       queued.sort((a, b) => Number(b.visible) - Number(a.visible) || a.distance - b.distance);
-      overviewThumbQueue.sort((a, b) => {
-        const left = queued.findIndex(entry => entry.job === a), right = queued.findIndex(entry => entry.job === b);
-        return (left < 0 ? Number.MAX_SAFE_INTEGER : left) - (right < 0 ? Number.MAX_SAFE_INTEGER : right);
-      });
+      const priority = new Map(queued.map((entry, index) => [entry.job, index]));
+      overviewThumbQueue.sort((a, b) => (priority.get(a) ?? Infinity) - (priority.get(b) ?? Infinity));
       pumpOverviewThumbnails();
       updateOverviewStatus();
     }
@@ -2103,7 +2103,7 @@
       overviewScrollFrame = requestAnimationFrame(() => {
         overviewScrollFrame = 0;
         if (edgeSide && overviewEdgeDistance(edgeSide) > 2) resetOverviewEdge(true);
-        updateOverviewThumbnails(); checkOverviewCache(false); updateOverviewStatus();
+        checkOverviewCache(false); updateOverviewStatus();
       });
     }, { passive: true });
     on(overview, 'wheel', event => {

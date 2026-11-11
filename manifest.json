@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "2.0.0.12",
-  "version_name": "2.0 b12",
+  "version": "2.0.0.13",
+  "version_name": "2.0 b13",
   "description": "__MSG_extDescription__",
   "minimum_chrome_version": "120",
   "permissions": [
@@ -47,9 +47,16 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "web_accessible_resources": [{
-    "resources": ["icons/32.png"],
-    "matches": ["http://*/*", "https://*/*"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/32.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
   "default_locale": "en"
 }

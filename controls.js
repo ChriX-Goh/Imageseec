@@ -130,6 +130,26 @@
     const bandSize = counts.length ? counts.length % 2 ? counts[middle] : Math.round((counts[middle - 1] + counts[middle]) / 2) : 1;
     return { boxes, width: horizontal ? Math.max(0, offset - gap) : width, height: horizontal ? height : Math.max(0, offset - gap), bandSize, bands, lanes, bandIds };
   }
+  function overviewSpatialIndex(boxes, horizontal) {
+    const sorted = boxes.map((box, index) => ({ index, box, start: horizontal ? box.x : box.y,
+      end: horizontal ? box.x + box.width : box.y + box.height })).sort((a, b) => a.start - b.start);
+    let end = -Infinity;
+    for (const item of sorted) { end = Math.max(end, item.end); item.maxEnd = end; }
+    return sorted;
+  }
+  function overviewIndexedRange(sorted, viewport, horizontal) {
+    const start = horizontal ? viewport.left : viewport.top, end = horizontal ? viewport.right : viewport.bottom;
+    let low = 0, high = sorted.length;
+    while (low < high) { const mid = (low + high) >>> 1; if (sorted[mid].maxEnd <= start) low = mid + 1; else high = mid; }
+    let first = -1, last = -1;
+    for (let i = low; i < sorted.length && sorted[i].start < end; i++) {
+      const { box, index } = sorted[i];
+      if (box.x + box.width <= viewport.left || box.x >= viewport.right || box.y + box.height <= viewport.top || box.y >= viewport.bottom) continue;
+      first = first < 0 ? index : Math.min(first, index);
+      last = Math.max(last, index);
+    }
+    return { first, last };
+  }
   function overviewCacheRange(total, firstVisible, lastVisible, before, after, hasImage = () => true) {
     const count = Math.max(0, Math.floor(Number(total) || 0));
     if (!count) return { start: 0, end: -1, before: 0, after: 0 };
@@ -157,5 +177,5 @@
     intent.retried = true; intent.lastRetryAt = now;
     return true;
   }
-  lens.controls = { ticks, overviewTicks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewCacheRange, overviewRetryIntent };
+  lens.controls = { ticks, overviewTicks, rulerMax, fromPosition, toPosition, holdPan, wheelMode, overviewLayout, overviewSpatialIndex, overviewIndexedRange, overviewCacheRange, overviewRetryIntent };
 })();

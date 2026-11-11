@@ -194,7 +194,9 @@ function viewerFunction(name) {
 test('visible-range cache is reused only while geometry and scroll position match', () => {
   const c = vm.createContext({});
   vm.runInContext(`
-    let overviewGeometry = 'layout-a', overviewRangeMemo = null, calls = 0, gridY = 0;
+    let overviewGeometry = 'layout-a', overviewRangeMemo = null, overviewSpatialIndex = [], calls = 0, gridY = 0;
+    const settings = { overviewDirection: 'vertical' };
+    const lens = { controls: { overviewIndexedRange(index, rect) { calls++; const first = Math.max(0, Math.floor(rect.top / 75)); return { first, last: Math.min(2, first + 1) }; } } };
     const overview = { getBoundingClientRect: () => ({ left: 0, right: 100, top: 0, bottom: 100 }) };
     const overviewGrid = { children: [0, 1, 2].map(index => ({ dataset: { index: String(index) } })),
       getBoundingClientRect: () => ({ left: 0, top: gridY }) };
@@ -206,13 +208,81 @@ test('visible-range cache is reused only while geometry and scroll position matc
     globalThis.relayout = () => { overviewGeometry = 'layout-b'; };
   `, c);
   assert.deepEqual(plain(c.run()), { first: 0, last: 1 });
-  assert.equal(c.count(), 3);
+  assert.equal(c.count(), 1);
   assert.deepEqual(plain(c.run()), { first: 0, last: 1 });
-  assert.equal(c.count(), 3);
+  assert.equal(c.count(), 1);
   c.move(-75);
   assert.deepEqual(plain(c.run()), { first: 1, last: 2 });
-  assert.equal(c.count(), 6);
-  c.relayout(); c.run(); assert.equal(c.count(), 9);
+  assert.equal(c.count(), 2);
+  c.relayout(); c.run(); assert.equal(c.count(), 3);
+});
+test('spatial index matches brute-force visibility for mixed aspect ratios and both axes', () => {
+  const controls = context().c.ImageLens.controls;
+  const ratios = Array.from({length: 1000}, (_, i) => [.3, .7, 1, 1.8, 3][i % 5]);
+  for (const horizontal of [false, true]) for (const alignment of ['auto', 'vertical', 'horizontal']) {
+    const boxes = controls.overviewLayout(ratios, 1200, 720, horizontal, false, alignment).boxes;
+    const index = controls.overviewSpatialIndex(boxes, horizontal);
+    for (let offset = 0; offset < 9000; offset += 237) {
+      const rect = horizontal ? {left:offset, right:offset+1200, top:0, bottom:720} : {left:0, right:1200, top:offset, bottom:offset+720};
+      const hits = boxes.map((b, i) => ({b, i})).filter(({b}) => b.x+b.width>rect.left && b.x<rect.right && b.y+b.height>rect.top && b.y<rect.bottom).map(x => x.i);
+      assert.deepEqual(plain(controls.overviewIndexedRange(index, rect, horizontal)), {first: hits.length ? Math.min(...hits) : -1, last: hits.length ? Math.max(...hits) : -1});
+    }
+  }
+});
+test('thumbnail scheduling only touches the current and previous cache windows', () => {
+  const c = vm.createContext({});
+  vm.runInContext(`
+    let overviewOpen = true, overviewPress = null, overviewDirty = false;
+    let window = { start: 100, end: 109, first: 103, last: 106 }, touched = [], dropped = [];
+    const overviewItems = Array.from({length: 1000}, (_, index) => ({key: String(index), thumb: 'image-' + index}));
+    const overviewCards = new Map(overviewItems.map(item => [item.key, {
+      dataset: {}, image: { loading: '', hasAttribute: () => false, removeAttribute: () => {} },
+      querySelector() { touched.push(item.key); return this.image; }
+    }]));
+    const overviewThumbJobs = new Map(), overviewThumbQueue = [];
+    let overviewThumbWindow = new Map(); const overviewThumbRetained = new Map();
+    function overviewCacheWindow() { return window; }
+    function queueOverviewThumbnail(item, card) { overviewThumbJobs.set(item.key, {key:item.key, status:'ready'}); }
+    function dropOverviewThumbnail(job) { dropped.push(job.key); overviewThumbJobs.delete(job.key); }
+    function pumpOverviewThumbnails() {} function updateOverviewStatus() {}
+    ${viewerFunction('updateOverviewThumbnails')}
+    globalThis.run = () => { touched = []; dropped = []; updateOverviewThumbnails(); return { touched, dropped }; };
+    globalThis.move = () => { window = { start: 105, end: 114, first: 108, last: 111 }; };
+  `, c);
+  assert.equal(c.run().touched.length, 10);
+  c.move();
+  const next = plain(c.run());
+  assert.equal(next.touched.length, 15);
+  assert.deepEqual(next.dropped, ['100', '101', '102', '103', '104']);
+  assert.ok(!next.touched.includes('999'));
+});
+test('recent decoded thumbnails survive reverse scrolling and retention stays bounded', () => {
+  const c = vm.createContext({});
+  vm.runInContext(`
+    let overviewOpen = true, overviewPress = null, overviewDirty = false;
+    let window = {start: 0, end: 9, first: 0, last: 9};
+    const overviewItems = Array.from({length: 100}, (_, i) => ({key:String(i), thumb:'image-'+i}));
+    const overviewCards = new Map(overviewItems.map(item => { const image = {src:'', loading:'', getAttribute: () => image.src,
+      hasAttribute: () => !!image.src, removeAttribute: () => {image.src='';}};
+      return [item.key, {dataset:{}, isConnected:true, querySelector: () => image}]; }));
+    const overviewThumbJobs = new Map(), overviewThumbQueue = [], overviewThumbRetained = new Map();
+    let overviewThumbWindow = new Map();
+    function overviewCacheWindow() { return window; }
+    function queueOverviewThumbnail(item, card) { const image = card.querySelector('img'); image.src=item.thumb;
+      overviewThumbJobs.set(item.key, {key:item.key, source:item.thumb, image, status:'ready'}); }
+    function dropOverviewThumbnail(job, remove = true) { if(remove)job.image.removeAttribute('src'); overviewThumbJobs.delete(job.key); }
+    function pumpOverviewThumbnails() {} function updateOverviewStatus() {}
+    ${viewerFunction('updateOverviewThumbnails')}
+    globalThis.move = start => {window = {start, end:start+9, first:start, last:start+9}; updateOverviewThumbnails();};
+    globalThis.count = () => overviewThumbRetained.size;
+    globalThis.has = key => !!overviewCards.get(String(key)).querySelector('img').src;
+  `, c);
+  c.move(0); c.move(10); assert.equal(c.has(0), true);
+  c.move(0); assert.equal(c.has(0), true);
+  for (let n = 10; n <= 90; n += 10) c.move(n);
+  assert.equal(c.count(), 64);
+  assert.equal(c.has(0), false);
+  assert.equal(c.has(89), true);
 });
 function overviewProjectionHarness(initial) {
   const c = vm.createContext({ state: initial, getComputedStyle: () => ({ aspectRatio: 'auto' }) });

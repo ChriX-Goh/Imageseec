@@ -1,5 +1,9 @@
 # Verification record
 
+## Current source: 2.0 b13
+
+81 unit checks pass, including a 1,000-image visibility-index comparison and bounded recent thumbnail retention. The 80-image source fixture was checked for forward and reverse scrolling in the in-app browser. Installed extension version, live-site regression and matched before/after performance remain pending.
+
 ## Current source: 2.0 b12
 
 The current source passes **78 automated unit checks**. In the Codex in-app browser, the four settings tabs and the refreshed generic function icons were visually confirmed. Source fixtures also check German text, tab keyboard navigation without image navigation, two-way scrolling in an 80-image overview, and a nested gallery that grew from 5 to 18 entries after 950 ms without including its separate recommendation. Some real image pages have been exercised, but live-site acceptance has not passed: one observed gallery included related illustrations and required a page control to reveal more images. This remains partial coverage; the final-source 20-site / 15-structure matrix has not been completed. The installed extension's loaded manifest version has not been verified. A controlled before/after performance comparison remains outstanding. No ZIP was built and nothing was submitted to the Chrome Web Store.
