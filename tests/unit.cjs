@@ -191,6 +191,29 @@ function viewerFunction(name) {
   while (end < lines.length && !/^\s{4}function [A-Za-z_$][\w$]*\(/.test(lines[end])) end++;
   return lines.slice(start, end).join('\n');
 }
+test('visible-range cache is reused only while geometry and scroll position match', () => {
+  const c = vm.createContext({});
+  vm.runInContext(`
+    let overviewGeometry = 'layout-a', overviewRangeMemo = null, calls = 0, gridY = 0;
+    const overview = { getBoundingClientRect: () => ({ left: 0, right: 100, top: 0, bottom: 100 }) };
+    const overviewGrid = { children: [0, 1, 2].map(index => ({ dataset: { index: String(index) } })),
+      getBoundingClientRect: () => ({ left: 0, top: gridY }) };
+    function overviewCardBox(card, grid) { calls++; const top = grid.top + Number(card.dataset.index) * 75; return { left: 0, right: 100, top, bottom: top + 70 }; }
+    ${viewerFunction('overviewVisibleRange')}
+    globalThis.run = () => overviewVisibleRange();
+    globalThis.count = () => calls;
+    globalThis.move = value => { gridY = value; };
+    globalThis.relayout = () => { overviewGeometry = 'layout-b'; };
+  `, c);
+  assert.deepEqual(plain(c.run()), { first: 0, last: 1 });
+  assert.equal(c.count(), 3);
+  assert.deepEqual(plain(c.run()), { first: 0, last: 1 });
+  assert.equal(c.count(), 3);
+  c.move(-75);
+  assert.deepEqual(plain(c.run()), { first: 1, last: 2 });
+  assert.equal(c.count(), 6);
+  c.relayout(); c.run(); assert.equal(c.count(), 9);
+});
 function overviewProjectionHarness(initial) {
   const c = vm.createContext({ state: initial, getComputedStyle: () => ({ aspectRatio: 'auto' }) });
   vm.runInContext(`
@@ -694,7 +717,6 @@ test('semantic gallery scope excludes unrelated images and keeps supplied DOM or
   assert.equal(result.entries.length, 3); assert.equal(result.index, 1);
   assert.deepEqual(plain(result.entries.map(e => e.key)), pictures.map(i => i.src));
 });
-
 test('repeated image cards work without semantic classes or custom data attributes', () => {
   const { c, image } = context();
   const pictures = [1,2].map(n => image(`https://media.example.net/${n}.jpg`));
@@ -884,6 +906,16 @@ test('nested repeated image rows form one bounded gallery group', () => {
   const result = c.ImageLens.gallery.collect(pictures[2].src, pictures[2]);
   assert.equal(result.entries.length, 4); assert.equal(result.index, 2);
 });
+test('a connected gallery seed avoids an unrelated whole-document discovery scan', () => {
+  const { c, image } = context();
+  const pictures = [1,2,3].map(n => image(`https://media.example.net/seed-${n}.jpg`));
+  albumFixture(c, pictures);
+  let calls = 0; const query = c.document.querySelectorAll;
+  c.document.querySelectorAll = selector => { calls++; return query(selector); };
+  const result = c.ImageLens.gallery.collect(pictures[1].src, pictures[1]);
+  assert.equal(result.entries.length, 3);
+  assert.equal(calls, 0, 'a verified connected non-modal seed does not need document-wide lookup');
+});
 test('lazy nested rows retain empty peer cards and widen an initially narrow scope', () => {
   const { c, image } = context(), pictures = [];
   const contains = function(node) { for (let n = node; n; n = n.parentElement) if (n === this) return true; return false; };
@@ -918,6 +950,56 @@ test('lazy nested rows retain empty peer cards and widen an initially narrow sco
   assert.equal(result.slots.filter(slot => slot.pending).length, 12);
   assert.ok(!result.slots.some(slot => slot.node === recommendations));
   assert.equal(result.slots[17].node, grid.children[5].children[2]);
+});
+
+test('large repeated-row galleries keep their parent scope past the former image-count cutoff', () => {
+  const { c, image, images } = context();
+  const contains = function(node) { for (let n = node; n; n = n.parentElement) if (n === this) return true; return false; };
+  const descendants = root => root.children.flatMap(child => [child, ...(child.children ? descendants(child) : [])]);
+  const branch = (tagName, className, width, height) => ({
+    tagName, className, isConnected: true, children: [], parentElement: null, attributes: [], contains,
+    getAttribute: () => null, closest: () => null, getBoundingClientRect: () => ({ width, height }),
+    querySelectorAll(selector) {
+      const all = descendants(this);
+      return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : selector === 'a[href]' ? [] : all;
+    },
+    querySelector(selector) { return selector.includes('img') ? this.querySelectorAll('img')[0] || null : null; }
+  });
+  const body = branch('BODY', '', 1200, 7000), grid = branch('DIV', 'result-grid', 1200, 7000);
+  body.children.push(grid); grid.parentElement = body;
+  for (let rowIndex = 0; rowIndex < 35; rowIndex++) {
+    const row = branch('DIV', 'gallery-row', 1200, 220); row.parentElement = grid; grid.children.push(row);
+    for (let column = 0; column < 7; column++) {
+      const tile = branch('ARTICLE', 'photo-tile', 160, 180); tile.parentElement = row; row.children.push(tile);
+      const photo = image(`https://images.example.test/large-grid-${rowIndex}-${column}.jpg`);
+      photo.parentElement = tile; photo.getBoundingClientRect = () => ({ left: column * 170, top: rowIndex * 220, width: 160, height: 180 });
+      tile.children.push(photo);
+    }
+  }
+  const recommendations = branch('SECTION', 'recommendations', 1200, 300), recommendationRow = branch('DIV', 'recommendation-row', 1200, 180);
+  recommendations.parentElement = body; body.children.push(recommendations);
+  recommendationRow.parentElement = recommendations; recommendations.children.push(recommendationRow);
+  for (let index = 0; index < 7; index++) {
+    const tile = branch('ARTICLE', 'recommendation-tile', 160, 180); tile.parentElement = recommendationRow; recommendationRow.children.push(tile);
+    const photo = image(`https://images.example.test/recommendation-${index}.jpg`);
+    photo.parentElement = tile; photo.getBoundingClientRect = () => ({ left: index * 170, top: 7100, width: 160, height: 180 });
+    tile.children.push(photo);
+  }
+  body.querySelectorAll = grid.querySelectorAll.bind(body);
+  c.document.body = body;
+  const selected = images[17 * 7 + 3];
+  const result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.scope, grid, 'gallery size must not make the resolver fall back to one row');
+  assert.equal(result.entries.length, 245);
+  assert.equal(result.slots.length, 245);
+  assert.equal(result.entries.some(entry => entry.key.includes('recommendation-')), false, 'the matched row grid must exclude its unrelated sibling recommendations');
+  assert.equal(result.index, 17 * 7 + 3);
+  const row = grid.children[0], tile = branch('ARTICLE', 'photo-tile', 160, 180);
+  const added = image('https://images.example.test/later.jpg');
+  tile.parentElement = row; row.children.push(tile); added.parentElement = tile; tile.children.push(added);
+  const refreshed = c.ImageLens.gallery.collect(selected.src, selected, grid);
+  assert.equal(refreshed.entries.length, 246, 'the next collection must see newly loaded media');
+  assert.ok(refreshed.entries.some(entry => entry.key.endsWith('/later.jpg')));
 });
 
 test('same-level image cards can mix IMG elements and CSS background photos', () => {
@@ -1004,6 +1086,18 @@ test('MV3 quick entry runs on HTTP/HTTPS pages and frames, with no file host acc
   assert.deepEqual(manifest.host_permissions, ['http://*/*', 'https://*/*']);
   assert.deepEqual(manifest.content_scripts, [{ matches: ['http://*/*', 'https://*/*'], js: ['quick-open.js'], run_at: 'document_start', all_frames: true }]);
   for (const file of [manifest.background.service_worker, manifest.action.default_popup, ...Object.values(manifest.icons)]) assert.ok(fs.existsSync(path.join(root, file)), file);
+});
+test('brand icons are available at declared sizes and the viewer exposes only its static mark', () => {
+  const manifest = JSON.parse(source('manifest.json'));
+  for (const size of [16, 32, 48, 128]) {
+    const file = manifest.icons[size];
+    const png = fs.readFileSync(path.join(root, file));
+    assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a');
+    assert.equal(png.readUInt32BE(16), size);
+    assert.equal(png.readUInt32BE(20), size);
+  }
+  assert.equal(manifest.action.default_icon['32'], manifest.icons['32']);
+  assert.deepEqual(manifest.web_accessible_resources, [{ resources: ['icons/32.png'], matches: ['http://*/*', 'https://*/*'] }]);
 });
 test('context menu opens the selected image in its original frame', async () => {
   const b = background(); b.chrome.runtime.onInstalled.callbacks[0]();

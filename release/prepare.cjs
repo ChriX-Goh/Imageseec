@@ -26,16 +26,17 @@ const content = policy.split(/\n\s*\n/).map(block => {
   return `<p>${escape(block).replace(/`([^`]+)`/g,'<code>$1</code>')}</p>`;
 }).join('\n');
 write(path.join(here,'web/privacy.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Imageseec Privacy Policy</title><meta name="description" content="How Imageseec handles local settings, webpage images and network requests."><style>body{margin:0;background:#f6f7fb;color:#242a38;font:16px/1.75 system-ui,sans-serif}main{max-width:780px;margin:auto;padding:48px 24px 72px}h1{font-size:32px;line-height:1.25}h2{font-size:21px;margin-top:34px}p{margin:16px 0}code{font-size:.88em;background:#e7ebf4;padding:2px 4px;border-radius:4px}</style></head><body><main>${content}</main></body></html>\n`);
-const symbol = '<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#d4defe"/><stop offset="1" stop-color="#879deb"/></linearGradient></defs><rect x="4" y="4" width="120" height="120" rx="30" fill="#1d2333"/><g fill="none" stroke="url(#g)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M44 27H27v17 M84 27h17v17 M101 84v17H84 M44 101H27V84"/><circle cx="64" cy="64" r="22"/><path d="M64 34v7 M64 87v7 M34 64h7 M87 64h7"/></g><circle cx="64" cy="64" r="7" fill="#e1e7ff"/>';
+const symbol = fs.readFileSync(path.join(here, 'artwork', 'imageseec-mark.png'));
 const svg = (width,height,body) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${body}</svg>`);
 (async () => {
   const assets = path.join(here, 'assets'); fs.mkdirSync(assets,{recursive:true});
-  // 96px artwork with 16px transparent outer padding for the store icon.
-  await sharp(svg(128,128,`<g transform="translate(16 16) scale(.75)">${symbol}</g>`)).png().toFile(path.join(assets,'store-icon-128.png'));
+  // Use the same transparent mark as the extension in all release artwork.
+  await sharp(symbol).resize(128, 128).png().toFile(path.join(assets,'store-icon-128.png'));
   for (const [w,h,name] of [[440,280,'promo-small-440x280.png'],[1400,560,'promo-marquee-1400x560.png']]) {
-    const size = h*.56, x = (w-size)/2, y=(h-size)/2;
-    const body = `<rect width="${w}" height="${h}" fill="#141a28"/><circle cx="${w*.18}" cy="${h*.2}" r="${h*.7}" fill="#819be8" opacity=".08"/><circle cx="${w*.9}" cy="${h*.9}" r="${h*.8}" fill="#d3deff" opacity=".04"/><g transform="translate(${x} ${y}) scale(${size/128})">${symbol}</g>`;
-    await sharp(svg(w,h,body)).png().toFile(path.join(assets,name));
+    const size = Math.round(h*.56), x = Math.round((w-size)/2), y = Math.round((h-size)/2);
+    const body = `<rect width="${w}" height="${h}" fill="#141a28"/><circle cx="${w*.18}" cy="${h*.2}" r="${h*.7}" fill="#819be8" opacity=".08"/><circle cx="${w*.9}" cy="${h*.9}" r="${h*.8}" fill="#d3deff" opacity=".04"/>`;
+    const mark = await sharp(symbol).resize(size, size).png().toBuffer();
+    await sharp(svg(w,h,body)).composite([{ input: mark, left: x, top: y }]).png().toFile(path.join(assets,name));
   }
   console.log('Prepared listing text, standalone privacy page, store icon and promotional artwork.');
 })();

@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Page images failed to load. Scroll or drag to retry."
+  },
+  "prefGeneral": {
+    "message": "General"
+  },
+  "prefImage": {
+    "message": "View"
+  },
+  "prefCompare": {
+    "message": "Compare"
+  },
+  "prefOverview": {
+    "message": "Overview"
   }
 }

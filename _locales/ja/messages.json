@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "ページの画像を読み込めません。スクロールまたはドラッグで再試行。"
+  },
+  "prefGeneral": {
+    "message": "一般"
+  },
+  "prefImage": {
+    "message": "画像"
+  },
+  "prefCompare": {
+    "message": "比較"
+  },
+  "prefOverview": {
+    "message": "一覧"
   }
 }

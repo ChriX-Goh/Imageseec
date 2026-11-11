@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "2.0.0.10",
-  "version_name": "2.0 b10",
+  "version": "2.0.0.12",
+  "version_name": "2.0 b12",
   "description": "__MSG_extDescription__",
   "minimum_chrome_version": "120",
   "permissions": [
@@ -33,13 +33,23 @@
   },
   "action": {
     "default_title": "__MSG_settingsTitle__",
-    "default_popup": "options.html"
+    "default_popup": "options.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
   },
   "options_page": "options.html",
   "icons": {
     "16": "icons/16.png",
+    "32": "icons/32.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
+  "web_accessible_resources": [{
+    "resources": ["icons/32.png"],
+    "matches": ["http://*/*", "https://*/*"]
+  }],
   "default_locale": "en"
 }

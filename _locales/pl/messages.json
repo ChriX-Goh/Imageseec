@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Nie udało się wczytać obrazów strony. Przewiń lub przeciągnij, aby ponowić."
+  },
+  "prefGeneral": {
+    "message": "Ogólne"
+  },
+  "prefImage": {
+    "message": "Obrazy"
+  },
+  "prefCompare": {
+    "message": "Porównaj"
+  },
+  "prefOverview": {
+    "message": "Przegląd"
   }
 }

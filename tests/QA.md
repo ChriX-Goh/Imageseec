@@ -1,6 +1,16 @@
 # Verification record
 
-## Current source: 2.0 b10
+## Current source: 2.0 b12
+
+The current source passes **78 automated unit checks**. In the Codex in-app browser, the four settings tabs and the refreshed generic function icons were visually confirmed. Source fixtures also check German text, tab keyboard navigation without image navigation, two-way scrolling in an 80-image overview, and a nested gallery that grew from 5 to 18 entries after 950 ms without including its separate recommendation. Some real image pages have been exercised, but live-site acceptance has not passed: one observed gallery included related illustrations and required a page control to reveal more images. This remains partial coverage; the final-source 20-site / 15-structure matrix has not been completed. The installed extension's loaded manifest version has not been verified. A controlled before/after performance comparison remains outstanding. No ZIP was built and nothing was submitted to the Chrome Web Store.
+
+The automated locale checks validate all 11 catalogs and settings labels, placeholders, language selection/fallback and store-listing text constraints. They do not prove that the rendered settings layout fits in all 11 languages and window sizes; visual language/layout coverage remains partial.
+
+## 2.0 b11
+
+A generic 245-image repeated-row gallery remains grouped without including a separate neighboring recommendation section. Source fixture verifies overview hides compare/overview controls while preserving Escape and close, and displays the new viewer mark. PNG dimensions and resource exposure are checked. 76 unit checks and source audit pass; final installed-extension and repeated live-site QA remain pending.
+
+## 2.0 b10
 
 On single, split and overview views, close with Escape and the close button. The viewer should disappear immediately; a page-layer image should shrink to the selected source or overview center and leave a brief outline. Check cancellation when the user starts moving, clicking or typing; with reduced motion the outline remains static. The cue was visually observed in the Codex in-app browser source fixture for both an image view and the overview center.
 

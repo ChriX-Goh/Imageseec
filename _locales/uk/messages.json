@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Не вдалося завантажити зображення сторінки. Прокрутіть або перетягніть для повтору."
+  },
+  "prefGeneral": {
+    "message": "Загальне"
+  },
+  "prefImage": {
+    "message": "Перегляд"
+  },
+  "prefCompare": {
+    "message": "Порівняння"
+  },
+  "prefOverview": {
+    "message": "Огляд"
   }
 }

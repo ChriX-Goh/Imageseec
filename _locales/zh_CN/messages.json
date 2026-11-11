@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "网页图片加载失败；滚动或拖动可重试。"
+  },
+  "prefGeneral": {
+    "message": "通用"
+  },
+  "prefImage": {
+    "message": "图片"
+  },
+  "prefCompare": {
+    "message": "双图"
+  },
+  "prefOverview": {
+    "message": "阅览"
   }
 }

@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Не удалось загрузить изображения страницы. Прокрутите или перетащите для повтора."
+  },
+  "prefGeneral": {
+    "message": "Общие"
+  },
+  "prefImage": {
+    "message": "Просмотр"
+  },
+  "prefCompare": {
+    "message": "Сравнение"
+  },
+  "prefOverview": {
+    "message": "Обзор"
   }
 }

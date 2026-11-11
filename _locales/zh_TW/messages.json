@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "網頁圖片載入失敗；捲動或拖曳即可重試。"
+  },
+  "prefGeneral": {
+    "message": "一般"
+  },
+  "prefImage": {
+    "message": "圖片"
+  },
+  "prefCompare": {
+    "message": "雙圖"
+  },
+  "prefOverview": {
+    "message": "閱覽"
   }
 }

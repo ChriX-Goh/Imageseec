@@ -7,6 +7,7 @@ const files = execFileSync('git', ['ls-files', '-c', '-o', '--exclude-standard',
 if (!files.length) throw Error('No project files found to audit.');
 const problems = [];
 const reviewedStoreScreenshots = new Set([
+  'release/artwork/imageseec-mark.png',
   'release/assets/store-screenshot-01-viewer-1280x800.png',
   'release/assets/store-screenshot-02-navigation-1280x800.png',
   'release/assets/store-icon-128.png',

@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Bilder der Seite konnten nicht geladen werden. Zum Wiederholen scrollen oder ziehen."
+  },
+  "prefGeneral": {
+    "message": "Allgemein"
+  },
+  "prefImage": {
+    "message": "Ansicht"
+  },
+  "prefCompare": {
+    "message": "Vergleich"
+  },
+  "prefOverview": {
+    "message": "Übersicht"
   }
 }

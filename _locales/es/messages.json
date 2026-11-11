@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "No se pudieron cargar las imágenes de la página. Desplázate o arrastra para reintentar."
+  },
+  "prefGeneral": {
+    "message": "General"
+  },
+  "prefImage": {
+    "message": "Imagen"
+  },
+  "prefCompare": {
+    "message": "Comparar"
+  },
+  "prefOverview": {
+    "message": "Galería"
   }
 }

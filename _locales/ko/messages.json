@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "페이지 이미지를 불러오지 못했습니다. 스크롤하거나 끌어서 다시 시도하세요."
+  },
+  "prefGeneral": {
+    "message": "일반"
+  },
+  "prefImage": {
+    "message": "이미지"
+  },
+  "prefCompare": {
+    "message": "비교"
+  },
+  "prefOverview": {
+    "message": "목록"
   }
 }

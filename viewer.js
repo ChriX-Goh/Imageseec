@@ -19,10 +19,11 @@
     .bar { position: absolute; z-index: 11; left: 26px; right: 26px; top: 20px; display: flex; gap: 14px; align-items: center; pointer-events: none; transition: transform .18s ease, opacity .15s ease; }
     .viewer.toolbar-auto:not(.top-open):not(:has(.settings:not([hidden]))) .bar:not(:hover):not(:has(:focus-visible)) { transform: translateY(-145%); opacity: 0; }
     .brand { font-weight: 650; letter-spacing: .1em; font-size: 16px; display: flex; gap: 10px; align-items: center; text-shadow: 0 1px 8px #000; }
-    .brand svg { color: #b9caff; }
+    .brand img { width: 24px; height: 24px; object-fit: contain; flex: none; }
     .counter, .resolution { color: #b6bac5; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .tools { margin-left: auto; display: flex; gap: 8px; pointer-events: auto; }
     .tools button { display: grid; place-items: center; width: 40px; height: 40px; backdrop-filter: blur(16px); }
+    .tools button[aria-pressed=true]:not(.zoom-lock) { color: #b7c8f2; border-color: #b7c8f280; }
     .tools .fit { width: auto; min-width: 60px; padding: 0 12px; font-size: 12px; font-variant-numeric: tabular-nums; }
     .zoom-control { position: relative; width: 60px; height: 40px; }
     .zoom-shell { position: absolute; top: 0; right: 0; width: 60px; border: 1px solid #ffffff1c; border-radius: 12px; background: #25272cf5; backdrop-filter: blur(16px); overflow: hidden; }
@@ -89,7 +90,7 @@
     .stage.dragging, .compare.dragging { cursor: grabbing; }
     .edge { position: absolute; z-index: 3; top: 18%; bottom: 20%; width: clamp(52px, 9vw, 150px); border: 0; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; opacity: .4; transition: opacity .18s, background .18s; }
     .edge:hover { opacity: 1; background: linear-gradient(90deg, #0003, transparent); }
-    .viewer.in-overview :is(.resolution, .zoom-lock, .edge, .trigger, .message) { display: none; }
+    .viewer.in-overview :is(.resolution, .zoom-lock, .edge, .trigger, .message, .compare-toggle, .overview-toggle) { display: none; }
     .edge span { display: grid; place-items: center; width: 44px; height: 56px; background: #23252b99; border: 1px solid #ffffff18; border-radius: 16px; backdrop-filter: blur(12px); }
     .prev { left: 0; } .next { right: 0; } .next:hover { background: linear-gradient(270deg, #0003, transparent); }
     .edge .edge-preview { position: absolute; display: none; width: 136px; height: 118px; padding: 6px; background: #1f222bf0; border: 1px solid #ffffff35; border-radius: 14px; box-shadow: 0 12px 36px #0007; pointer-events: none; }
@@ -112,7 +113,7 @@
     .thumb span { position: absolute; bottom: 5px; right: 7px; padding: 0 4px; background: #0009; border-radius: 4px; font-size: 10px; }
     .thumb.current { border: 2px solid #b4c8ff; transform: translateY(-3px); box-shadow: 0 0 18px #9fb9ff24; }
     .thumb.empty { opacity: 0; pointer-events: none; }
-    .settings { position: absolute; z-index: 10; top: 72px; right: 26px; width: min(350px, calc(100vw - 32px)); max-height: calc(100dvh - 88px); overflow-y: auto; background: #23252cf5; border: 1px solid #ffffff22; border-radius: 18px; padding: 22px; box-shadow: 0 16px 64px #0007; backdrop-filter: blur(24px); }
+    .settings { position: absolute; z-index: 10; top: 72px; right: 26px; width: min(390px, calc(100vw - 32px)); max-height: calc(100dvh - 88px); overflow-y: auto; background: #23252cf5; border: 1px solid #ffffff22; border-radius: 18px; padding: 16px; box-shadow: 0 16px 64px #0007; backdrop-filter: blur(24px); }
     .settings[hidden] { display: none; }
     .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     @media(max-width: 600px) { .bar { left: 12px; right: 12px; top: 12px; gap: 8px; } .brand { font-size: 13px; } .tools { gap: 4px; } .tools button { width: 34px; height: 34px; } .thumb { flex-basis: 62px; width: 62px; height: 62px; } .strip { padding-inline: 12px; } .counter { font-size: 10px; } .overview { padding: 64px 12px 24px; } .overview-grid { column-width: 150px; column-gap: 8px; } .overview-card { margin-bottom: 8px; } }
@@ -121,8 +122,16 @@
   `;
   const icon = name => {
     const paths = { close: '<path d="m6 6 12 12M18 6 6 18"/>', prev: '<path d="m14 5-7 7 7 7"/>', next: '<path d="m10 5 7 7-7 7"/>', full: '<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>', settings: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2" fill="#25272c"/><circle cx="15" cy="12" r="2" fill="#25272c"/><circle cx="9" cy="18" r="2" fill="#25272c"/>', lens: '<path d="M8 3H3v5m18 0V3h-5M3 16v5h5m13-5v5h-5"/><circle cx="12" cy="12" r="5"/><path d="M12 4v3m0 10v3M4 12h3m10 0h3"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>', compare: '<rect x="3" y="4" width="8" height="16" rx="1"/><rect x="13" y="4" width="8" height="16" rx="1"/><path d="M12 4v16"/>', overview: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/>' };
-    paths.lock = '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/>';
-    paths.unlock = '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 7.5-2"/><path d="M12 14v3"/>';
+    Object.assign(paths, {
+      close: '<path d="M6 6l12 12M18 6L6 18"/>',
+      prev: '<path d="m14.5 5-7 7 7 7"/>', next: '<path d="m9.5 5 7 7-7 7"/>',
+      full: '<path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/>',
+      settings: '<path d="M4 6h5m4 0h7M4 12h9m4 0h3M4 18h3m4 0h9"/><circle cx="11" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="9" cy="18" r="2"/>',
+      compare: '<rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M12 4v16"/>',
+      overview: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+      lock: '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
+      unlock: '<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 7.5-2M12 14v3"/>'
+    });
     return `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
   };
   const flower = '<svg class="loading-flower" viewBox="0 0 24 24" aria-hidden="true">' +
@@ -310,7 +319,7 @@
       <div class="overview-shell" hidden><div class="overview" aria-label="${h('overviewTitle')}" aria-hidden="true" tabindex="0"><div class="overview-content">
         <div class="overview-status" data-side="-1" role="status" hidden></div><div class="overview-grid"></div><div class="overview-status" data-side="1" role="status" hidden></div></div></div></div>
       <div class="top-trigger" aria-hidden="true"></div>
-      <header class="bar"><div class="brand">${icon('lens')}Imageseec</div><div class="counter"></div><div class="resolution"></div><div class="tools">
+      <header class="bar"><div class="brand"><img src="${chrome.runtime.getURL('icons/32.png')}" alt="" aria-hidden="true">Imageseec</div><div class="counter"></div><div class="resolution"></div><div class="tools">
         <button class="compare-toggle" title="${h('splitView')}" aria-label="${h('splitView')}" aria-pressed="false">${icon('compare')}</button>
         <button class="overview-toggle" title="${h('overviewView')}" aria-label="${h('overviewView')}">${icon('overview')}</button>
         <div class="zoom-control"><div class="zoom-shell"><button class="fit" title="${h('zoomCycle')}" aria-label="${h('zoom')}">—</button><div class="zoom-popover"><div class="zoom-panel">
@@ -355,6 +364,7 @@
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const overviewCards = new Map();
     let overviewItems = [], overviewStartOrdinal = 0, overviewGeometry = '', overviewLayoutConfig = '', rebuildOverviewItems = false;
+    let overviewRangeMemo = null;
     let overviewPress = null, overviewCommitTimer = 0, overviewCommitStarted = 0, overviewDirty = false, pictureClick = 0;
     let overviewClickGuard = null;
     let overviewLayoutAnchor = null;
@@ -1189,6 +1199,7 @@
     function renderOverview(anchor, rebuild = false) {
       if (!overviewOpen) return;
       if (overviewPress) { overviewDirty = true; return; }
+      overviewRangeMemo = null;
       clearTimeout(overviewCommitTimer);
       overviewCommitTimer = overviewCommitStarted = 0;
       overviewDirty = false;
@@ -1268,6 +1279,10 @@
     }
     function overviewVisibleRange(rect = overview.getBoundingClientRect()) {
       const grid = overviewGrid.getBoundingClientRect();
+      const previous = overviewRangeMemo;
+      if (previous && previous.geometry === overviewGeometry && previous.count === overviewGrid.children.length &&
+          previous.left === rect.left && previous.right === rect.right && previous.top === rect.top && previous.bottom === rect.bottom &&
+          previous.gridLeft === grid.left && previous.gridTop === grid.top) return { first: previous.first, last: previous.last };
       let first = -1, last = -1;
       // Adaptive masonry has variable main-axis lengths and interleaves lane
       // indexes, so use actual rectangles and a contiguous conservative range.
@@ -1279,6 +1294,8 @@
         first = first < 0 ? index : Math.min(first, index);
         last = Math.max(last, index);
       }
+      overviewRangeMemo = { geometry: overviewGeometry, count: overviewGrid.children.length, left: rect.left, right: rect.right,
+        top: rect.top, bottom: rect.bottom, gridLeft: grid.left, gridTop: grid.top, first, last };
       return { first, last };
     }
     function overviewCacheCount(side) {
@@ -2359,6 +2376,7 @@
       const typing = event.composedPath().some(n => n instanceof HTMLElement && (/^(INPUT|TEXTAREA|SELECT)$/.test(n.tagName) || n.isContentEditable));
       if (event.isComposing) return;
       if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); close(); return; }
+      if (event.composedPath().includes(form)) return;
       if (typing) return;
       if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.repeat && ['g', 'G', '1', '2'].includes(event.key)) {
         event.preventDefault(); event.stopImmediatePropagation();

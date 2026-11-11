@@ -101,12 +101,19 @@
     return unique(candidates).filter(value => !(/^data:image\//i.test(value) && node.complete &&
       node.naturalWidth > 0 && node.naturalWidth <= 2 && node.naturalHeight <= 2));
   }
+  let discoveryCache = null;
   function images(root = document) {
+    const cached = discoveryCache?.images.get(root);
+    if (cached) return [...cached];
     const found = [...root.querySelectorAll('img')];
     for (const node of root.querySelectorAll('*')) if (node.shadowRoot && node.id !== 'image-lens-viewer') found.push(...images(node.shadowRoot));
+    discoveryCache?.images.set(root, found);
     return found;
   }
   function mediaNodes(root = document, includeBackgrounds = true, viewportOnly = false) {
+    const cacheKey = `${includeBackgrounds}:${viewportOnly}`;
+    const cached = discoveryCache?.media.get(root)?.get(cacheKey);
+    if (cached) return [...cached];
     const found = [...images(root)];
     if (!includeBackgrounds) return unique(found);
     const all = [...root.querySelectorAll('*')];
@@ -123,7 +130,12 @@
         (rect.width < 72 || rect.height < 72 || !/url\s*\(/i.test(getComputedStyle(node).backgroundImage || ''))) continue;
       if (sources(node).length) found.push(node);
     }
-    return unique(found);
+    const result = unique(found);
+    if (discoveryCache) {
+      if (!discoveryCache.media.has(root)) discoveryCache.media.set(root, new Map());
+      discoveryCache.media.get(root).set(cacheKey, result);
+    }
+    return [...result];
   }
   function isVisibleCandidate(node) {
     const rect = node.getBoundingClientRect();
@@ -189,8 +201,15 @@
       classes.every(name => String(node.className || '').split(/\s+/).includes(name)));
     if (cards.length / Math.max(1, children.length) < .65 &&
         (!classes.length || children.filter(sameRow).length / children.length < .8)) return false;
-    const keys = rows.flatMap(row => row.media.map(node => key(sources(node)[0]))).filter(Boolean);
-    return keys.length >= 4 && new Set(keys).size >= 4 && keys.length <= 240;
+    // Gallery size is not evidence against a repeated-row structure. Inspect
+    // a bounded sample so large feeds keep their parent scope without making
+    // detection proportional to every image URL in the gallery.
+    const sampleCount = Math.min(24, rows.length);
+    const sampleRows = Array.from({ length: sampleCount }, (_, index) => rows[
+      Math.floor(index * (rows.length - 1) / Math.max(1, sampleCount - 1))
+    ]);
+    const keys = sampleRows.flatMap(row => row.media.slice(0, 10).map(node => key(sources(node)[0]))).filter(Boolean);
+    return keys.length >= 4 && new Set(keys).size >= 4;
   }
   function linkedSource(value) {
     try {
@@ -393,13 +412,13 @@
     if (positions.some(n => !Number.isFinite(n) || n <= 0) || new Set(positions).size !== candidates.length) return candidates;
     return candidates.map((node, index) => ({ node, position: positions[index] })).sort((a, b) => a.position - b.position).map(item => item.node);
   }
-  function collect(source, preferred = null, scopeHint = null) {
-    const allImages = images();
-    const allMedia = mediaNodes(document, true, true);
+  function collectSnapshot(source, preferred = null, scopeHint = null) {
     const matches = node => [node.currentSrc, node.src, ...sources(node)].some(value => value && (value === source || key(value) === key(source)));
-    const seed = preferred?.isConnected && matches(preferred) ? preferred : [...allImages, ...allMedia].find(matches);
+    let allMedia;
+    const pageMedia = () => allMedia ||= [...images(), ...mediaNodes(document, true, true)];
+    const seed = preferred?.isConnected && matches(preferred) ? preferred : pageMedia().find(matches);
     const modal = seed?.closest('[role="dialog"], dialog, [aria-modal="true"]');
-    const albumSeed = modal && [...allImages, ...allMedia].find(node => !node.closest('[role="dialog"], dialog, [aria-modal="true"]') && matches(node) && scopeFor(node));
+    const albumSeed = modal && pageMedia().find(node => !node.closest('[role="dialog"], dialog, [aria-modal="true"]') && matches(node) && scopeFor(node));
     const selected = albumSeed || seed;
     const knownNestedScope = scopeHint?.isConnected && nestedGalleryRows(scopeHint);
     const discovered = knownNestedScope ? scopeHint : scopeFor(selected);
@@ -447,6 +466,12 @@
       else index = 0;
     }
     return { entries, index, seed: selected, scope, slots, confidence: scope ? 'group' : 'seed', adapter: lens.i18n.text('galleryGeneric') };
+  }
+  function collect(source, preferred = null, scopeHint = null) {
+    const previous = discoveryCache;
+    discoveryCache = { images: new WeakMap(), media: new WeakMap() };
+    try { return collectSnapshot(source, preferred, scopeHint); }
+    finally { discoveryCache = previous; }
   }
   lens.gallery = { url, key, sources, collect, scopeFor, slotsFor, mergeEntries, sameEntry, connectedEntryNode, observedAttributes };
 })();

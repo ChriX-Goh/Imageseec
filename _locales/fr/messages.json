@@ -296,5 +296,17 @@
   },
   "overviewSourceFailed": {
     "message": "Les images de la page n’ont pas été chargées. Faites défiler ou glissez pour réessayer."
+  },
+  "prefGeneral": {
+    "message": "Général"
+  },
+  "prefImage": {
+    "message": "Images"
+  },
+  "prefCompare": {
+    "message": "Comparer"
+  },
+  "prefOverview": {
+    "message": "Galerie"
   }
 }
