@@ -1,5 +1,9 @@
 # Verification record
 
+## Current source: 2.0 b14
+
+The in-app browser source fixture used a nested scroller with 950 ms delayed images; overview grew from 5 to 18 images. During viewing the root and viewer both measured 1280 CSS pixels; root inline overflow and gutter styles were restored on exit. This does not establish installed extension behavior or all site/iframe scrollbar cases. Live-site performance comparison remains pending.
+
 ## Current source: 2.0 b13
 
 81 unit checks pass, including a 1,000-image visibility-index comparison and bounded recent thumbnail retention. The 80-image source fixture was checked for forward and reverse scrolling in the in-app browser. Installed extension version, live-site regression and matched before/after performance remain pending.

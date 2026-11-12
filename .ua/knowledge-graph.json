@@ -21,7 +21,7 @@
     "trackedAndUntrackedFiles": 106,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b13",
+    "versionName": "2.0 b14",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -259,7 +259,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "ddcd4086195043b8e303d76f42e351cb10cc2a413178311ff071672a6870532a",
+      "sourceHash": "687cf7cf79edbce0bfced61c35c9cdd5722355eb901d7c166d120cd0b16fe186",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -339,7 +339,7 @@
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "919bf24cf3c651e1e17c3ca92fedbf848a7a58e226a5011d903694cfad313223",
+      "sourceHash": "0aa4d705d2f62d236645af5633c8b442af68a1c2480e5b51431b579755507f08",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -429,7 +429,7 @@
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "d49211c7e26314915ed661b1ef57556b6897a0fbe5fd8ef49233ff073e744f79",
+      "sourceHash": "94989f89344e4f3269b499fab79ebb88412d9f495c5c49f46a74cdc78c7f92a5",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -968,7 +968,7 @@
         "limits"
       ],
       "complexity": "moderate",
-      "sourceHash": "833b34b5d27f137f4ed9e5b68099a370017859b8576c55dc0f41cdcc247976cc",
+      "sourceHash": "7a74417ee7aa741a05a7f31a46b8eaf145e99ab2c5536bde18a584a8c6b1f93f",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2221,7 +2221,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "4a90bc6454ce3c0c84a45e8f33c86dd45ec3029401e564c2eb7d7e6e449488f8",
+      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2524,8 +2524,8 @@
       "name": "close",
       "filePath": "viewer.js",
       "lineRange": [
-        382,
-        382
+        381,
+        381
       ],
       "summary": "先同步卸载查看器并恢复网页位置，再将活动图片或阅览中央缩略图动画到目标来源并描边提示。",
       "tags": [
@@ -2542,8 +2542,8 @@
       "name": "status",
       "filePath": "viewer.js",
       "lineRange": [
-        501,
-        501
+        500,
+        500
       ],
       "summary": "显示图片加载或失败状态；真实等待期间显示原创菊花动画。",
       "tags": [
@@ -2559,8 +2559,8 @@
       "name": "activeIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        507,
-        507
+        506,
+        506
       ],
       "summary": "计算单图或双图模式的活动图片索引，并遵守锁定栏规则。",
       "tags": [
@@ -2576,8 +2576,8 @@
       "name": "updateCompareControls",
       "filePath": "viewer.js",
       "lineRange": [
-        518,
-        518
+        517,
+        517
       ],
       "summary": "updateCompareControls 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2593,8 +2593,8 @@
       "name": "updateOverviewButton",
       "filePath": "viewer.js",
       "lineRange": [
-        535,
-        535
+        534,
+        534
       ],
       "summary": "更新模式按钮、工具栏样式和当前模式适用的倍率名称。",
       "tags": [
@@ -2610,8 +2610,8 @@
       "name": "transformCompare",
       "filePath": "viewer.js",
       "lineRange": [
-        544,
-        544
+        543,
+        543
       ],
       "summary": "transformCompare 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2627,8 +2627,8 @@
       "name": "transform",
       "filePath": "viewer.js",
       "lineRange": [
-        567,
-        567
+        566,
+        566
       ],
       "summary": "transform 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2644,8 +2644,8 @@
       "name": "updateRuler",
       "filePath": "viewer.js",
       "lineRange": [
-        579,
-        579
+        578,
+        578
       ],
       "summary": "按当前模式更新倍率尺；全览使用独立缩略图倍率范围。",
       "tags": [
@@ -2661,8 +2661,8 @@
       "name": "fit",
       "filePath": "viewer.js",
       "lineRange": [
-        603,
-        603
+        602,
+        602
       ],
       "summary": "fit 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2678,8 +2678,8 @@
       "name": "zoom",
       "filePath": "viewer.js",
       "lineRange": [
-        619,
-        619
+        618,
+        618
       ],
       "summary": "zoom 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2695,8 +2695,8 @@
       "name": "setScale",
       "filePath": "viewer.js",
       "lineRange": [
-        632,
-        632
+        631,
+        631
       ],
       "summary": "setScale 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2712,8 +2712,8 @@
       "name": "updateLock",
       "filePath": "viewer.js",
       "lineRange": [
-        669,
-        669
+        668,
+        668
       ],
       "summary": "updateLock 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2729,8 +2729,8 @@
       "name": "updateFullscreenLabel",
       "filePath": "viewer.js",
       "lineRange": [
-        675,
-        675
+        674,
+        674
       ],
       "summary": "updateFullscreenLabel 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2746,8 +2746,8 @@
       "name": "bindPreferences",
       "filePath": "viewer.js",
       "lineRange": [
-        682,
-        682
+        681,
+        681
       ],
       "summary": "bindPreferences 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2763,8 +2763,8 @@
       "name": "savePreferences",
       "filePath": "viewer.js",
       "lineRange": [
-        687,
-        687
+        686,
+        686
       ],
       "summary": "保存偏好并立即更新工具栏隐藏、全览倍率与锚定布局。",
       "tags": [
@@ -2780,8 +2780,8 @@
       "name": "refreshLanguage",
       "filePath": "viewer.js",
       "lineRange": [
-        701,
-        701
+        700,
+        700
       ],
       "summary": "刷新本地化控件并保留当前图片或全览模式。",
       "tags": [
@@ -2797,8 +2797,8 @@
       "name": "cacheNeighbors",
       "filePath": "viewer.js",
       "lineRange": [
-        739,
-        739
+        738,
+        738
       ],
       "summary": "cacheNeighbors 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2814,8 +2814,8 @@
       "name": "renderStrip",
       "filePath": "viewer.js",
       "lineRange": [
-        754,
-        754
+        753,
+        753
       ],
       "summary": "renderStrip 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2831,8 +2831,8 @@
       "name": "showStrip",
       "filePath": "viewer.js",
       "lineRange": [
-        777,
-        777
+        776,
+        776
       ],
       "summary": "showStrip 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2848,8 +2848,8 @@
       "name": "updateEdgePreviews",
       "filePath": "viewer.js",
       "lineRange": [
-        782,
-        782
+        781,
+        781
       ],
       "summary": "updateEdgePreviews 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2882,8 +2882,8 @@
       "name": "updateNavigationButtons",
       "filePath": "viewer.js",
       "lineRange": [
-        798,
-        798
+        797,
+        797
       ],
       "summary": "结合当前邻接边界和前后扫描状态更新导航可用性。",
       "tags": [
@@ -2899,8 +2899,8 @@
       "name": "renderOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1202,
-        1202
+        1201,
+        1201
       ],
       "summary": "复用阅览卡片并按图片比例排版，渲染前清除可见范围缓存。",
       "tags": [
@@ -2916,8 +2916,8 @@
       "name": "layoutOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1250,
-        1250
+        1249,
+        1249
       ],
       "summary": "按绝对序号和固定比例布置行优先或列优先槽位；应用方向、对齐、间距和缩放，同时恢复中央图片锚点。",
       "tags": [
@@ -2933,8 +2933,8 @@
       "name": "updateOverviewThumbnails",
       "filePath": "viewer.js",
       "lineRange": [
-        1438,
-        1438
+        1437,
+        1437
       ],
       "summary": "仅调度可见及缓存范围的缩略图，近期完成的缩略图有限保留以改善反向浏览。",
       "tags": [
@@ -2950,8 +2950,8 @@
       "name": "scanDelay",
       "filePath": "viewer.js",
       "lineRange": [
-        1529,
-        1529
+        1528,
+        1528
       ],
       "summary": "scanDelay 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2967,8 +2967,8 @@
       "name": "done",
       "filePath": "viewer.js",
       "lineRange": [
-        1533,
-        1533
+        1532,
+        1532
       ],
       "summary": "done 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2984,10 +2984,10 @@
       "name": "scanSegment",
       "filePath": "viewer.js",
       "lineRange": [
-        1537,
-        1537
+        1536,
+        1536
       ],
-      "summary": "沿源页活动轴扫描一个有限区段，按全览方向筛选待解析槽位，等待图库变化后恢复页面坐标。",
+      "summary": "分段触发源图库懒加载；监听图片和 DOM 更新，无变化时降低刷新频率，并恢复源滚动位置。",
       "tags": [
         "lazy-loading",
         "nested-scroll",
@@ -3002,8 +3002,8 @@
       "name": "scanMore",
       "filePath": "viewer.js",
       "lineRange": [
-        1649,
-        1649
+        1656,
+        1656
       ],
       "summary": "按前后方向驱动限时分段扫描；根据图库条目、槽位、资源加载与当前全览需求决定继续或暂停。",
       "tags": [
@@ -3020,8 +3020,8 @@
       "name": "enterOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1727,
-        1727
+        1734,
+        1734
       ],
       "summary": "保存单图或双图状态并打开全览，以当前活动图片为锚点；只在进入全览时播放图片到缩略图过渡。",
       "tags": [
@@ -3039,8 +3039,8 @@
       "name": "exitOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1759,
-        1759
+        1766,
+        1766
       ],
       "summary": "结束全览按压/拖拽状态，取消后台扫描，并恢复进入前的图片状态或切换到选中的单图/双图。",
       "tags": [
@@ -3075,8 +3075,8 @@
       "name": "showSingle",
       "filePath": "viewer.js",
       "lineRange": [
-        1803,
-        1803
+        1810,
+        1810
       ],
       "summary": "加载并显示指定图片，更新尺寸、倍率状态和加载提示。",
       "tags": [
@@ -3092,8 +3092,8 @@
       "name": "showPair",
       "filePath": "viewer.js",
       "lineRange": [
-        1833,
-        1833
+        1840,
+        1840
       ],
       "summary": "加载并显示双图对照，更新两栏尺寸与导航状态。",
       "tags": [
@@ -3109,8 +3109,8 @@
       "name": "show",
       "filePath": "viewer.js",
       "lineRange": [
-        1866,
-        1866
+        1873,
+        1873
       ],
       "summary": "show 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3126,8 +3126,8 @@
       "name": "navigate",
       "filePath": "viewer.js",
       "lineRange": [
-        1867,
-        1867
+        1874,
+        1874
       ],
       "summary": "navigate 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3143,8 +3143,8 @@
       "name": "setCompare",
       "filePath": "viewer.js",
       "lineRange": [
-        1901,
-        1901
+        1908,
+        1908
       ],
       "summary": "切换单图双图；从全览切换时按焦点或中央缩略图选择起点。",
       "tags": [
@@ -3160,8 +3160,8 @@
       "name": "refresh",
       "filePath": "viewer.js",
       "lineRange": [
-        1921,
-        1921
+        1928,
+        1928
       ],
       "summary": "按图片身份合并重新收集的条目，保留已确认比例并安排增量布局。",
       "tags": [
@@ -3177,8 +3177,8 @@
       "name": "storageChanged",
       "filePath": "viewer.js",
       "lineRange": [
-        1969,
-        1969
+        1976,
+        1976
       ],
       "summary": "应用保存的偏好并更新工具栏、全览倍率和当前布局。",
       "tags": [
@@ -3194,8 +3194,8 @@
       "name": "fullscreen",
       "filePath": "viewer.js",
       "lineRange": [
-        2224,
-        2224
+        2231,
+        2231
       ],
       "summary": "fullscreen 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3211,8 +3211,8 @@
       "name": "startHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2264,
-        2264
+        2271,
+        2271
       ],
       "summary": "startHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3228,8 +3228,8 @@
       "name": "followHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2308,
-        2308
+        2315,
+        2315
       ],
       "summary": "followHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3245,8 +3245,8 @@
       "name": "endHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2335,
-        2335
+        2342,
+        2342
       ],
       "summary": "endHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3279,8 +3279,8 @@
       "name": "rememberSourceAnchors",
       "filePath": "viewer.js",
       "lineRange": [
-        414,
-        414
+        413,
+        413
       ],
       "summary": "记录当前图库条目相对页面与嵌套滚动容器的位置，供关闭后即时恢复和定位。",
       "tags": [
@@ -3297,8 +3297,8 @@
       "name": "revealSource",
       "filePath": "viewer.js",
       "lineRange": [
-        457,
-        457
+        456,
+        456
       ],
       "summary": "关闭查看器后优先恢复记录的页面坐标，再用 instant 滚动定位来源图片并播放短暂回跳提示；虚拟节点可在限时内重新挂载，用户输入可取消。",
       "tags": [
@@ -3315,8 +3315,8 @@
       "name": "centralOverviewIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        1060,
-        1060
+        1059,
+        1059
       ],
       "summary": "返回阅览视口中心最近的可见缩略图索引。",
       "tags": [
@@ -3332,8 +3332,8 @@
       "name": "captureOverviewAnchor",
       "filePath": "viewer.js",
       "lineRange": [
-        1082,
-        1082
+        1081,
+        1081
       ],
       "summary": "保存中央缩略图及其相对视口位置。",
       "tags": [
@@ -3349,8 +3349,8 @@
       "name": "restoreOverviewAnchor",
       "filePath": "viewer.js",
       "lineRange": [
-        1089,
-        1089
+        1088,
+        1088
       ],
       "summary": "布局或图库变化后恢复中央缩略图锚点。",
       "tags": [
@@ -3366,8 +3366,8 @@
       "name": "pictureState",
       "filePath": "viewer.js",
       "lineRange": [
-        1720,
-        1720
+        1727,
+        1727
       ],
       "summary": "快照当前单图或双图、锁定、缩放、分隔线与来源状态。",
       "tags": [
@@ -3439,7 +3439,7 @@
         288,
         288
       ],
-      "summary": "关闭时恢复网页根 overflow 与 scrollbar-gutter 原值。",
+      "summary": "关闭时有条件恢复网页原有 overflow 与 scrollbar-gutter 值和优先级。",
       "tags": [
         "scroll-restoration",
         "page-style"
@@ -3452,8 +3452,8 @@
       "name": "centerSourceNode",
       "filePath": "viewer.js",
       "lineRange": [
-        428,
-        428
+        427,
+        427
       ],
       "summary": "用 instant 滚动将重新连接的来源图片置于网页或嵌套滚动视口中央。",
       "tags": [
@@ -3470,8 +3470,8 @@
       "name": "overviewCacheCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1297,
-        1297
+        1296,
+        1296
       ],
       "summary": "按视觉带和设置计算前后目标图片数量；自动前缓存初始一带，向前操作后扩为两带。",
       "tags": [
@@ -3487,8 +3487,8 @@
       "name": "activateOverviewBackward",
       "filePath": "viewer.js",
       "lineRange": [
-        1303,
-        1303
+        1302,
+        1302
       ],
       "summary": "只在当前阅读轴收到明确向前输入后，将自动前缓存扩展到两视觉带并恢复需要的前向扫描。",
       "tags": [
@@ -3505,8 +3505,8 @@
       "name": "overviewCacheWindow",
       "filePath": "viewer.js",
       "lineRange": [
-        1310,
-        1310
+        1309,
+        1309
       ],
       "summary": "把中央可见带和前后设置换算为独立、有界的缩略图预载区间。",
       "tags": [
@@ -3522,8 +3522,8 @@
       "name": "scheduleOverviewCacheCheck",
       "filePath": "viewer.js",
       "lineRange": [
-        1487,
-        1487
+        1486,
+        1486
       ],
       "summary": "延迟重试缓存缺口检查，避免连续触发扫描。",
       "tags": [
@@ -3539,8 +3539,8 @@
       "name": "checkOverviewCache",
       "filePath": "viewer.js",
       "lineRange": [
-        1491,
-        1491
+        1490,
+        1490
       ],
       "summary": "根据可见图片和前后缓存余量提前触发对应方向的扫描。",
       "tags": [
@@ -3578,7 +3578,7 @@
         284,
         284
       ],
-      "summary": "打开查看器时锁定网页滚动并预留经典滚动条槽位，避免懒加载扫描挤动布局。",
+      "summary": "隐藏根滚动条及占位，保留程序化滚动能力。",
       "tags": [
         "scroll-stability",
         "top-layer",
@@ -3592,8 +3592,8 @@
       "name": "overviewVisibleRange",
       "filePath": "viewer.js",
       "lineRange": [
-        1284,
-        1284
+        1283,
+        1283
       ],
       "summary": "根据瀑布流空间索引计算可见范围，并在位置不变时复用结果。",
       "tags": [
@@ -3662,8 +3662,8 @@
       "name": "activeSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        512,
-        512
+        511,
+        511
       ],
       "summary": "捕获单图或双图活动栏可见部分作为模式切换反馈源。",
       "tags": [
@@ -3728,8 +3728,8 @@
       "name": "overviewCardBox",
       "filePath": "viewer.js",
       "lineRange": [
-        1097,
-        1097
+        1096,
+        1096
       ],
       "summary": "读取固定布局赋给卡片的矩形，不使用图片自然尺寸重排框格。",
       "tags": [
@@ -3745,8 +3745,8 @@
       "name": "queueOverviewCommit",
       "filePath": "viewer.js",
       "lineRange": [
-        1102,
-        1102
+        1101,
+        1101
       ],
       "summary": "合并短时间的图库变化并延后布局提交；用户按住缩略图时暂挂会改变命中目标的更新。",
       "tags": [
@@ -3762,8 +3762,8 @@
       "name": "setOverviewSize",
       "filePath": "viewer.js",
       "lineRange": [
-        594,
-        594
+        593,
+        593
       ],
       "summary": "限制并保存全览缩略图 25% 至 300% 大小，保持锚点并重算布局。",
       "tags": [
@@ -3778,8 +3778,8 @@
       "name": "overviewEdgeDistance",
       "filePath": "viewer.js",
       "lineRange": [
-        809,
-        809
+        808,
+        808
       ],
       "summary": "按阅读方向计算全览内容到指定端点的距离。",
       "tags": [
@@ -3794,8 +3794,8 @@
       "name": "updateOverviewStatus",
       "filePath": "viewer.js",
       "lineRange": [
-        925,
-        925
+        924,
+        924
       ],
       "summary": "分别显示两端的加载、失败、可重试暂停和图库边界提示。",
       "tags": [
@@ -3810,8 +3810,8 @@
       "name": "resetOverviewEdge",
       "filePath": "viewer.js",
       "lineRange": [
-        960,
-        960
+        959,
+        959
       ],
       "summary": "释放端点位移，并按结束状态执行回弹或平滑归位。",
       "tags": [
@@ -3826,8 +3826,8 @@
       "name": "pushOverviewEdge",
       "filePath": "viewer.js",
       "lineRange": [
-        974,
-        974
+        973,
+        973
       ],
       "summary": "在已知边界或端点扫描加载时按滚动量阻尼移动全览层。",
       "tags": [
@@ -3842,8 +3842,8 @@
       "name": "releaseOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2024,
-        2024
+        2031,
+        2031
       ],
       "summary": "在指针释放、取消、窗口失焦或无按键移动时结束拖拽，保护点击选择并刷新缓存需求。",
       "tags": [
@@ -3931,8 +3931,8 @@
       "name": "collectOverviewItems",
       "filePath": "viewer.js",
       "lineRange": [
-        1146,
-        1146
+        1145,
+        1145
       ],
       "summary": "按稳定槽位合并真实图片与待加载占位；保留已分配轨道，填入中间新图并删除失效占位。",
       "tags": [
@@ -3967,8 +3967,8 @@
       "name": "overviewEdgeIntent",
       "filePath": "viewer.js",
       "lineRange": [
-        991,
-        991
+        990,
+        990
       ],
       "summary": "在图库端点提供滚动阻力；只有同向累积意图达到阈值才解除暂停或结束状态并重试一次。",
       "tags": [
@@ -3977,7 +3977,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "4a90bc6454ce3c0c84a45e8f33c86dd45ec3029401e564c2eb7d7e6e449488f8",
+      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4002,8 +4002,8 @@
       "name": "overviewSourceLoads",
       "filePath": "viewer.js",
       "lineRange": [
-        814,
-        814
+        813,
+        813
       ],
       "summary": "确认当前扫描方向的缓存范围内，图库图像来源是否仍在实际网络加载。",
       "tags": [
@@ -4019,8 +4019,8 @@
       "name": "overviewScanDemandSatisfied",
       "filePath": "viewer.js",
       "lineRange": [
-        826,
-        826
+        825,
+        825
       ],
       "summary": "检查当前缓存范围的缩略图任务、待解析槽位与额外图片发现缺口；任务在队列中不代表已解码。",
       "tags": [
@@ -4036,8 +4036,8 @@
       "name": "overviewSlotPending",
       "filePath": "viewer.js",
       "lineRange": [
-        841,
-        841
+        840,
+        840
       ],
       "summary": "按稳定槽位的有限重试次数判断空卡片是否仍需懒加载触发。",
       "tags": [
@@ -4053,8 +4053,8 @@
       "name": "scanResolvedSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        866,
-        866
+        865,
+        865
       ],
       "summary": "从同组图库条目、来源与稳定槽位创建扫描状态快照。",
       "tags": [
@@ -4070,8 +4070,8 @@
       "name": "scanResolvedProgress",
       "filePath": "viewer.js",
       "lineRange": [
-        883,
-        883
+        882,
+        882
       ],
       "summary": "比较扫描前后的同组图库来源、条目和稳定槽位身份，判断是否取得实际进展。",
       "tags": [
@@ -4087,8 +4087,8 @@
       "name": "scanViewportSourceLoad",
       "filePath": "viewer.js",
       "lineRange": [
-        889,
-        889
+        888,
+        888
       ],
       "summary": "只定位同组图库扫描视口附近尚未完成的有效图片来源，用于区分网络加载与无进展。",
       "tags": [
@@ -4104,8 +4104,8 @@
       "name": "scanSlotSignature",
       "filePath": "viewer.js",
       "lineRange": [
-        1010,
-        1010
+        1009,
+        1009
       ],
       "summary": "为同组图库稳定槽位计算来源、顺序及待加载状态签名。",
       "tags": [
@@ -4121,8 +4121,8 @@
       "name": "scanOneSlotSignature",
       "filePath": "viewer.js",
       "lineRange": [
-        1019,
-        1019
+        1018,
+        1018
       ],
       "summary": "计算一个待加载槽位的来源与状态签名，为有限重试计数提供依据。",
       "tags": [
@@ -4138,8 +4138,8 @@
       "name": "explicitScanBoundary",
       "filePath": "viewer.js",
       "lineRange": [
-        1025,
-        1025
+        1024,
+        1024
       ],
       "summary": "仅当完整可靠的 ARIA 槽位顺序、总数和图片解析状态一致时确认图库端点。",
       "tags": [
@@ -4155,8 +4155,8 @@
       "name": "scanSourceFailureCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1042,
-        1042
+        1041,
+        1041
       ],
       "summary": "只统计扫描方向上的同组图库失败图像来源，不把无关页面图片算作扫描失败。",
       "tags": [
@@ -4172,8 +4172,8 @@
       "name": "queueGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        1988,
-        1988
+        1995,
+        1995
       ],
       "summary": "统一响应源图库 image load/error 及结构变化，稳定合并当前图库并更新空槽和预缓存。",
       "tags": [
@@ -4182,7 +4182,7 @@
         "gallery-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "4a90bc6454ce3c0c84a45e8f33c86dd45ec3029401e564c2eb7d7e6e449488f8",
+      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4224,8 +4224,8 @@
       "name": "overviewImageRange",
       "filePath": "viewer.js",
       "lineRange": [
-        1322,
-        1322
+        1321,
+        1321
       ],
       "summary": "按真实图片来源统计前后缩略图缓存；空白预留槽不消耗目标图片数量。",
       "tags": [
@@ -4241,8 +4241,8 @@
       "name": "overviewNeedsDiscovery",
       "filePath": "viewer.js",
       "lineRange": [
-        1326,
-        1326
+        1325,
+        1325
       ],
       "summary": "在图片缓存余量前检查一个视觉带，决定何时继续发现同组图库图片。",
       "tags": [
@@ -4258,8 +4258,8 @@
       "name": "scanSlotPending",
       "filePath": "viewer.js",
       "lineRange": [
-        844,
-        844
+        843,
+        843
       ],
       "summary": "判断空图库槽位是否属于当前全览需求，忽略视口投影之外的无关旧槽。",
       "tags": [
@@ -4274,8 +4274,8 @@
       "name": "overviewPendingForSide",
       "filePath": "viewer.js",
       "lineRange": [
-        853,
-        853
+        852,
+        852
       ],
       "summary": "按阅读方向把可见空槽需求分配给前向或后向扫描。",
       "tags": [
@@ -4290,8 +4290,8 @@
       "name": "clearOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2012,
-        2012
+        2019,
+        2019
       ],
       "summary": "立即结束全览按压状态，释放可信指针捕获并恢复仍在查看器中的动画。",
       "tags": [
@@ -4306,8 +4306,8 @@
       "name": "scrollSourceTo",
       "filePath": "viewer.js",
       "lineRange": [
-        857,
-        857
+        856,
+        856
       ],
       "summary": "沿源图库滚动轴使用 instant 行为移动一个扫描区段，并返回实际滚动位置。",
       "tags": [
@@ -4322,8 +4322,8 @@
       "name": "moveHeldImage",
       "filePath": "viewer.js",
       "lineRange": [
-        2313,
-        2313
+        2320,
+        2320
       ],
       "summary": "按指针位移更新普通图或双图查看器的拖拽位置，不依赖系统滚动平滑样式。",
       "tags": [
@@ -4338,8 +4338,8 @@
       "name": "visibleSourceBox",
       "filePath": "viewer.js",
       "lineRange": [
-        431,
-        431
+        430,
+        430
       ],
       "summary": "将来源图片可见区域裁切到页面视口与嵌套滚动容器边界，作为返回提示的落点。",
       "tags": [
@@ -4354,8 +4354,8 @@
       "name": "finishSourceReturn",
       "filePath": "viewer.js",
       "lineRange": [
-        448,
-        448
+        447,
+        447
       ],
       "summary": "居中来源节点并在网页 top layer 播放缩图及目标描边。",
       "tags": [
@@ -4370,8 +4370,8 @@
       "name": "centralOverviewItem",
       "filePath": "viewer.js",
       "lineRange": [
-        1065,
-        1065
+        1064,
+        1064
       ],
       "summary": "找出阅览视口中离画面中心最近的图片卡片。",
       "tags": [
@@ -4386,8 +4386,8 @@
       "name": "overviewSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        453,
-        453
+        452,
+        452
       ],
       "summary": "截取全览视口中的中央缩略图，以便关闭时将其动画回网页来源。",
       "tags": [

@@ -266,7 +266,6 @@
     const focused = document.activeElement;
     const scroll = { value: document.documentElement.style.getPropertyValue('overflow'), priority: document.documentElement.style.getPropertyPriority('overflow') };
     const scrollbarGutter = { value: document.documentElement.style.getPropertyValue('scrollbar-gutter'), priority: document.documentElement.style.getPropertyPriority('scrollbar-gutter') };
-    const reserveScrollbarGutter = innerWidth > document.documentElement.clientWidth && !/\bstable\b/.test(scrollbarGutter.value);
     const pagePosition = { x: window.scrollX, y: window.scrollY, elements: [] };
     for (let node = collection.scope; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
       const style = getComputedStyle(node);
@@ -291,7 +290,7 @@
       }
     };
     const lockPage = () => {
-      if (reserveScrollbarGutter) document.documentElement.style.setProperty('scrollbar-gutter', 'stable', 'important');
+      document.documentElement.style.setProperty('scrollbar-gutter', 'auto', 'important');
       document.documentElement.style.setProperty('overflow', 'hidden', 'important');
     };
     const restorePageStyles = () => {
@@ -299,7 +298,7 @@
         if (scroll.value) document.documentElement.style.setProperty('overflow', scroll.value, scroll.priority);
         else document.documentElement.style.removeProperty('overflow');
       }
-      if (reserveScrollbarGutter && document.documentElement.style.getPropertyValue('scrollbar-gutter') === 'stable' && document.documentElement.style.getPropertyPriority('scrollbar-gutter') === 'important') {
+      if (document.documentElement.style.getPropertyValue('scrollbar-gutter') === 'auto' && document.documentElement.style.getPropertyPriority('scrollbar-gutter') === 'important') {
         if (scrollbarGutter.value) document.documentElement.style.setProperty('scrollbar-gutter', scrollbarGutter.value, scrollbarGutter.priority);
         else document.documentElement.style.removeProperty('scrollbar-gutter');
       }
@@ -1594,24 +1593,28 @@
         state.phase = pendingNearby() ? 'waiting-trigger' : 'scanning';
         state.sourceLoading = false; state.loadingNode = null;
         let observedChanges = 0;
+        const observedScope = collection.scope;
+        const onSourceImageState = event => { if (event.target?.tagName === 'IMG') observedChanges++; };
+        observedScope.addEventListener('load', onSourceImageState, true);
+        observedScope.addEventListener('error', onSourceImageState, true);
         const localObserver = new MutationObserver(records => {
-          if (records.some(record => collection.scope?.contains(record.target) || record.target === scopeParent)) observedChanges++;
+          if (records.some(record => observedScope.contains(record.target) || record.target === scopeParent)) observedChanges++;
         });
-        localObserver.observe(collection.scope, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
+        localObserver.observe(observedScope, { subtree: true, childList: true, attributes: true, attributeFilter: lens.gallery.observedAttributes });
         state.cursor = scrollSourceTo(next);
         const started = performance.now(), timeout = pendingNearby() ? 4200 : edge ? 900 : 1800;
-        let stableSince = started, signature = beforeSignature;
+        let stableSince = started, signature = beforeSignature, currentResolved = beforeResolved, lastRefresh = started;
         try {
           while (!signal.aborted && !closed && performance.now() - started < timeout) {
             await scanDelay(120, signal);
             if (signal.aborted || closed) break;
             const elapsed = performance.now() - started;
-            if (elapsed >= 420 && (observedChanges > 0 || performance.now() - stableSince >= 180)) {
-              refresh(direction); observedChanges = 0;
+            if (observedChanges > 0 || performance.now() - lastRefresh >= 600) {
+              refresh(direction); observedChanges = 0; lastRefresh = performance.now();
+              const currentSignature = scanSlotSignature();
+              currentResolved = scanResolvedSnapshot();
+              if (currentSignature !== signature) { signature = currentSignature; stableSince = performance.now(); }
             }
-            const currentSignature = scanSlotSignature(), currentResolved = scanResolvedSnapshot();
-            const changed = currentSignature !== signature;
-            if (changed) { signature = currentSignature; stableSince = performance.now(); }
             const progressed = scanResolvedProgress(beforeResolved, currentResolved);
             const pendingNow = pendingNearby();
             state.loadingNode = scanViewportSourceLoad(direction, state, viewport, origin);
@@ -1621,7 +1624,11 @@
             if (progressed && settled && !pendingNow) break;
             if (!progressed && !pendingNow && !state.sourceLoading && elapsed >= 720) break;
           }
-        } finally { localObserver.disconnect(); }
+        } finally {
+          localObserver.disconnect();
+          observedScope.removeEventListener('load', onSourceImageState, true);
+          observedScope.removeEventListener('error', onSourceImageState, true);
+        }
         if (!signal.aborted && !closed) { refresh(direction); rememberSourceAnchors(); }
         for (const { item, signature, position } of targetedSlots) {
           if (position < state.cursor - viewport * .2 || position > state.cursor + viewport * 1.2) continue;
