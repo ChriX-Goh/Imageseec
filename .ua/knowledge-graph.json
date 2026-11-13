@@ -13,15 +13,16 @@
       "txt"
     ],
     "frameworks": [],
-    "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、稳定比例和顺序的自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-10T22:59:45.105Z",
-    "gitCommitHash": "d1ba443c34a0ef78f04622b3230a97a4c0b7f42f"
+    "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
+    "analyzedAt": "2026-11-13T01:37:58.470Z",
+    "gitCommitHash": "2250a3d273dcf5d22eb497503f07a12d4e2915ad",
+    "versionName": "2.0 b15"
   },
   "sourceState": {
-    "trackedAndUntrackedFiles": 106,
+    "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b14",
+    "versionName": "2.0 b15",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -70,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "388d0a643fb3ad3a8f00548205c3077a5c1f1b749adec9090249f0de89a3057f",
+      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -88,7 +89,9 @@
         "localization",
         "placeholder-substitution"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "0182c04457b445fa1417ddadb57726a0ea5c8d52bffd59666a3cd3b936f48cdb",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/i18n-fixture.cjs:forLocale",
@@ -105,7 +108,9 @@
         "localization",
         "locale-fallback"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "0182c04457b445fa1417ddadb57726a0ea5c8d52bffd59666a3cd3b936f48cdb",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/i18n-fixture.cjs:script",
@@ -141,7 +146,9 @@
         "vm-sandbox",
         "gallery"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/unit.cjs:albumFixture",
@@ -158,7 +165,9 @@
         "gallery",
         "dom-simulation"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/unit.cjs:background",
@@ -177,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "388d0a643fb3ad3a8f00548205c3077a5c1f1b749adec9090249f0de89a3057f",
+      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -250,7 +259,7 @@
       "type": "config",
       "name": "manifest.json",
       "filePath": "manifest.json",
-      "summary": "声明 MV3 扩展入口、权限和多尺寸标识；源码候选为 2.0 b12。",
+      "summary": "声明 MV3 扩展入口、权限和图标；源码候选为 2.0 b15。",
       "tags": [
         "configuration",
         "manifest-v3",
@@ -259,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "687cf7cf79edbce0bfced61c35c9cdd5722355eb901d7c166d120cd0b16fe186",
+      "sourceHash": "a4c3ae162be3b2125ac24961252f1b04ce96c190614209716ff5bae4af97f346",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -339,7 +348,7 @@
         "verification"
       ],
       "complexity": "simple",
-      "sourceHash": "0aa4d705d2f62d236645af5633c8b442af68a1c2480e5b51431b579755507f08",
+      "sourceHash": "bcbe898c82474bb5a7242384822dbd17ee9a5a2ffe957b5de085d32a928fc06c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -399,7 +408,7 @@
         "publishing"
       ],
       "complexity": "simple",
-      "sourceHash": "d1259218201e926b7fd0b626061ff5679194f24f4d3c16783d88f448e567f76c",
+      "sourceHash": "314426c4a3983daa2a80d1f02b8a69b6ba8174c6cf8927e7b8c77f95d297b79c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -422,14 +431,15 @@
       "type": "document",
       "name": "STATUS.zh-CN.md",
       "filePath": "docs/STATUS.zh-CN.md",
-      "summary": "记录 b12 本地实现与尚待实站及安装版验收。",
+      "summary": "记录 2.0 b15 候选的实现范围、通用夹具结果及尚未完成的实站、安装版和对照验收。",
       "tags": [
         "status",
         "beta",
-        "verification"
+        "verification",
+        "b15"
       ],
       "complexity": "simple",
-      "sourceHash": "94989f89344e4f3269b499fab79ebb88412d9f495c5c49f46a74cdc78c7f92a5",
+      "sourceHash": "52582d899b82186318157d66a75e02659e9331569ced1a2ae5d5f7ca50d53d7d",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -960,15 +970,16 @@
       "type": "document",
       "name": "QA.md",
       "filePath": "tests/QA.md",
-      "summary": "记录 b11 通用大图库和源代码界面检查，区分安装版与实站验收。",
+      "summary": "记录 2.0 b15 自动化与浏览器夹具证据，并区分合成性能、实时站点和安装版验收边界。",
       "tags": [
         "documentation",
         "testing",
         "verification",
-        "limits"
+        "limits",
+        "b15"
       ],
       "complexity": "moderate",
-      "sourceHash": "7a74417ee7aa741a05a7f31a46b8eaf145e99ab2c5536bde18a584a8c6b1f93f",
+      "sourceHash": "7c0f916c52f896a7e979fd22d57336d7b247923fa37a83ba69984d6f62282121",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1297,14 +1308,14 @@
       "type": "file",
       "name": "gallery.js",
       "filePath": "gallery.js",
-      "summary": "通用图库发现按一次收集复用媒体节点快照，结束后丢弃缓存；保持图片身份与组范围。",
+      "summary": "通用图库发现按单次收集复用来源快照，并通过图片键、稳定槽位和别名索引合并条目，保留首个匹配顺序。",
       "tags": [
         "gallery-discovery",
         "image-sources",
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "1b75e8e3e8ba58205d504302e670446a4bd4b307a9564be20481e7af9900235e",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1476,7 +1487,9 @@
         "scale",
         "utility"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:fromPosition",
@@ -1493,7 +1506,9 @@
         "scale",
         "mapping"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:toPosition",
@@ -1510,7 +1525,9 @@
         "scale",
         "mapping"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:holdPan",
@@ -1527,7 +1544,9 @@
         "gesture",
         "mapping"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:wheelMode",
@@ -1544,7 +1563,9 @@
         "navigation",
         "zoom"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:overviewLayout",
@@ -1561,7 +1582,9 @@
         "fixed-slots",
         "stable-order"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:overviewCacheRange",
@@ -1578,7 +1601,9 @@
         "thumbnail-cache",
         "bounds"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:url",
@@ -1595,7 +1620,9 @@
         "image-url",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:key",
@@ -1612,7 +1639,9 @@
         "image-identity",
         "deduplication"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:sources",
@@ -1623,13 +1652,14 @@
         76,
         76
       ],
-      "summary": "合并图片、响应式来源、延迟属性和明确原图地址。",
+      "summary": "在一次图库收集中缓存节点图片来源解析，下一次收集重新读取动态来源。",
       "tags": [
-        "gallery-discovery",
-        "lazy-loading",
-        "image-sources"
+        "image-source",
+        "per-collection-cache"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:scopeFor",
@@ -1646,7 +1676,9 @@
         "structure",
         "scope"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:slotsFor",
@@ -1663,7 +1695,9 @@
         "stable-slots",
         "lazy-loading"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:connectedEntryNode",
@@ -1680,7 +1714,9 @@
         "virtual-list",
         "identity"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:sameEntry",
@@ -1697,7 +1733,9 @@
         "image-identity",
         "deduplication"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:mergeEntries",
@@ -1714,7 +1752,9 @@
         "ordering",
         "identity-merge"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:collect",
@@ -1731,7 +1771,9 @@
         "grouping",
         "lazy-loading"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:i18n.js:resolveLocale",
@@ -1748,7 +1790,9 @@
         "language-resolution",
         "fallback"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d9dd579db588d89be521f8a2cd27f1f39a5443999f8a33f78194adf02087af94",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:i18n.js:loadCatalog",
@@ -1765,7 +1809,9 @@
         "message-catalog",
         "runtime-messaging"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d9dd579db588d89be521f8a2cd27f1f39a5443999f8a33f78194adf02087af94",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:i18n.js:setLanguage",
@@ -1782,7 +1828,9 @@
         "language-selection",
         "settings"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d9dd579db588d89be521f8a2cd27f1f39a5443999f8a33f78194adf02087af94",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:i18n.js:text",
@@ -1799,7 +1847,9 @@
         "message-formatting",
         "text"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d9dd579db588d89be521f8a2cd27f1f39a5443999f8a33f78194adf02087af94",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:i18n.js:html",
@@ -1835,7 +1885,9 @@
         "localization",
         "rendering"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9d2903755006773fce20149d491dafe8a9112340361ef83886ff4502a1fd837e",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:options.js:save",
@@ -1852,7 +1904,9 @@
         "local-storage",
         "persistence"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9d2903755006773fce20149d491dafe8a9112340361ef83886ff4502a1fd837e",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:options.js:init",
@@ -1888,7 +1942,9 @@
         "localization",
         "overview-cache"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "fb7d35d85c004f9ea9de98c724da85a4b6b03e8841ea2340dc76711e7e2d5991",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:preferences.js:fill",
@@ -1905,7 +1961,9 @@
         "state-binding",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "fb7d35d85c004f9ea9de98c724da85a4b6b03e8841ea2340dc76711e7e2d5991",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:preferences.js:bind",
@@ -1941,7 +1999,9 @@
         "image-detection",
         "hit-testing"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:quick-open.js:linkedImageSource",
@@ -1958,7 +2018,9 @@
         "image-url",
         "link-resolution"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:quick-open.js:sourceFor",
@@ -1975,7 +2037,9 @@
         "image-sources",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:quick-open.js:rememberContext",
@@ -1992,7 +2056,9 @@
         "context-menu",
         "target-resolution"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:quick-open.js:contextMessage",
@@ -2213,7 +2279,7 @@
       "type": "file",
       "name": "viewer.js",
       "filePath": "viewer.js",
-      "summary": "管理图片和全览浏览、统一功能图标、分类设置、扫描和回源。",
+      "summary": "管理图片查看与全览，包括双向懒扫描、嵌套滚动目标、图库刷新合并、预缓存、设置和回源。",
       "tags": [
         "viewer-runtime",
         "image-navigation",
@@ -2221,7 +2287,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2239,7 +2305,9 @@
         "source-hashes",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "e93db0929203b2a9b4c296d7cc299c45b311d3c7e80988b8b36c29c452e7960b",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:scripts/graph-freshness.cjs:matchesGraphScope",
@@ -2256,7 +2324,9 @@
         "source-hashes",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "e93db0929203b2a9b4c296d7cc299c45b311d3c7e80988b8b36c29c452e7960b",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:scripts/graph-freshness.cjs:digest",
@@ -2273,7 +2343,9 @@
         "source-hashes",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "e93db0929203b2a9b4c296d7cc299c45b311d3c7e80988b8b36c29c452e7960b",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:scripts/graph-freshness.cjs:main",
@@ -2290,7 +2362,9 @@
         "source-hashes",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "e93db0929203b2a9b4c296d7cc299c45b311d3c7e80988b8b36c29c452e7960b",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:settings.js:normalize",
@@ -2326,7 +2400,9 @@
         "gallery-generation",
         "interaction-testing"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9cb27835a8f2b158aed10662488c8cb437b07fc389148949e241683e75429711",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/demo.js:open",
@@ -2343,7 +2419,9 @@
         "gallery-generation",
         "interaction-testing"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9cb27835a8f2b158aed10662488c8cb437b07fc389148949e241683e75429711",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/demo.js:view",
@@ -2360,7 +2438,9 @@
         "gallery-generation",
         "interaction-testing"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9cb27835a8f2b158aed10662488c8cb437b07fc389148949e241683e75429711",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/demo.js:inViewerSurface",
@@ -2377,7 +2457,9 @@
         "gallery-generation",
         "interaction-testing"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "9cb27835a8f2b158aed10662488c8cb437b07fc389148949e241683e75429711",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/demo.js:print",
@@ -2432,7 +2514,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:finish",
@@ -2449,7 +2533,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:next",
@@ -2466,7 +2552,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:restorePageCoordinates",
@@ -2482,7 +2570,9 @@
         "scroll-restoration",
         "nested-scroll"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:$",
@@ -2499,7 +2589,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:on",
@@ -2516,7 +2608,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:close",
@@ -2534,7 +2628,9 @@
         "scroll-restoration",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:status",
@@ -2551,7 +2647,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:activeIndex",
@@ -2568,7 +2666,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateCompareControls",
@@ -2585,7 +2685,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateOverviewButton",
@@ -2602,7 +2704,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:transformCompare",
@@ -2619,7 +2723,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:transform",
@@ -2636,7 +2742,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateRuler",
@@ -2653,7 +2761,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:fit",
@@ -2670,7 +2780,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:zoom",
@@ -2687,7 +2799,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:setScale",
@@ -2704,7 +2818,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateLock",
@@ -2721,7 +2837,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateFullscreenLabel",
@@ -2738,7 +2856,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:bindPreferences",
@@ -2755,7 +2875,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:savePreferences",
@@ -2772,7 +2894,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:refreshLanguage",
@@ -2789,7 +2913,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:cacheNeighbors",
@@ -2806,7 +2932,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:renderStrip",
@@ -2823,7 +2951,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:showStrip",
@@ -2840,7 +2970,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateEdgePreviews",
@@ -2857,7 +2989,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:target",
@@ -2874,7 +3008,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateNavigationButtons",
@@ -2891,7 +3027,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:renderOverview",
@@ -2908,7 +3046,9 @@
         "masonry",
         "cache-invalidation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:layoutOverview",
@@ -2925,7 +3065,9 @@
         "fixed-layout",
         "anchor-restoration"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateOverviewThumbnails",
@@ -2942,7 +3084,9 @@
         "thumbnail-cache",
         "lazy-loading"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanDelay",
@@ -2959,7 +3103,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:done",
@@ -2976,7 +3122,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanSegment",
@@ -2994,7 +3142,9 @@
         "bounded-scan",
         "viewer-runtime"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanMore",
@@ -3012,7 +3162,9 @@
         "bounded-scan",
         "viewer-runtime"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:enterOverview",
@@ -3031,7 +3183,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:exitOverview",
@@ -3050,7 +3204,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:resolveIndex",
@@ -3067,7 +3223,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:showSingle",
@@ -3084,7 +3242,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:showPair",
@@ -3101,7 +3261,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:show",
@@ -3118,7 +3280,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:navigate",
@@ -3135,7 +3299,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:setCompare",
@@ -3152,7 +3318,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:refresh",
@@ -3169,7 +3337,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:storageChanged",
@@ -3186,7 +3356,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:fullscreen",
@@ -3203,7 +3375,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:startHold",
@@ -3220,7 +3394,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:followHold",
@@ -3237,7 +3413,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:endHold",
@@ -3254,7 +3432,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:scripts/graph-freshness.cjs:globRegExp",
@@ -3271,7 +3451,9 @@
         "source-hashes",
         "validation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "e93db0929203b2a9b4c296d7cc299c45b311d3c7e80988b8b36c29c452e7960b",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:rememberSourceAnchors",
@@ -3289,7 +3471,9 @@
         "layout-stability",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:revealSource",
@@ -3307,7 +3491,9 @@
         "virtual-list",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:centralOverviewIndex",
@@ -3324,7 +3510,9 @@
         "overview-layout",
         "anchor-restoration"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:captureOverviewAnchor",
@@ -3341,7 +3529,9 @@
         "overview-layout",
         "anchor-restoration"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:restoreOverviewAnchor",
@@ -3358,7 +3548,9 @@
         "overview-layout",
         "anchor-restoration"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:pictureState",
@@ -3375,7 +3567,9 @@
         "image-interaction",
         "state-management"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/lazy-gallery.js:update",
@@ -3392,7 +3586,9 @@
         "lazy-loading",
         "gallery-generation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "39d5b5353ea3cc75f633887961c8c4fd0c0c96853cc960ce9ee546b42b09a277",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/lazy-gallery.js:load",
@@ -3409,7 +3605,9 @@
         "lazy-loading",
         "gallery-generation"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "39d5b5353ea3cc75f633887961c8c4fd0c0c96853cc960ce9ee546b42b09a277",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/lazy-gallery.js:append",
@@ -3444,7 +3642,9 @@
         "scroll-restoration",
         "page-style"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:centerSourceNode",
@@ -3462,7 +3662,9 @@
         "layout-stability",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewCacheCount",
@@ -3479,7 +3681,9 @@
         "thumbnail-cache",
         "automatic-cache"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:activateOverviewBackward",
@@ -3497,7 +3701,9 @@
         "automatic-cache",
         "lazy-scanning"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewCacheWindow",
@@ -3514,7 +3720,9 @@
         "thumbnail-cache",
         "bounds"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scheduleOverviewCacheCheck",
@@ -3531,7 +3739,9 @@
         "thumbnail-cache",
         "lazy-scanning"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:checkOverviewCache",
@@ -3548,7 +3758,9 @@
         "prefetch",
         "lazy-scanning"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:scripts/graph-freshness.cjs:indexDigest",
@@ -3584,7 +3796,9 @@
         "top-layer",
         "layout"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewVisibleRange",
@@ -3601,7 +3815,9 @@
         "visible-range",
         "cache"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/installed-checks.js:read",
@@ -3618,7 +3834,9 @@
         "viewer-state",
         "assertion"
       ],
-      "complexity": "complex"
+      "complexity": "complex",
+      "sourceHash": "c68907edd8fd24de1a1bac82bbec6b71372650afa8ee7ad4d3e4cb335d5ca606",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/installed-checks.js:ready",
@@ -3635,7 +3853,9 @@
         "async-wait",
         "viewer-state"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "c68907edd8fd24de1a1bac82bbec6b71372650afa8ee7ad4d3e4cb335d5ca606",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:tests/installed-checks.js:set",
@@ -3670,7 +3890,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:clipBox",
@@ -3686,7 +3908,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:pictureSnapshot",
@@ -3702,7 +3926,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:returnFeedback",
@@ -3720,7 +3946,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "complex"
+      "complexity": "complex",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewCardBox",
@@ -3737,7 +3965,9 @@
         "fixed-slots",
         "geometry"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:queueOverviewCommit",
@@ -3754,7 +3984,9 @@
         "layout-stability",
         "input"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:setOverviewSize",
@@ -3770,7 +4002,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewEdgeDistance",
@@ -3786,7 +4020,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:updateOverviewStatus",
@@ -3802,7 +4038,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:resetOverviewEdge",
@@ -3818,7 +4056,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:pushOverviewEdge",
@@ -3834,7 +4074,9 @@
         "阅览",
         "交互"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:releaseOverviewPress",
@@ -3853,7 +4095,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:applyRuler",
@@ -3870,7 +4114,9 @@
         "overview-scale",
         "controls"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:makeEntry",
@@ -3888,7 +4134,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "1b75e8e3e8ba58205d504302e670446a4bd4b307a9564be20481e7af9900235e",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3940,7 +4186,9 @@
         "stable-slots",
         "placeholder"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:overviewRetryIntent",
@@ -3977,7 +4225,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4011,7 +4259,9 @@
         "loading-state",
         "source-loading"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewScanDemandSatisfied",
@@ -4028,7 +4278,9 @@
         "demand-limited",
         "lazy-scanning"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewSlotPending",
@@ -4045,7 +4297,9 @@
         "lazy-loading",
         "slot-attempts"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanResolvedSnapshot",
@@ -4062,7 +4316,9 @@
         "gallery-snapshot",
         "identity"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanResolvedProgress",
@@ -4079,7 +4335,9 @@
         "progress-detection",
         "gallery-scope"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanViewportSourceLoad",
@@ -4096,7 +4354,9 @@
         "loading-state",
         "scoped-image"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanSlotSignature",
@@ -4113,7 +4373,9 @@
         "slot-state",
         "gallery-scope"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanOneSlotSignature",
@@ -4130,7 +4392,9 @@
         "slot-attempts",
         "identity"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:explicitScanBoundary",
@@ -4147,7 +4411,9 @@
         "boundary-detection",
         "aria"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanSourceFailureCount",
@@ -4164,7 +4430,9 @@
         "network-errors",
         "gallery-scope"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:queueGalleryRefresh",
@@ -4172,17 +4440,17 @@
       "name": "queueGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        1995,
-        1995
+        2065,
+        2065
       ],
-      "summary": "统一响应源图库 image load/error 及结构变化，稳定合并当前图库并更新空槽和预缓存。",
+      "summary": "以 300 毫秒尾随延迟和 900 毫秒最大等待合并 DOM 与图片事件；扫描中延后刷新至扫描结束。",
       "tags": [
-        "lazy-loading",
-        "load-error",
-        "gallery-refresh"
+        "gallery-refresh",
+        "bounded-debounce",
+        "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "f2847727c7ced4bbc32ae484d416297b96880d8b37e78fbcb7786e27755627bc",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4216,7 +4484,9 @@
         "aria",
         "stable-slots"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewImageRange",
@@ -4233,7 +4503,9 @@
         "thumbnail-cache",
         "pending-slots"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewNeedsDiscovery",
@@ -4250,7 +4522,9 @@
         "lazy-discovery",
         "preload"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scanSlotPending",
@@ -4266,7 +4540,9 @@
         "viewer-runtime",
         "lazy-loading"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewPendingForSide",
@@ -4282,7 +4558,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:clearOverviewPress",
@@ -4298,7 +4576,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:scrollSourceTo",
@@ -4314,7 +4594,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:moveHeldImage",
@@ -4330,7 +4612,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:visibleSourceBox",
@@ -4346,7 +4630,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:finishSourceReturn",
@@ -4362,7 +4648,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:centralOverviewItem",
@@ -4378,7 +4666,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:viewer.js:overviewSnapshot",
@@ -4394,7 +4684,9 @@
         "viewer-runtime",
         "overview-interaction"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:gallery.js:nestedGalleryRows",
@@ -4411,7 +4703,9 @@
         "structure",
         "bounded-sampling"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:overviewSpatialIndex",
@@ -4428,7 +4722,9 @@
         "performance",
         "visibility"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
       "id": "function:controls.js:overviewIndexedRange",
@@ -4445,7 +4741,215 @@
         "performance",
         "visibility"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/benchmark-gallery.cjs",
+      "type": "file",
+      "name": "benchmark-gallery.cjs",
+      "filePath": "tests/benchmark-gallery.cjs",
+      "summary": "对比图库身份索引合并与有序参考算法，输出合成 Node 场景的重复测量中位数和 P95。",
+      "tags": [
+        "test",
+        "benchmark",
+        "gallery-merge",
+        "synthetic-performance"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "185a9b2861b35cf512ecd13f2f5de150a7c647b3ef7a6a71aff76a546523fff2",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/perf-lazy-gallery-config.js",
+      "type": "file",
+      "name": "perf-lazy-gallery-config.js",
+      "filePath": "tests/perf-lazy-gallery-config.js",
+      "summary": "解析通用图库性能夹具的 URL 配置，区分缺省值与显式零值并限制输入范围。",
+      "tags": [
+        "test",
+        "fixture-config",
+        "lazy-loading",
+        "input-validation"
+      ],
+      "complexity": "simple",
+      "sourceHash": "4efd2a5b59e3d5e1d06505bfbf1b19aea35fefc47af964b2fbcdbe19e316956e",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/perf-lazy-gallery-config.test.cjs",
+      "type": "file",
+      "name": "perf-lazy-gallery-config.test.cjs",
+      "filePath": "tests/perf-lazy-gallery-config.test.cjs",
+      "summary": "回归测试图库夹具默认参数、显式零值、连续模式、范围边界和无效输入回退。",
+      "tags": [
+        "test",
+        "unit",
+        "fixture-config",
+        "regression"
+      ],
+      "complexity": "simple",
+      "sourceHash": "9099a1dc825f57dc21d3cdf5561b98fa06a7f926bd545e4d5b82338409d2b572",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/perf-lazy-gallery.html",
+      "type": "file",
+      "name": "perf-lazy-gallery.html",
+      "filePath": "tests/perf-lazy-gallery.html",
+      "summary": "提供持续追加懒加载性能测试页面，可切换嵌套滚动并记录槽位、加载、解码事件。",
+      "tags": [
+        "test",
+        "fixture",
+        "lazy-loading",
+        "performance"
+      ],
+      "complexity": "simple",
+      "sourceHash": "808a0ef6428dc310c016244938d8b7169c54c18f545f92369f544fd4ae0cac9f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/perf-lazy-gallery.js",
+      "type": "file",
+      "name": "perf-lazy-gallery.js",
+      "filePath": "tests/perf-lazy-gallery.js",
+      "summary": "按 URL 参数生成有限或无上限图库，控制追加间隔、批量、来源延迟、请求延迟和嵌套滚动。",
+      "tags": [
+        "test",
+        "fixture",
+        "lazy-loading",
+        "continuous-gallery",
+        "performance"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "972424e559fb8b9ed35d5822b4896876e963d8784bef7244b8f68a45a5291bf5",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/scan-scheduling.cjs",
+      "type": "file",
+      "name": "scan-scheduling.cjs",
+      "filePath": "tests/scan-scheduling.cjs",
+      "summary": "用虚拟时钟检查图库刷新最大等待、扫描合并、懒加载槽位变化及动态嵌套滚动目标。",
+      "tags": [
+        "test",
+        "unit",
+        "scan-scheduling",
+        "nested-scroll"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "e34887a9501caa438d7b8c3e5b7595300b6fb2e208a7a88add73e2af91419d4a",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:entryMatcher",
+      "type": "function",
+      "name": "entryMatcher",
+      "filePath": "gallery.js",
+      "lineRange": [
+        389,
+        389
+      ],
+      "summary": "为图片键、稳定槽位和来源别名建立多值候选索引，并按既有顺序重新校验同一图片身份。",
+      "tags": [
+        "gallery-identity",
+        "index",
+        "deduplication"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:refreshScrollCandidates",
+      "type": "function",
+      "name": "refreshScrollCandidates",
+      "filePath": "viewer.js",
+      "lineRange": [
+        281,
+        281
+      ],
+      "summary": "发现同组图库祖先中的可滚动及潜在 overflow 容器，保存原始坐标以供懒加载扫描后恢复。",
+      "tags": [
+        "nested-scroll",
+        "lazy-loading"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:scanTargetFor",
+      "type": "function",
+      "name": "scanTargetFor",
+      "filePath": "viewer.js",
+      "lineRange": [
+        299,
+        299
+      ],
+      "summary": "优先选取已溢出的近端滚动容器，无容器溢出时保留可增长的 auto 容器。",
+      "tags": [
+        "nested-scroll",
+        "lazy-loading"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:refreshScanScroller",
+      "type": "function",
+      "name": "refreshScanScroller",
+      "filePath": "viewer.js",
+      "lineRange": [
+        317,
+        317
+      ],
+      "summary": "在图库尺寸变化后更新扫描容器和方向游标，避免继续驱动已不适用的滚动轴。",
+      "tags": [
+        "nested-scroll",
+        "scan-state"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:cancelGalleryRefresh",
+      "type": "function",
+      "name": "cancelGalleryRefresh",
+      "filePath": "viewer.js",
+      "lineRange": [
+        2048,
+        2048
+      ],
+      "summary": "关闭查看器时取消延迟图库刷新并清空排队状态。",
+      "tags": [
+        "gallery-refresh",
+        "cleanup"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:flushGalleryRefresh",
+      "type": "function",
+      "name": "flushGalleryRefresh",
+      "filePath": "viewer.js",
+      "lineRange": [
+        2051,
+        2051
+      ],
+      "summary": "合并刷新当前图库，比较来源签名并在内容确有变化时恢复扫描状态。",
+      "tags": [
+        "gallery-refresh",
+        "scan-resume"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
   "edges": [
@@ -5605,7 +6109,8 @@
       "target": "function:gallery.js:sources",
       "type": "contains",
       "direction": "forward",
-      "weight": 1
+      "weight": 1,
+      "description": "图片来源解析会在单次同步图库收集中复用。"
     },
     {
       "source": "file:gallery.js",
@@ -7046,7 +7551,7 @@
       "type": "documents",
       "direction": "forward",
       "weight": 0.5,
-      "description": "Documents current versioning and publication boundaries."
+      "description": "版本简报记录候选扩展版本号。"
     },
     {
       "source": "function:scripts/graph-freshness.cjs:main",
@@ -8262,7 +8767,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.7,
-      "description": "单元检查覆盖图片身份、分组、延迟来源及顺序去重。"
+      "description": "确定性和随机差分回归验证身份索引、别名冲突、稳定槽位更换及有序合并。"
     },
     {
       "source": "file:i18n.js",
@@ -9367,6 +9872,342 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "定义可见卡片查询。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:entryMatcher",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图库键、稳定槽位及来源别名的多值索引实现。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:mergeEntries",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "条目合并调用候选索引，仍按 sameEntry 复核并保留原列表顺序。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:collect",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "采集流程读取来源快照并在本轮结束后丢弃。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:refreshScrollCandidates",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "扫描图库的可滚动祖先并记录坐标。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:scanTargetFor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "从候选滚动容器中选择当前扫描目标。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:refreshScanScroller",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "滚动布局改变后更新扫描目标与游标。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:cancelGalleryRefresh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "关闭时清理图库刷新定时器。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:flushGalleryRefresh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "提交合并后的图库内容更新。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:queueGalleryRefresh",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "对图库 DOM 和图片变化进行有界合并。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:refreshScrollCandidates",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "扫描开始和图库范围更新时重新检查嵌套滚动祖先。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:scanTargetFor",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "当前与变化后的候选容器均由同一目标选择器评估。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:refreshScanScroller",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "扫描分段开始时适配当前源图库滚动目标。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:cancelGalleryRefresh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "查看器关闭时停止待处理的页面更新。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:queueGalleryRefresh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "MutationObserver 与图片 load/error 事件进入同一个有界刷新队列。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:flushGalleryRefresh",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "刷新队列提交后重采集并判断扫描是否可以恢复。"
+    },
+    {
+      "source": "function:gallery.js:entryMatcher",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查最早相同项、陈旧槽位索引校验以及 1,200 组固定种子差分样例。"
+    },
+    {
+      "source": "function:gallery.js:sources",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "验证来源解析缓存只限于单次同步收集。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "虚拟时钟验证图库变化刷新最大等待、扫描排队和新出现的嵌套滚动容器。"
+    },
+    {
+      "source": "function:viewer.js:queueGalleryRefresh",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "调度夹具验证图库刷新及动态扫描容器选择语义。"
+    },
+    {
+      "source": "function:viewer.js:flushGalleryRefresh",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "调度夹具验证图库刷新及动态扫描容器选择语义。"
+    },
+    {
+      "source": "function:viewer.js:scanTargetFor",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "调度夹具验证图库刷新及动态扫描容器选择语义。"
+    },
+    {
+      "source": "function:viewer.js:refreshScanScroller",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "调度夹具验证图库刷新及动态扫描容器选择语义。"
+    },
+    {
+      "source": "file:tests/benchmark-gallery.cjs",
+      "target": "file:gallery.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6,
+      "description": "基准对比当前索引实现与内部保留的有序参考实现。"
+    },
+    {
+      "source": "file:tests/benchmark-gallery.cjs",
+      "target": "function:gallery.js:mergeEntries",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "合成图库重复测量检查索引合并的顺序、字段和条目数量。"
+    },
+    {
+      "source": "file:tests/benchmark-gallery.cjs",
+      "target": "function:gallery.js:entryMatcher",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "合成 Node 基准测量图库身份候选索引；不代表浏览器性能。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery.html",
+      "target": "file:tests/perf-lazy-gallery.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "性能夹具页面加载图库生成器。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery.html",
+      "target": "file:tests/perf-lazy-gallery-config.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "页面通过共享配置解析器读取 URL 测试选项。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery.html",
+      "target": "file:gallery.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "加载真实图库识别模块供查看器发现同组图片。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery.html",
+      "target": "file:viewer.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "加载真实查看器以复现图库浏览路径。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery.html",
+      "target": "file:tests/demo-setup.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "夹具使用测试版 Chrome API 环境加载扩展源码。"
+    },
+    {
+      "source": "file:tests/dev-server.cjs",
+      "target": "file:tests/perf-lazy-gallery.html",
+      "type": "serves",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "本地夹具服务器提供持续懒加载性能页面。"
+    },
+    {
+      "source": "file:tests/dev-server.cjs",
+      "target": "file:tests/perf-lazy-gallery.js",
+      "type": "serves",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "本地夹具服务器提供通用图片响应及图库生成逻辑。"
+    },
+    {
+      "source": "file:tests/dev-server.cjs",
+      "target": "file:tests/perf-lazy-gallery-config.js",
+      "type": "serves",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "本地夹具服务器提供共享配置读取代码。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "file:tests/perf-lazy-gallery.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "连续追加图库用于观察嵌套滚动触发、图片发现和查看器阅览表现。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "file:tests/perf-lazy-gallery.html",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "连续追加图库用于观察通用结构下同组图片发现。"
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "file:tests/perf-lazy-gallery.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "可控批次与来源延迟用于观察动态发现时的扫描等待。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery-config.test.cjs",
+      "target": "file:tests/perf-lazy-gallery-config.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "回归检查参数缺省、显式零值、有限/连续模式和范围校验。"
+    },
+    {
+      "source": "file:tests/perf-lazy-gallery-config.test.cjs",
+      "target": "file:tests/perf-lazy-gallery-config.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "配置回归测试直接加载共享参数解析器。"
+    },
+    {
+      "source": "document:tests/QA.md",
+      "target": "file:tests/perf-lazy-gallery.html",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "验收记录描述持续追加夹具及其实测边界。"
+    },
+    {
+      "source": "document:tests/QA.md",
+      "target": "file:tests/benchmark-gallery.cjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "验收记录区分合成 Node 基准与浏览器真实性能对照。"
+    },
+    {
+      "source": "document:tests/QA.md",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "验收记录概述刷新调度和嵌套滚动回归。"
+    },
+    {
+      "source": "document:docs/STATUS.zh-CN.md",
+      "target": "document:tests/QA.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5,
+      "description": "版本简报链接当前 QA 证据与未完成事项。"
     }
   ],
   "layers": [
@@ -9433,7 +10274,13 @@
         "file:tests/quick-demo.js",
         "file:tests/b6-virtual.html",
         "file:tests/b7-rows.html",
-        "file:tests/overview-insert.html"
+        "file:tests/overview-insert.html",
+        "file:tests/scan-scheduling.cjs",
+        "file:tests/benchmark-gallery.cjs",
+        "file:tests/perf-lazy-gallery-config.js",
+        "file:tests/perf-lazy-gallery-config.test.cjs",
+        "file:tests/perf-lazy-gallery.html",
+        "file:tests/perf-lazy-gallery.js"
       ]
     },
     {

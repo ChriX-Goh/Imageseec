@@ -1,6 +1,12 @@
 # Verification record
 
-## Current source: 2.0 b14
+## Current source: 2.0 b15
+
+Gallery snapshot matching now indexes identity, aliases and stable slots and revalidates candidates in original order; deterministic differential checks exercise conflicts and replacement. Gallery refresh uses a bounded trailing debounce and coalesces scan-time mutations. Scrollport discovery tracks initially non-overflowing nested scrollers as well as existing overflowing ancestors. A generated continuous gallery fixture provides configurable lazy batches, delayed image sources, an optional nested scrollport and explicit loading/decode event counts. A separate synthetic Node benchmark compares the indexed and prior merge algorithms; its output is not a browser benchmark. Automated and browser fixture checks do not establish live-site parity. Final-source multi-site, installed-extension and controlled native-versus-extension performance acceptance remain pending. No package or store submission.
+
+After the scrollport change, an in-app browser run of the continuous nested fixture grew from 38 to 62 discovered and loaded images during the first observation; after further downward input the page reached 98 loaded images and Escape closed the viewer with its source scrollport moved toward the viewed area. During fast inputs the overview did temporarily reach the current edge. The run exercised the source fixture, not an installed-extension build; it does not show performance parity or verify every resulting source image.
+
+## Historical source: 2.0 b14
 
 The in-app browser source fixture used a nested scroller with 950 ms delayed images; overview grew from 5 to 18 images. During viewing the root and viewer both measured 1280 CSS pixels; root inline overflow and gutter styles were restored on exit. This does not establish installed extension behavior or all site/iframe scrollbar cases. Live-site performance comparison remains pending.
 

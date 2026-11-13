@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generic continuous gallery performance fixture</title>
+  <style>
+    :root { color-scheme: light; font: 15px/1.45 system-ui, sans-serif; color: #172033; background: #eef1f6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 18px; background: #fff; border-bottom: 1px solid #d5dbe5; box-shadow: 0 2px 8px #16223a12; }
+    h1 { margin: 0; font-size: 17px; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    button { border: 1px solid #aab5c7; border-radius: 7px; padding: 6px 10px; color: inherit; background: #fff; cursor: pointer; }
+    button:hover { background: #f1f5fb; }
+    button:focus-visible { outline: 2px solid #3269d5; outline-offset: 2px; }
+    #status { flex: 1 1 260px; min-width: 220px; font-variant-numeric: tabular-nums; }
+    main { max-width: 1440px; margin: 0 auto; padding: 16px; }
+    #scroll-region { min-height: 70vh; }
+    #scroll-region.nested { height: min(76vh, 780px); min-height: 360px; overflow: auto; overscroll-behavior: contain; border: 2px solid #9aa9bf; border-radius: 10px; background: #e0e6ef; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); align-items: start; gap: 12px; padding: 12px; }
+    .gallery-item { min-width: 0; overflow: hidden; border: 1px solid #c5cddb; border-radius: 8px; background: #fff; }
+    .frame { display: grid; place-items: center; min-height: 180px; aspect-ratio: 4 / 3; overflow: hidden; background: linear-gradient(135deg, #d4dce8, #c6d0df 50%, #e2e7ef); }
+    .frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .caption { padding: 5px 8px; color: #46536a; font-size: 12px; }
+    #sentinel { grid-column: 1 / -1; height: 2px; }
+    #event-log { max-height: 170px; overflow: auto; padding: 8px 12px; margin: 12px; border: 1px solid #ccd4e0; border-radius: 8px; background: #fff; font: 12px/1.5 ui-monospace, monospace; white-space: pre-wrap; }
+    @media (max-width: 580px) { main { padding: 8px; } .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 8px; } .frame { min-height: 130px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Generated gallery performance fixture</h1>
+    <div class="controls">
+      <button id="append-one" type="button">Append one batch</button>
+      <button id="start-auto" type="button">Start near-edge loading</button>
+      <button id="stop-auto" type="button">Pause loading</button>
+      <button id="open-viewer" type="button">Open gallery viewer</button>
+    </div>
+    <output id="status" aria-live="polite"></output>
+  </header>
+  <main>
+    <div id="scroll-region">
+      <section class="gallery" data-gallery aria-label="Generated image collection"></section>
+      <div id="sentinel" aria-hidden="true"></div>
+    </div>
+    <pre id="event-log" aria-label="Fixture event log"></pre>
+  </main>
+  <script src="demo-setup.js"></script>
+  <script src="../locale-catalogs.js"></script>
+  <script src="../i18n.js"></script>
+  <script src="../settings.js"></script>
+  <script src="../controls.js"></script>
+  <script src="../preferences.js"></script>
+  <script src="../gallery.js"></script>
+  <script src="../viewer.js"></script>
+  <script src="perf-lazy-gallery-config.js"></script>
+  <script src="perf-lazy-gallery.js"></script>
+</body>
+</html>

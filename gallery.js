@@ -75,7 +75,13 @@
   }
   function sources(node) {
     if (!node) return [];
-    if (node.tagName !== 'IMG') return backgroundSources(node);
+    const cached = discoveryCache?.sources.get(node);
+    if (cached) return [...cached];
+    if (node.tagName !== 'IMG') {
+      const result = backgroundSources(node);
+      discoveryCache?.sources.set(node, result);
+      return [...result];
+    }
     const current = url(node.currentSrc || node.getAttribute('src'));
     const candidates = [];
     const anchor = node.closest('a[href]');
@@ -98,8 +104,10 @@
       }
     }
     candidates.push(current, url(node.getAttribute('src')));
-    return unique(candidates).filter(value => !(/^data:image\//i.test(value) && node.complete &&
+    const result = unique(candidates).filter(value => !(/^data:image\//i.test(value) && node.complete &&
       node.naturalWidth > 0 && node.naturalWidth <= 2 && node.naturalHeight <= 2));
+    discoveryCache?.sources.set(node, result);
+    return [...result];
   }
   let discoveryCache = null;
   function images(root = document) {
@@ -378,16 +386,48 @@
     const aliases = new Set(a.aliases || a.sources?.map(key) || [a.key]);
     return (b.aliases || b.sources?.map(key) || [b.key]).some(value => aliases.has(value));
   }
+  function entryMatcher(entries) {
+    const keyIndex = new Map(), slotIndex = new Map(), aliasIndex = new Map(), positions = new Map();
+    const addTo = (map, value, entry) => {
+      let candidates = map.get(value);
+      if (!candidates) map.set(value, candidates = new Set());
+      candidates.add(entry);
+    };
+    const add = (entry, position = positions.size) => {
+      if (!positions.has(entry)) positions.set(entry, position);
+      addTo(keyIndex, entry.key, entry);
+      if (entry.slotStable) addTo(slotIndex, entry.slotKey, entry);
+      for (const value of entry.aliases || entry.sources?.map(key) || [entry.key]) addTo(aliasIndex, value, entry);
+    };
+    entries.forEach((entry, position) => add(entry, position));
+    const find = entry => {
+      const candidates = new Set();
+      const include = (map, value) => { for (const candidate of map.get(value) || []) candidates.add(candidate); };
+      include(keyIndex, entry.key);
+      if (entry.slotStable) include(slotIndex, entry.slotKey);
+      for (const value of entry.aliases || entry.sources?.map(key) || [entry.key]) include(aliasIndex, value);
+      let found = null, earliest = Infinity;
+      for (const candidate of candidates) {
+        const position = positions.get(candidate);
+        if (position >= earliest || !sameEntry(candidate, entry)) continue;
+        found = candidate; earliest = position;
+      }
+      return found;
+    };
+    return { add, find };
+  }
   function mergeEntries(existing, incoming, direction = 1) {
     const result = existing.slice(), matched = new Map();
+    const matcher = entryMatcher(result);
     for (const entry of incoming) {
-      const found = result.find(old => sameEntry(old, entry));
+      const found = matcher.find(entry);
       if (found) {
         const id = found.key;
         const aliases = unique([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(key)]);
         const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
           ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
         Object.assign(found, entry, geometry, { key: id, aliases });
+        matcher.add(found);
         matched.set(entry, found);
       }
     }
@@ -430,7 +470,7 @@
     const nestedScope = knownNestedScope || Boolean(scope && nestedGalleryRows(scope));
     const slots = slotsFor(scope, candidates.includes(selected) ? selected : candidates.find(isVisibleCandidate), nestedScope);
     const slotted = slots.length > 1 && (slots.some(slot => slot.pending) || slots.every(slot => slot.stable));
-    const entries = [];
+    const entries = [], matcher = entryMatcher(entries);
     const primaryByCard = new Map();
     for (const node of candidates) {
       const slot = slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node));
@@ -450,9 +490,9 @@
         if (primary && primary !== node) continue;
       }
       const entry = makeEntry(node);
-      if (!entry || entries.some(old => sameEntry(old, entry))) continue;
+      if (!entry || matcher.find(entry)) continue;
       if (slot) Object.assign(entry, { slotKey: slot.key, slotStable: slot.stable, slotNode: slot.node });
-      entries.push(entry);
+      entries.push(entry); matcher.add(entry, entries.length - 1);
     }
     const seedEntry = selected && makeEntry(selected);
     const sourceKey = seedEntry?.key || key(source);
@@ -469,7 +509,7 @@
   }
   function collect(source, preferred = null, scopeHint = null) {
     const previous = discoveryCache;
-    discoveryCache = { images: new WeakMap(), media: new WeakMap() };
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap() };
     try { return collectSnapshot(source, preferred, scopeHint); }
     finally { discoveryCache = previous; }
   }

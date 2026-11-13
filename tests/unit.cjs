@@ -524,6 +524,86 @@ test('gallery snapshots retain identity and order across prepend, holes, aliases
   assert.equal(merge([entry('first', { node })], [entry('unrelated', { node })]).length, 2);
   assert.deepEqual(plain(merge([entry('e'), entry('f')], [entry('a'), entry('b'), entry('c')], -1).map(e=>e.key)), ['a', 'b', 'c', 'e', 'f']);
 });
+test('indexed gallery merge matches the earliest alias candidate and rechecks changed slots', () => {
+  const { c } = context(), merge = c.ImageLens.gallery.mergeEntries;
+  const entry = (key, extra = {}) => ({ key, sources: [key], aliases: [key], ...extra });
+  const firstAlias = entry('first', { aliases: ['first', 'target'] });
+  const directKey = entry('target');
+  const result = merge([firstAlias, directKey], [entry('target')]);
+  assert.equal(result[0], firstAlias, 'the first sameEntry result wins even if a later entry has the exact key');
+  assert.equal(result[1], directKey);
+
+  const oldSlot = entry('same-key', { slotKey: 'old-slot', slotStable: true });
+  const other = entry('other-key', { slotKey: 'other-slot', slotStable: true });
+  const changed = merge([oldSlot, other], [entry('same-key', { slotKey: 'new-slot', slotStable: true })]);
+  const staleSlot = entry('new-item', { slotKey: 'old-slot', slotStable: true });
+  const afterStaleLookup = merge(changed, [staleSlot]);
+  assert.equal(afterStaleLookup.length, 3, 'stale slot postings must be rejected by sameEntry');
+  assert.equal(afterStaleLookup[2], staleSlot);
+});
+test('indexed gallery merge is equivalent to the ordered reference across randomized snapshots', () => {
+  const { c } = context(), merge = c.ImageLens.gallery.mergeEntries;
+  const referenceMerge = (existing, incoming, direction = 1) => {
+    const result = existing.slice(), matched = new Map();
+    for (const entry of incoming) {
+      const found = result.find(old => c.ImageLens.gallery.sameEntry(old, entry));
+      if (found) {
+        const id = found.key;
+        const aliases = [...new Set([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(c.ImageLens.gallery.key)].filter(Boolean))];
+        const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
+          ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
+        Object.assign(found, entry, geometry, { key: id, aliases });
+        matched.set(entry, found);
+      }
+    }
+    if (!matched.size) return direction < 0 ? [...incoming, ...result] : [...result, ...incoming];
+    for (let n = 0; n < incoming.length; n++) {
+      const entry = incoming[n];
+      if (matched.has(entry)) continue;
+      const previous = incoming.slice(0, n).reverse().map(item => matched.get(item)).find(Boolean);
+      const next = incoming.slice(n + 1).map(item => matched.get(item)).find(Boolean);
+      const at = previous ? result.indexOf(previous) + 1 : next ? result.indexOf(next) : direction < 0 ? 0 : result.length;
+      result.splice(at, 0, entry); matched.set(entry, entry);
+    }
+    return result;
+  };
+  let seed = 0x6d2b79f5;
+  const random = limit => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed % limit; };
+  const makeEntry = () => {
+    const key = `https://images.example/${random(45)}?v=${random(4)}`;
+    const entry = { key, thumb: `thumb-${random(8)}`, sources: [key] };
+    const aliasMode = random(4);
+    if (aliasMode === 1) entry.aliases = [];
+    else if (aliasMode > 1) entry.aliases = Array.from({ length: random(5) }, () => `https://images.example/${random(45)}?v=${random(4)}`);
+    if (random(4) === 0) entry.sources = Array.from({ length: random(4) }, () => `https://images.example/${random(45)}?v=${random(4)}`);
+    if (random(3) === 0) { entry.slotStable = true; entry.slotKey = `slot-${random(20)}`; }
+    if (random(7) === 0) entry.dimensions = { width: random(1000), height: random(1000) };
+    if (random(7) === 0) entry.aspectRatio = random(5);
+    return entry;
+  };
+  for (let trial = 0; trial < 1200; trial++) {
+    const existing = Array.from({ length: random(32) }, makeEntry);
+    const incoming = Array.from({ length: random(32) }, makeEntry);
+    const direction = random(2) ? 1 : -1;
+    const expected = referenceMerge(plain(existing), plain(incoming), direction);
+    const actual = merge(plain(existing), plain(incoming), direction);
+    assert.deepEqual(plain(actual), plain(expected), `seed 0x6d2b79f5, trial ${trial}`);
+  }
+});
+test('gallery source attributes are cached only for one synchronous collection', () => {
+  const { c, image } = context(), node = image('https://img.example/cached.jpg'), reads = new Map();
+  node.getAttribute = name => {
+    reads.set(name, (reads.get(name) || 0) + 1);
+    return name === 'src' ? node.src : null;
+  };
+  const g = c.ImageLens.gallery;
+  const first = g.collect(node.src, node);
+  assert.equal(first.entries.length, 1);
+  assert.equal(reads.get('data-original'), 1, 'repeated source resolution in one collect reuses the node snapshot');
+  const second = g.collect(node.src, node);
+  assert.equal(second.entries.length, 1);
+  assert.equal(reads.get('data-original'), 2, 'a later collect rereads the live node instead of reusing stale values');
+});
 test('overview projection fills a newly resolved middle slot and removes the reserved card', () => {
   const { c } = context();
   const a = projectionSlot('slot:a', { pending: false }), b = projectionSlot('slot:b'), slotC = projectionSlot('slot:c', { pending: false });

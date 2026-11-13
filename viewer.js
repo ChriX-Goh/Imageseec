@@ -267,21 +267,66 @@
     const scroll = { value: document.documentElement.style.getPropertyValue('overflow'), priority: document.documentElement.style.getPropertyPriority('overflow') };
     const scrollbarGutter = { value: document.documentElement.style.getPropertyValue('scrollbar-gutter'), priority: document.documentElement.style.getPropertyPriority('scrollbar-gutter') };
     const pagePosition = { x: window.scrollX, y: window.scrollY, elements: [] };
-    for (let node = collection.scope; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
-      const style = getComputedStyle(node);
-      if ((node.scrollHeight > node.clientHeight + 4 && /auto|scroll|overlay|hidden/.test(style.overflowY)) ||
-          (node.scrollWidth > node.clientWidth + 4 && /auto|scroll|overlay|hidden/.test(style.overflowX))) {
-        pagePosition.elements.push({ node, top: node.scrollTop, left: node.scrollLeft });
-      }
-    }
-    const scanScroller = pagePosition.elements[0]?.node || null;
-    const scanHorizontal = Boolean(scanScroller && scanScroller.scrollWidth > scanScroller.clientWidth + 4 && scanScroller.scrollHeight <= scanScroller.clientHeight + 4);
+    const scrollCandidates = [];
+    refreshScrollCandidates(collection.scope, true);
+    const initialScanTarget = scanTargetFor(scrollCandidates);
+    let scanScroller = initialScanTarget.node;
+    let scanHorizontal = initialScanTarget.horizontal;
     const sourcePosition = () => scanScroller ? scanHorizontal ? scanScroller.scrollLeft : scanScroller.scrollTop : window.scrollY;
     const scanStates = Object.fromEntries([-1, 1].map(direction => [direction, {
       cursor: sourcePosition(), phase: collection.scope ? 'idle' : 'ended',
       paused: false, ended: !collection.scope, failed: false, lastAttempt: -Infinity,
       noProgress: 0, triggerWaits: 0, resourceErrors: 0, totalAttempts: 0, sourceLoading: false, loadingNode: null, slotAttempts: new Map()
     }]));
+    function refreshScrollCandidates(scope, captureNewPosition = !scanPromise) {
+      for (let i = pagePosition.elements.length - 1; i >= 0; i--) {
+        if (!pagePosition.elements[i].node?.isConnected) pagePosition.elements.splice(i, 1);
+      }
+      scrollCandidates.length = 0;
+      for (let node = scope; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
+        const style = getComputedStyle(node);
+        const potentialX = /^(auto|scroll|overlay)$/.test(style.overflowX);
+        const potentialY = /^(auto|scroll|overlay)$/.test(style.overflowY);
+        const actualX = node.scrollWidth > node.clientWidth + 4 && (potentialX || style.overflowX === 'hidden');
+        const actualY = node.scrollHeight > node.clientHeight + 4 && (potentialY || style.overflowY === 'hidden');
+        if (!(potentialX || potentialY || actualX || actualY)) continue;
+        scrollCandidates.push(node);
+        if (!pagePosition.elements.some(item => item.node === node) && captureNewPosition) {
+          pagePosition.elements.push({ node, top: node.scrollTop, left: node.scrollLeft });
+        }
+      }
+    }
+    function scanTargetFor(candidates) {
+      const states = candidates.filter(node => node?.isConnected).map(node => {
+        const style = getComputedStyle(node);
+        const potentialX = /^(auto|scroll|overlay)$/.test(style.overflowX);
+        const potentialY = /^(auto|scroll|overlay)$/.test(style.overflowY);
+        const actualX = node.scrollWidth > node.clientWidth + 4 && (potentialX || style.overflowX === 'hidden');
+        const actualY = node.scrollHeight > node.clientHeight + 4 && (potentialY || style.overflowY === 'hidden');
+        return { node, potentialX, potentialY, actualX, actualY };
+      });
+      // Existing overflowing ancestors take priority over empty auto wrappers.
+      // If none overflow yet, retain the nearest potential scrollport so a
+      // gallery that grows after opening can trigger its own lazy loader.
+      const target = states.find(state => state.actualX || state.actualY) ||
+        states.find(state => state.potentialY || state.potentialX);
+      if (!target) return { node: null, horizontal: false };
+      return { node: target.node, horizontal: target.actualX && !target.actualY ||
+        !target.actualX && !target.actualY && !target.potentialY && target.potentialX };
+    }
+    function refreshScanScroller() {
+      // Called at the start of each scan segment, after the prior segment has
+      // restored the source page. Any newly replaced scroll ancestors can now
+      // safely capture their user-visible baseline before this segment moves.
+      refreshScrollCandidates(collection.scope, true);
+      const next = scanTargetFor(scrollCandidates);
+      if (next.node === scanScroller && next.horizontal === scanHorizontal) return false;
+      scanScroller = next.node; scanHorizontal = next.horizontal;
+      const cursor = sourcePosition();
+      for (const state of Object.values(scanStates)) state.cursor = cursor;
+      rememberSourceAnchors();
+      return true;
+    }
     const sourceAnchors = new Map();
     const restorePageCoordinates = () => {
       window.scrollTo({ left: pagePosition.x, top: pagePosition.y, behavior: 'instant' });
@@ -353,7 +398,7 @@
     const message = $('.message');
     const strip = $('.strip');
     const form = $('.settings');
-    let closed = false, serial = 0, scale = 1, panX = 0, panY = 0, width = 0, height = 0, hold = null, scanTimer = 0, wasFullscreen = false, returningToPage = false, lastWheel = 0, lastFineWheel = 0;
+    let closed = false, serial = 0, scale = 1, panX = 0, panY = 0, width = 0, height = 0, hold = null, scanTimer = 0, scanQueuedAt = 0, galleryRefreshQueued = false, wasFullscreen = false, returningToPage = false, lastWheel = 0, lastFineWheel = 0;
     let lockedScale = null;
     let preset = null, rulerMaximum = 100, sliding = false;
     let compareEnabled = settings.compareEnabled, compareLeft = index, compareRight = index + 1, activePane = 0, lockedPane = null, pairNeedsAnchor = false;
@@ -388,7 +433,8 @@
       const targetPosition = target && sourceAnchors.get(target.key);
       closed = true; overviewOpen = false; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       scanController?.abort(); scanRestore = null;
-      clearOverviewPress(); endHold(); clearTimeout(scanTimer); clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      clearOverviewPress(); endHold(); cancelGalleryRefresh();
+      clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
       cancelAnimationFrame(overviewScrollFrame);
       clearTimeout(overviewEdgeIntentState.timer);
       for (const job of overviewThumbJobs.values()) {
@@ -419,6 +465,7 @@
         if (!box.width || !box.height) continue;
         sourceAnchors.set(entry.key, {
           position: sourcePosition() + (scanHorizontal ? box.left - (container?.left || 0) + box.width / 2 : box.top - (container?.top || 0) + box.height / 2),
+          scroller: scanScroller, horizontal: scanHorizontal,
           pageX: window.scrollX, pageY: window.scrollY,
           elements: pagePosition.elements.filter(item => item.node.isConnected && item.node.contains(node)).map(item => ({ node: item.node, top: item.node.scrollTop, left: item.node.scrollLeft }))
         });
@@ -449,6 +496,9 @@
       centerSourceNode(node);
       returnFeedback(snapshot, visibleSourceBox(node), null, reducedMotion.matches);
     }
+    function sourceAnchorWindowY(position, viewportHeight) {
+      return position.scroller === null ? position.position - viewportHeight / 2 : position.pageY;
+    }
     function overviewSnapshot() {
       const card = overviewCards.get(centralOverviewItem()?.key);
       return card ? pictureSnapshot(card.querySelector('img'), overview.getBoundingClientRect()) : null;
@@ -462,14 +512,14 @@
         if (!position) return;
         window.scrollTo({ left: position.pageX, top: position.pageY, behavior: 'instant' });
         const elements = position.elements || [];
-        for (const item of [...elements].reverse()) if (item.node.isConnected && item.node !== scanScroller) {
+        for (const item of [...elements].reverse()) if (item.node.isConnected && item.node !== position.scroller) {
           item.node.scrollTo({ top: item.top, left: item.left, behavior: 'instant' });
         }
-        if (scanScroller?.isConnected && elements.some(item => item.node === scanScroller)) {
-          const axis = scanHorizontal ? 'left' : 'top';
-          scanScroller.scrollTo({ [axis]: position.position - (scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight) / 2, behavior: 'instant' });
+        if (position.scroller?.isConnected && elements.some(item => item.node === position.scroller)) {
+          const axis = position.horizontal ? 'left' : 'top';
+          position.scroller.scrollTo({ [axis]: position.position - (position.horizontal ? position.scroller.clientWidth : position.scroller.clientHeight) / 2, behavior: 'instant' });
         } else {
-          window.scrollTo({ left: position.pageX, top: position.position - innerHeight / 2, behavior: 'instant' });
+          window.scrollTo({ left: position.pageX, top: sourceAnchorWindowY(position, innerHeight), behavior: 'instant' });
         }
       }
       try {
@@ -1535,6 +1585,7 @@
     }
     async function scanSegment(signal, direction = 1) {
       if (!collection.scope?.isConnected || signal.aborted) return { edge: false };
+      refreshScanScroller();
       const state = scanStates[direction];
       const viewport = scanScroller ? scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight : innerHeight;
       const maximum = scanScroller ? scanHorizontal ? scanScroller.scrollWidth - scanScroller.clientWidth : scanScroller.scrollHeight - scanScroller.clientHeight : document.scrollingElement.scrollHeight - innerHeight;
@@ -1713,6 +1764,7 @@
       })().finally(() => {
         scanPromise = null; scanController = null;
         if (closed) return;
+        if (galleryRefreshQueued) flushGalleryRefresh({ scanCompleted: true });
         updateNavigationButtons();
         if (overviewOpen) {
           if (edgeSide === direction && !state.ended) resetOverviewEdge(true);
@@ -1943,6 +1995,7 @@
       }
       const newer = lens.gallery.collect(current.thumb, current.node, collection.scope);
       if (newer.scope) { collection.scope = newer.scope; scopeParent = newer.scope.parentElement; }
+      refreshScrollCandidates(collection.scope, !scanPromise);
       collection.slots = newer.slots || [];
       const pendingKeys = new Set(collection.slots.filter(slot => slot.pending).map(slot => slot.key));
       for (const state of Object.values(scanStates)) {
@@ -1992,17 +2045,37 @@
       if (overviewOpen) { updateRuler(); queueOverviewCommit(); }
     }
     let observedGallerySignature = scanSlotSignature();
+    function cancelGalleryRefresh() {
+      clearTimeout(scanTimer); scanTimer = 0; scanQueuedAt = 0; galleryRefreshQueued = false;
+    }
+    function flushGalleryRefresh({ scanCompleted = false } = {}) {
+      if (closed || scanPromise || !galleryRefreshQueued) return false;
+      clearTimeout(scanTimer); scanTimer = 0; scanQueuedAt = 0; galleryRefreshQueued = false;
+      const previous = scanCompleted ? scanSlotSignature() : observedGallerySignature;
+      refresh();
+      observedGallerySignature = scanSlotSignature();
+      if (previous !== observedGallerySignature) {
+        for (const state of Object.values(scanStates)) state.paused = state.ended = state.failed = false;
+      }
+      // The scanner has just settled the pending mutation batch and its caller
+      // will schedule any remaining cache work after it updates scan status.
+      if (overviewOpen && !scanCompleted) checkOverviewCache();
+      return true;
+    }
     function queueGalleryRefresh() {
-      clearTimeout(scanTimer); scanTimer = setTimeout(() => {
-        if (closed) return;
-        const previous = observedGallerySignature || scanSlotSignature();
-        refresh();
-        observedGallerySignature = scanSlotSignature();
-        if (previous !== observedGallerySignature && !scanPromise) {
-          for (const state of Object.values(scanStates)) state.paused = state.ended = state.failed = false;
-        }
-        if (overviewOpen) checkOverviewCache();
-      }, 300);
+      if (closed) return;
+      galleryRefreshQueued = true;
+      // Scans already refresh while observing their source segment. Defer the
+      // coalesced page mutation refresh until that segment restores its scroll.
+      if (scanPromise) return;
+      const now = performance.now();
+      if (!scanQueuedAt) scanQueuedAt = now;
+      const remaining = Math.max(0, 900 - (now - scanQueuedAt));
+      clearTimeout(scanTimer);
+      scanTimer = setTimeout(() => {
+        scanTimer = 0;
+        flushGalleryRefresh();
+      }, Math.min(300, remaining));
     }
     const observer = new MutationObserver(records => {
       if (records.some(record => !host.contains(record.target) && (collection.scope?.contains(record.target) || record.target === scopeParent))) queueGalleryRefresh();
