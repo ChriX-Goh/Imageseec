@@ -1,5 +1,11 @@
 # Verification record
 
+## Source candidate: 2.0 b16
+
+Gallery slot lookup preserves earliest containing-slot semantics with an ancestor index; a randomized reference comparison exercises nested and duplicate slots. Overview layout avoids repeated lane scans and quadratic emitted-band lookup. Scan-time source mutations are coalesced before full collection; message dispatch handles synchronous runtime failures as well as rejected promises. These are bounded source-level improvements, not evidence that a live fast-scroll freeze is resolved. The supplied stack lacks the original exception title. Installed-extension and real-site performance verification remain pending. No package or store submission.
+
+In the in-app browser, the generated nested continuous-gallery source fixture grew from 44 to 92 discovered images over repeated downward wheel inputs. Reverse scrolling and Escape returned to the source page; the page reported 116 loaded images at exit. This is a limited source-fixture interaction check, not an installed-extension, measured frame-rate, or live-site acceptance result.
+
 ## Current source: 2.0 b15
 
 Gallery snapshot matching now indexes identity, aliases and stable slots and revalidates candidates in original order; deterministic differential checks exercise conflicts and replacement. Gallery refresh uses a bounded trailing debounce and coalesces scan-time mutations. Scrollport discovery tracks initially non-overflowing nested scrollers as well as existing overflowing ancestors. A generated continuous gallery fixture provides configurable lazy batches, delayed image sources, an optional nested scrollport and explicit loading/decode event counts. A separate synthetic Node benchmark compares the indexed and prior merge algorithms; its output is not a browser benchmark. Automated and browser fixture checks do not establish live-site parity. Final-source multi-site, installed-extension and controlled native-versus-extension performance acceptance remain pending. No package or store submission.

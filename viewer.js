@@ -278,6 +278,12 @@
       paused: false, ended: !collection.scope, failed: false, lastAttempt: -Infinity,
       noProgress: 0, triggerWaits: 0, resourceErrors: 0, totalAttempts: 0, sourceLoading: false, loadingNode: null, slotAttempts: new Map()
     }]));
+    function scanRefreshDue(now, lastRefresh, observedChanges) {
+      // Source pages may emit hundreds of mutations while a virtualized gallery
+      // is moving. Full collection and overview reconciliation are expensive, so
+      // sample mutations at 4 Hz and retain a slower no-mutation safety refresh.
+      return now - lastRefresh >= (observedChanges > 0 ? 240 : 600);
+    }
     function refreshScrollCandidates(scope, captureNewPosition = !scanPromise) {
       for (let i = pagePosition.elements.length - 1; i >= 0; i--) {
         if (!pagePosition.elements[i].node?.isConnected) pagePosition.elements.splice(i, 1);
@@ -1660,7 +1666,7 @@
             await scanDelay(120, signal);
             if (signal.aborted || closed) break;
             const elapsed = performance.now() - started;
-            if (observedChanges > 0 || performance.now() - lastRefresh >= 600) {
+            if (scanRefreshDue(performance.now(), lastRefresh, observedChanges)) {
               refresh(direction); observedChanges = 0; lastRefresh = performance.now();
               const currentSignature = scanSlotSignature();
               currentResolved = scanResolvedSnapshot();

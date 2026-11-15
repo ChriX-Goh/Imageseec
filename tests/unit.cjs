@@ -191,6 +191,77 @@ function viewerFunction(name) {
   while (end < lines.length && !/^\s{4}function [A-Za-z_$][\w$]*\(/.test(lines[end])) end++;
   return lines.slice(start, end).join('\n');
 }
+function galleryFunction(name) {
+  const gallery = source('gallery.js');
+  const lines = gallery.split(/\r?\n/);
+  const start = lines.findIndex(line => new RegExp(`^\\s{2}function ${name}\\(`).test(line));
+  assert.notEqual(start, -1, `missing gallery function ${name}`);
+  let end = start + 1;
+  while (end < lines.length && !/^\s{2}function [A-Za-z_$][\w$]*\(/.test(lines[end])) end++;
+  return lines.slice(start, end).join('\n');
+}
+test('slot matcher preserves first containing slot while indexing ancestor lookups', () => {
+  const gallery = source('gallery.js');
+  assert.match(gallery, /const findSlot = slotMatcher\(slots\);/);
+  assert.match(gallery, /const slot = findSlot\(node\);/);
+  const c = vm.createContext({});
+  vm.runInContext(`${galleryFunction('slotMatcher')}\nglobalThis.makeMatcher = slotMatcher;`, c);
+  let seed = 0x5eed1234;
+  const random = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 0x100000000);
+  const pick = values => values[Math.floor(random() * values.length)];
+  const shuffle = values => {
+    for (let index = values.length - 1; index > 0; index--) {
+      const other = Math.floor(random() * (index + 1));
+      [values[index], values[other]] = [values[other], values[index]];
+    }
+    return values;
+  };
+  let id = 0;
+  const createNode = (parent = null, tree = 'light') => {
+    const node = { id: ++id, tree, parentElement: parent, children: [] };
+    if (parent) parent.children.push(node);
+    node.contains = other => {
+      for (let ancestor = other; ancestor; ancestor = ancestor.parentElement) if (ancestor === node) return true;
+      return false;
+    };
+    return node;
+  };
+  const oldFind = (node, slots) => slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node)) || null;
+  const identity = slot => slot?.node.id ?? null;
+  for (let round = 0; round < 2000; round++) {
+    const roots = Array.from({ length: 1 + Math.floor(random() * 4) }, (_, index) => createNode(null, `root-${index}`));
+    const nodes = roots.slice();
+    const count = 25 + Math.floor(random() * 90);
+    for (let index = roots.length; index < count; index++) {
+      const parents = nodes.filter(node => node.children.length < 9);
+      const parent = pick(parents);
+      nodes.push(createNode(parent, parent.tree));
+    }
+    const candidates = nodes.filter(node => node.parentElement && random() < 0.58);
+    const slotNodes = nodes.filter(node => node.parentElement && random() < 0.35);
+    if (slotNodes.length && random() < 0.7) {
+      const parent = pick(slotNodes).parentElement;
+      if (parent?.parentElement && random() < 0.5) slotNodes.push(parent);
+    }
+    const rawSlots = slotNodes.concat(random() < 0.2 && slotNodes.length ? [pick(slotNodes)] : []);
+    const slots = shuffle(rawSlots.map((node, index) => ({ node, order: index })));
+    const indexed = c.makeMatcher(slots);
+    for (const node of candidates) {
+      assert.equal(identity(indexed(node)), identity(oldFind(node, slots)), `round ${round}, node ${node.id}`);
+    }
+  }
+
+  const host = createNode(null, 'light');
+  const shadowRoot = { host };
+  const shadowChild = createNode(null, 'shadow');
+  host.shadowRoot = shadowRoot;
+  assert.equal(identity(c.makeMatcher([{ node: host }])(shadowChild)), identity(oldFind(shadowChild, [{ node: host }])));
+
+  const outer = createNode(), inner = createNode(outer), media = createNode(inner);
+  const nested = [{ node: outer }, { node: inner }];
+  assert.equal(identity(c.makeMatcher(nested)(media)), identity(oldFind(media, nested)));
+  assert.equal(identity(c.makeMatcher(nested.slice().reverse())(media)), identity(oldFind(media, nested.slice().reverse())));
+});
 test('visible-range cache is reused only while geometry and scroll position match', () => {
   const c = vm.createContext({});
   vm.runInContext(`

@@ -5,6 +5,12 @@
   const controller = new AbortController();
   lens.quickOpenController = controller;
   let enabled = false;
+  const sendRuntimeMessage = message => {
+    try {
+      const pending = chrome?.runtime?.sendMessage?.(message);
+      if (pending && typeof pending.catch === 'function') pending.catch(() => {});
+    } catch { /* The extension context can disappear while the page is open. */ }
+  };
   chrome.storage.local.get('settings').then(({ settings }) => { enabled = settings?.quickOpen !== false; }).catch(() => {});
   const changed = (changes, area) => { if (area === 'local' && changes.settings) enabled = changes.settings.newValue?.quickOpen !== false; };
   chrome.storage.onChanged.addListener(changed);
@@ -94,7 +100,7 @@
     const detected = Boolean(source);
     if (committed || detected !== lastHover) {
       lastHover = detected;
-      chrome.runtime.sendMessage({ type: 'lens-context-target', detected }).catch(() => {});
+      sendRuntimeMessage({ type: 'lens-context-target', detected });
     }
   };
   window.addEventListener('pointerover', event => { rememberContext(event); }, { capture: true, signal: controller.signal });
@@ -117,6 +123,6 @@
     const source = sourceFor(image);
     if (!source) return;
     event.preventDefault(); event.stopImmediatePropagation();
-    chrome.runtime.sendMessage({ type: 'lens-quick-open', source }).catch(() => {});
+    sendRuntimeMessage({ type: 'lens-quick-open', source });
   }, { capture: true, signal: controller.signal });
 })();

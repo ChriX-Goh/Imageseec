@@ -14,15 +14,15 @@
     ],
     "frameworks": [],
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-13T01:37:58.470Z",
+    "analyzedAt": "2026-11-15T12:23:51.258Z",
     "gitCommitHash": "2250a3d273dcf5d22eb497503f07a12d4e2915ad",
-    "versionName": "2.0 b15"
+    "versionName": "2.0 b16"
   },
   "sourceState": {
     "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b15",
+    "versionName": "2.0 b16",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -63,7 +63,7 @@
       "type": "file",
       "name": "unit.cjs",
       "filePath": "tests/unit.cjs",
-      "summary": "检查本地化、图库识别、动态新增和扩展入口。",
+      "summary": "检查本地化、图库发现与槽位索引差分、动态新增、布局与扩展入口。",
       "tags": [
         "test",
         "unit",
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "f5dc964033203850f360bbce0bb8b830a438b781e18abb9a4b2046d560aeed64",
+      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "a4c3ae162be3b2125ac24961252f1b04ce96c190614209716ff5bae4af97f346",
+      "sourceHash": "23556ece5f9c0acb64fc002a76e4fcaa42856ac577a928628c3b1202defa9f56",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -439,7 +439,7 @@
         "b15"
       ],
       "complexity": "simple",
-      "sourceHash": "52582d899b82186318157d66a75e02659e9331569ced1a2ae5d5f7ca50d53d7d",
+      "sourceHash": "e6a2b1e6686f5b362660de9c94b7436a39cea824d724c9e3dd8e4d7df2fdd550",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -970,16 +970,16 @@
       "type": "document",
       "name": "QA.md",
       "filePath": "tests/QA.md",
-      "summary": "记录 2.0 b15 自动化与浏览器夹具证据，并区分合成性能、实时站点和安装版验收边界。",
+      "summary": "记录 2.0 b16 的布局与槽位查找优化、消息运行时错误保护及验证边界；区分源码检查与真实站点验收。",
       "tags": [
         "documentation",
         "testing",
         "verification",
         "limits",
-        "b15"
+        "b16"
       ],
       "complexity": "moderate",
-      "sourceHash": "7c0f916c52f896a7e979fd22d57336d7b247923fa37a83ba69984d6f62282121",
+      "sourceHash": "c816a1a6cb3d4d282de7c616c119ed86a1262353a357f4d83177bbec1479d220",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1300,7 +1300,7 @@
         "overview-layout"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1315,7 +1315,7 @@
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1390,7 +1390,7 @@
         "context-menu"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1488,7 +1488,7 @@
         "utility"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1507,7 +1507,7 @@
         "mapping"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1526,7 +1526,7 @@
         "mapping"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1545,7 +1545,7 @@
         "mapping"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1564,7 +1564,7 @@
         "zoom"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1576,14 +1576,15 @@
         20,
         20
       ],
-      "summary": "依据源图库顺序、可靠比例和稳定轨道计算自适应全览位置；迟到图片尺寸不重新洗牌已分配的槽位。",
+      "summary": "按源顺序和稳定轨道一次计算自适应瀑布流坐标；以线性轨道累积和已发出 band 索引避免重复全量筛选。",
       "tags": [
         "overview",
-        "fixed-slots",
-        "stable-order"
+        "masonry",
+        "stable-order",
+        "linear-layout"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1602,7 +1603,7 @@
         "bounds"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1621,7 +1622,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1640,7 +1641,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1658,7 +1659,7 @@
         "per-collection-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1677,7 +1678,7 @@
         "scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1696,7 +1697,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1715,7 +1716,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1734,7 +1735,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1753,7 +1754,7 @@
         "identity-merge"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1772,7 +1773,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2000,7 +2001,7 @@
         "hit-testing"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2019,7 +2020,7 @@
         "link-resolution"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2038,7 +2039,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2057,7 +2058,7 @@
         "target-resolution"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2076,7 +2077,7 @@
         "frame-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "67724142e3bf62385ece0dec720a54d4d6414eef12bce72a8480799fff0f59aa",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2287,7 +2288,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2515,7 +2516,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2534,7 +2535,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2553,7 +2554,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2571,7 +2572,7 @@
         "nested-scroll"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2590,7 +2591,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2609,7 +2610,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2629,7 +2630,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2648,7 +2649,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2667,7 +2668,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2686,7 +2687,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2705,7 +2706,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2724,7 +2725,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2743,7 +2744,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2762,7 +2763,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2781,7 +2782,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2800,7 +2801,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2819,7 +2820,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2838,7 +2839,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2857,7 +2858,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2876,7 +2877,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2895,7 +2896,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2914,7 +2915,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2933,7 +2934,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2952,7 +2953,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2971,7 +2972,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2990,7 +2991,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3009,7 +3010,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3028,7 +3029,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3040,14 +3041,14 @@
         1201,
         1201
       ],
-      "summary": "复用阅览卡片并按图片比例排版，渲染前清除可见范围缓存。",
+      "summary": "复用全览卡片并按图片比例排版，更新布局、缩略图任务和缓存需求。",
       "tags": [
         "overview",
         "masonry",
         "cache-invalidation"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3066,7 +3067,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3078,14 +3079,14 @@
         1437,
         1437
       ],
-      "summary": "仅调度可见及缓存范围的缩略图，近期完成的缩略图有限保留以改善反向浏览。",
+      "summary": "仅调度可见及缓存范围缩略图，通过有界队列按可见优先级加载、解码并保留近期完成项。",
       "tags": [
         "overview",
         "thumbnail-cache",
-        "lazy-loading"
+        "bounded-queue"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3104,7 +3105,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3123,7 +3124,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3135,15 +3136,15 @@
         1536,
         1536
       ],
-      "summary": "分段触发源图库懒加载；监听图片和 DOM 更新，无变化时降低刷新频率，并恢复源滚动位置。",
+      "summary": "分段触发同组图库懒加载；观察槽位与资源变化，按有界频率刷新快照并恢复源滚动位置。",
       "tags": [
         "lazy-loading",
         "nested-scroll",
         "bounded-scan",
-        "viewer-runtime"
+        "refresh-throttle"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3163,7 +3164,7 @@
         "viewer-runtime"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3184,7 +3185,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3205,7 +3206,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3224,7 +3225,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3243,7 +3244,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3262,7 +3263,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3281,7 +3282,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3300,7 +3301,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3319,7 +3320,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3338,7 +3339,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3357,7 +3358,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3376,7 +3377,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3395,7 +3396,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3414,7 +3415,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3433,7 +3434,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3472,7 +3473,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3492,7 +3493,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3511,7 +3512,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3530,7 +3531,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3549,7 +3550,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3568,7 +3569,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3643,7 +3644,7 @@
         "page-style"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3663,7 +3664,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3682,7 +3683,7 @@
         "automatic-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3702,7 +3703,7 @@
         "lazy-scanning"
       ],
       "complexity": "simple",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3721,7 +3722,7 @@
         "bounds"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3740,7 +3741,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3759,7 +3760,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3797,7 +3798,7 @@
         "layout"
       ],
       "complexity": "simple",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3816,7 +3817,7 @@
         "cache"
       ],
       "complexity": "simple",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3891,7 +3892,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3909,7 +3910,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3927,7 +3928,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3947,7 +3948,7 @@
         "overview-interaction"
       ],
       "complexity": "complex",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3966,7 +3967,7 @@
         "geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3985,7 +3986,7 @@
         "input"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4003,7 +4004,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4021,7 +4022,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4039,7 +4040,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4057,7 +4058,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4075,7 +4076,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4096,7 +4097,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4115,7 +4116,7 @@
         "controls"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4134,7 +4135,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4187,7 +4188,7 @@
         "placeholder"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4206,7 +4207,7 @@
         "gesture"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4225,7 +4226,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4260,7 +4261,7 @@
         "source-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4279,7 +4280,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4298,7 +4299,7 @@
         "slot-attempts"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4317,7 +4318,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4336,7 +4337,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4355,7 +4356,7 @@
         "scoped-image"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4374,7 +4375,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4393,7 +4394,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4412,7 +4413,7 @@
         "aria"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4431,7 +4432,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4443,14 +4444,14 @@
         2065,
         2065
       ],
-      "summary": "以 300 毫秒尾随延迟和 900 毫秒最大等待合并 DOM 与图片事件；扫描中延后刷新至扫描结束。",
+      "summary": "以尾随延迟和最大等待合并 DOM 与图片事件；扫描期间将图库刷新延后至扫描结束。",
       "tags": [
         "gallery-refresh",
-        "bounded-debounce",
-        "lazy-loading"
+        "mutation-coalescing",
+        "scan-scheduling"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4485,7 +4486,7 @@
         "stable-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4504,7 +4505,7 @@
         "pending-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4523,7 +4524,7 @@
         "preload"
       ],
       "complexity": "simple",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4541,7 +4542,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4559,7 +4560,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4577,7 +4578,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4595,7 +4596,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4613,7 +4614,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4631,7 +4632,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4649,7 +4650,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4667,7 +4668,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4685,7 +4686,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4704,7 +4705,7 @@
         "bounded-sampling"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4723,7 +4724,7 @@
         "visibility"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4742,7 +4743,7 @@
         "visibility"
       ],
       "complexity": "moderate",
-      "sourceHash": "d09f1eb026de2aacb5fdd8eeb262d05462980e4007d51d208c7bc0ad9f707d7f",
+      "sourceHash": "e42ac3844927ddb5f3d6a8d9de6b1605cb5b90f702c9a1418e4d02a3c13f4d85",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4831,15 +4832,16 @@
       "type": "file",
       "name": "scan-scheduling.cjs",
       "filePath": "tests/scan-scheduling.cjs",
-      "summary": "用虚拟时钟检查图库刷新最大等待、扫描合并、懒加载槽位变化及动态嵌套滚动目标。",
+      "summary": "用虚拟时钟验证图库刷新频率、扫描合并、懒加载槽位变化与动态嵌套滚动目标。",
       "tags": [
         "test",
         "unit",
         "scan-scheduling",
-        "nested-scroll"
+        "nested-scroll",
+        "refresh-throttle"
       ],
       "complexity": "moderate",
-      "sourceHash": "e34887a9501caa438d7b8c3e5b7595300b6fb2e208a7a88add73e2af91419d4a",
+      "sourceHash": "c65e921df1ed039be684c87fa34bafa99fde4706ca8ecb7019a67ce6ea40bcd7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4858,7 +4860,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "87c5d60d541336cbd85e374b979b3abf1ce0c14372fad863a09692129e29cb52",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4876,7 +4878,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4894,7 +4896,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4912,7 +4914,7 @@
         "scan-state"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4930,7 +4932,7 @@
         "cleanup"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4948,7 +4950,213 @@
         "scan-resume"
       ],
       "complexity": "moderate",
-      "sourceHash": "8ad76309142e593c00fed9bd0d0e2bfca6e3e188647ccad9192997578e0b7f6c",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:collectSnapshot",
+      "type": "function",
+      "name": "collectSnapshot",
+      "filePath": "gallery.js",
+      "lineRange": [
+        474,
+        474
+      ],
+      "summary": "在有界同组范围内收集图片和槽位，将每个媒体候选关联到最早匹配的祖先槽位。",
+      "tags": [
+        "gallery-discovery",
+        "snapshot",
+        "slot-matching"
+      ],
+      "complexity": "complex",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:slotMatcher",
+      "type": "function",
+      "name": "slotMatcher",
+      "filePath": "gallery.js",
+      "lineRange": [
+        455,
+        455
+      ],
+      "summary": "按 DOM 祖先建立槽位索引，保留原槽位数组中最早匹配项，避免逐候选扫描整组槽位。",
+      "tags": [
+        "gallery-discovery",
+        "slot-index",
+        "performance"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:scanRefreshDue",
+      "type": "function",
+      "name": "scanRefreshDue",
+      "filePath": "viewer.js",
+      "lineRange": [
+        281,
+        281
+      ],
+      "summary": "限制扫描期间的全量图库刷新频率：持续结构变化时按 240ms 采样，安静时保留 600ms 兜底。",
+      "tags": [
+        "lazy-loading",
+        "refresh-throttle",
+        "performance"
+      ],
+      "complexity": "simple",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:queueOverviewThumbnail",
+      "type": "function",
+      "name": "queueOverviewThumbnail",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1459,
+        1459
+      ],
+      "summary": "为可见或缓存范围内的图库项创建、复用并排队缩略图加载任务。",
+      "tags": [
+        "overview",
+        "thumbnail-queue",
+        "lazy-loading"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:pumpOverviewThumbnails",
+      "type": "function",
+      "name": "pumpOverviewThumbnails",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1452,
+        1452
+      ],
+      "summary": "按有界并发启动仍有效的缩略图任务。",
+      "tags": [
+        "overview",
+        "thumbnail-queue",
+        "bounded-concurrency"
+      ],
+      "complexity": "simple",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:startOverviewThumbnail",
+      "type": "function",
+      "name": "startOverviewThumbnail",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1431,
+        1431
+      ],
+      "summary": "加载并解码缩略图，处理超时、失败和当前任务身份校验。",
+      "tags": [
+        "overview",
+        "thumbnail-loading",
+        "decode"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:markOverviewThumbnailReady",
+      "type": "function",
+      "name": "markOverviewThumbnailReady",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1397,
+        1397
+      ],
+      "summary": "确认当前缩略图任务已解码，更新卡片状态并安排布局和缓存复查。",
+      "tags": [
+        "overview",
+        "thumbnail-state",
+        "decode"
+      ],
+      "complexity": "simple",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:failOverviewThumbnail",
+      "type": "function",
+      "name": "failOverviewThumbnail",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1418,
+        1418
+      ],
+      "summary": "标记缩略图失败，释放并发占用并按退避计划安排重试。",
+      "tags": [
+        "overview",
+        "thumbnail-state",
+        "retry"
+      ],
+      "complexity": "simple",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:dropOverviewThumbnail",
+      "type": "function",
+      "name": "dropOverviewThumbnail",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1388,
+        1388
+      ],
+      "summary": "取消缩略图任务，释放活动槽位并按需移除图像来源。",
+      "tags": [
+        "overview",
+        "thumbnail-queue",
+        "cancellation"
+      ],
+      "complexity": "simple",
+      "sourceHash": "5e67344bcc8d95ae6f5775bd855c7871e41788ebc331524af5b1383e994ea4bf",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:quick-open.js:sendRuntimeMessage",
+      "type": "function",
+      "name": "sendRuntimeMessage",
+      "filePath": "quick-open.js",
+      "lineRange": [
+        8,
+        8
+      ],
+      "summary": "安全发送快捷打开与右键目标消息；同时吸收扩展上下文失效导致的同步异常和异步拒绝。",
+      "tags": [
+        "content-script",
+        "runtime-message",
+        "error-handling"
+      ],
+      "complexity": "simple",
+      "sourceHash": "b7fc8959986ee3a6933afd5ce0edecd5039af06240df9c3bc99536a1c3ea953e",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/quick-open-runtime.test.cjs",
+      "type": "file",
+      "name": "quick-open-runtime.test.cjs",
+      "filePath": "tests/quick-open-runtime.test.cjs",
+      "summary": "验证快捷入口在扩展上下文同步失效、消息 Promise 拒绝和正常转发时的运行时消息处理。",
+      "tags": [
+        "test",
+        "unit",
+        "quick-open",
+        "runtime-error"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4e8437f888d0899d2266aaed37d831eeb8d1768f86b7d6bf2d4fe8361a8f9ff5",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
@@ -7942,13 +8150,6 @@
       "weight": 0.8
     },
     {
-      "source": "function:viewer.js:updateOverviewThumbnails",
-      "target": "function:viewer.js:layoutOverview",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
       "source": "function:viewer.js:scanSegment",
       "target": "function:viewer.js:scanDelay",
       "type": "calls",
@@ -8567,7 +8768,7 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8,
-      "description": "布局结果决定自动模式每侧的视觉轨道缓存数。"
+      "description": "根据布局轨道数量计算自动前后缓存数。"
     },
     {
       "source": "function:viewer.js:updateOverviewThumbnails",
@@ -8575,7 +8776,7 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8,
-      "description": "按窗口加载当前缩略图。"
+      "description": "按可视范围和设置的前后缓存窗口选择任务。"
     },
     {
       "source": "function:viewer.js:checkOverviewCache",
@@ -8583,7 +8784,7 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8,
-      "description": "检查可见范围两侧的缓存缺口。"
+      "description": "计算当前可见区和缓存余量。"
     },
     {
       "source": "function:viewer.js:checkOverviewCache",
@@ -8591,7 +8792,7 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8,
-      "description": "缓存不足时沿对应方向分段扫描。"
+      "description": "图片缓冲不足时触发对应方向的图库扫描。"
     },
     {
       "source": "function:viewer.js:checkOverviewCache",
@@ -8759,7 +8960,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.7,
-      "description": "单元检查覆盖全览布局、轨道数量、缓存窗口及手势映射。"
+      "description": "回归检查线性轨道/分组布局与稳定提示下的输出语义。"
     },
     {
       "source": "file:gallery.js",
@@ -8767,7 +8968,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.7,
-      "description": "确定性和随机差分回归验证身份索引、别名冲突、稳定槽位更换及有序合并。"
+      "description": "包含图片身份合并和 DOM 槽位查找的随机差分回归。"
     },
     {
       "source": "file:i18n.js",
@@ -10015,7 +10216,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.7,
-      "description": "虚拟时钟验证图库变化刷新最大等待、扫描排队和新出现的嵌套滚动容器。"
+      "description": "验证扫描期间图库刷新受限且安静扫描能及时复查。"
     },
     {
       "source": "function:viewer.js:queueGalleryRefresh",
@@ -10208,6 +10409,286 @@
       "direction": "forward",
       "weight": 0.5,
       "description": "版本简报链接当前 QA 证据与未完成事项。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:collectSnapshot",
+      "type": "contains",
+      "description": "单次收集内部的图库快照实现。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:slotMatcher",
+      "type": "contains",
+      "description": "为媒体候选建立祖先槽位索引。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "function:gallery.js:collect",
+      "target": "function:gallery.js:collectSnapshot",
+      "type": "calls",
+      "description": "为当前图片建立一轮新的同组图库快照。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:gallery.js:collectSnapshot",
+      "target": "function:gallery.js:slotsFor",
+      "type": "calls",
+      "description": "识别重复卡片与稳定空槽。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:gallery.js:collectSnapshot",
+      "target": "function:gallery.js:slotMatcher",
+      "type": "calls",
+      "description": "将媒体候选映射到首个包含它的源图库槽位。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:gallery.js:slotMatcher",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "description": "2,000 组随机 DOM 树对照旧 slots.find，覆盖重复、嵌套、重叠顺序和 ShadowRoot 边界。",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:scanRefreshDue",
+      "type": "contains",
+      "description": "扫描轮询的图库刷新限频规则。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "function:viewer.js:scanRefreshDue",
+      "type": "calls",
+      "description": "按结构变化量决定本轮是否重新收集整个图库。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:scanRefreshDue",
+      "target": "file:tests/scan-scheduling.cjs",
+      "type": "tested_by",
+      "description": "验证持续变更按 240ms 限频、静默扫描保留 600ms 兜底。",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:queueOverviewThumbnail",
+      "type": "contains",
+      "description": "为缓存窗口中的卡片创建和排队缩略图任务。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:pumpOverviewThumbnails",
+      "type": "contains",
+      "description": "从任务队列以最多六个并发启动缩略图。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:startOverviewThumbnail",
+      "type": "contains",
+      "description": "实际加载并解码缩略图，处理加载超时和失败。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:markOverviewThumbnailReady",
+      "type": "contains",
+      "description": "解码成功后提交就绪状态、比例和缓存复查。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:failOverviewThumbnail",
+      "type": "contains",
+      "description": "失败后释放任务并设置退避重试。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:viewer.js",
+      "target": "function:viewer.js:dropOverviewThumbnail",
+      "type": "contains",
+      "description": "取消任务并清理图片来源和并发状态。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "function:viewer.js:renderOverview",
+      "target": "function:viewer.js:collectOverviewItems",
+      "type": "calls",
+      "description": "将更新的条目和预留槽投影为可复用卡片。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:renderOverview",
+      "target": "function:viewer.js:checkOverviewCache",
+      "type": "calls",
+      "description": "渲染后安排可视区及前后缓冲补充检查。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:updateOverviewThumbnails",
+      "target": "function:viewer.js:queueOverviewThumbnail",
+      "type": "calls",
+      "description": "为窗口内卡片准备任务并按可见距离排序。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:updateOverviewThumbnails",
+      "target": "function:viewer.js:pumpOverviewThumbnails",
+      "type": "calls",
+      "description": "更新队列优先级后启动有界并发任务。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:updateOverviewThumbnails",
+      "target": "function:viewer.js:dropOverviewThumbnail",
+      "type": "calls",
+      "description": "离开缓存窗口或来源变化时取消旧任务。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:pumpOverviewThumbnails",
+      "target": "function:viewer.js:startOverviewThumbnail",
+      "type": "calls",
+      "description": "启动队列中有效的缩略图任务。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:startOverviewThumbnail",
+      "target": "function:viewer.js:markOverviewThumbnailReady",
+      "type": "calls",
+      "description": "图片加载并解码后提交就绪状态。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:startOverviewThumbnail",
+      "target": "function:viewer.js:failOverviewThumbnail",
+      "type": "calls",
+      "description": "加载、解码或超时失败时进入失败状态。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:markOverviewThumbnailReady",
+      "target": "function:viewer.js:queueOverviewCommit",
+      "type": "calls",
+      "description": "仅在首次获得可靠比例时安排合并布局。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:markOverviewThumbnailReady",
+      "target": "function:viewer.js:scheduleOverviewCacheCheck",
+      "type": "calls",
+      "description": "解码后重新计算缓存需求。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:failOverviewThumbnail",
+      "target": "function:viewer.js:scheduleOverviewCacheCheck",
+      "type": "calls",
+      "description": "失败任务采用退避延迟后安排缓存复查。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:failOverviewThumbnail",
+      "target": "function:viewer.js:updateOverviewStatus",
+      "type": "calls",
+      "description": "向全览反馈当前范围的失败状态。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:dropOverviewThumbnail",
+      "target": "function:viewer.js:updateOverviewThumbnails",
+      "type": "calls",
+      "description": "释放任务状态后由当前窗口重新排队。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:checkOverviewCache",
+      "target": "function:viewer.js:updateOverviewThumbnails",
+      "type": "calls",
+      "description": "先同步可见及缓冲窗口的缩略图任务。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:viewer.js:layoutOverview",
+      "target": "function:viewer.js:overviewSpatialIndex",
+      "type": "calls",
+      "description": "按新布局建立可见范围空间索引。",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:quick-open.js",
+      "target": "function:quick-open.js:sendRuntimeMessage",
+      "type": "contains",
+      "description": "统一处理运行时消息发送中的同步异常与异步拒绝。",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "function:quick-open.js:sendRuntimeMessage",
+      "target": "file:background.js",
+      "type": "routes",
+      "description": "将快捷打开和上下文目标消息送至扩展后台。",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:quick-open.js:sendRuntimeMessage",
+      "target": "file:tests/quick-open-runtime.test.cjs",
+      "type": "tested_by",
+      "description": "覆盖扩展上下文失效、Promise 拒绝与正常消息转发。",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:quick-open.js",
+      "target": "file:tests/quick-open-runtime.test.cjs",
+      "type": "tested_by",
+      "description": "针对消息调用同步抛错和异步拒绝的运行时回归夹具。",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:tests/QA.md",
+      "target": "file:tests/quick-open-runtime.test.cjs",
+      "type": "documents",
+      "description": "运行时错误回归覆盖消息上下文失效和正常路径。",
+      "direction": "forward",
+      "weight": 0.6
     }
   ],
   "layers": [
@@ -10280,7 +10761,8 @@
         "file:tests/perf-lazy-gallery-config.js",
         "file:tests/perf-lazy-gallery-config.test.cjs",
         "file:tests/perf-lazy-gallery.html",
-        "file:tests/perf-lazy-gallery.js"
+        "file:tests/perf-lazy-gallery.js",
+        "file:tests/quick-open-runtime.test.cjs"
       ]
     },
     {

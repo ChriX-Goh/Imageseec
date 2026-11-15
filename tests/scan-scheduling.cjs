@@ -82,6 +82,18 @@ function scheduler() {
   return { context, advance, history, now: () => now };
 }
 
+test('scan refresh rate stays bounded during a sustained source mutation burst', () => {
+  const code = viewerFunction('scanRefreshDue').replace(/^\s{4}/gm, '');
+  const context = vm.createContext({});
+  vm.runInContext(`${code}\nglobalThis.refreshDue = scanRefreshDue;`, context);
+  assert.equal(context.refreshDue(120, 0, 1), false, 'one 120ms poll must not recollect the whole gallery');
+  assert.equal(context.refreshDue(240, 0, 200), true, 'mutations are sampled at most once every 240ms');
+  assert.equal(context.refreshDue(360, 240, 20), false);
+  assert.equal(context.refreshDue(480, 240, 20), true);
+  assert.equal(context.refreshDue(599, 0, 0), false, 'quiet scans retain the slower safety interval');
+  assert.equal(context.refreshDue(600, 0, 0), true);
+});
+
 test('continuous gallery mutations cannot postpone refresh beyond the 900ms max wait', () => {
   const clock = scheduler();
   for (let elapsed = 0; elapsed < 5000; elapsed += 100) {

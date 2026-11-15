@@ -42,6 +42,7 @@
       const cross = Math.max(1, scale > 1 ? Math.min(fitCross, (nominalCross - trim) * scale + trim) : fitCross);
       const inset = Math.max(0, (limit - cross * laneCount - gap * (laneCount - 1)) / 2);
       const ends = Array(laneCount).fill(0);
+      const laneFirst = Array(laneCount).fill(-1), laneLast = Array(laneCount).fill(-1), laneSizes = Array(laneCount).fill(0);
       const knownLaneAfter = Array(count).fill(false);
       let knownLane = false;
       for (let i = count - 1; i >= 0; i--) {
@@ -57,6 +58,9 @@
             ? ((ordinal % laneCount) + laneCount) % laneCount
             : ends.indexOf(Math.min(...ends));
         lanes[index] = lane;
+        if (laneFirst[lane] < 0) laneFirst[lane] = index;
+        laneLast[lane] = index;
+        laneSizes[lane]++;
         const imageWidth = horizontal ? Math.max(1, cross - padding - caption) * safe[index] : Math.max(1, cross - padding);
         const imageHeight = horizontal ? Math.max(1, cross - padding - caption) / safe[index] : Math.max(1, cross - padding) / safe[index];
         const cardWidth = horizontal ? imageWidth + padding : cross;
@@ -67,14 +71,12 @@
         bandIds[index] = `lane:${lane}`;
         ends[lane] += (horizontal ? cardWidth : cardHeight) + gap;
       }
-      const extent = Math.max(0, ...ends) - (count ? gap : 0);
+      const extent = ends.reduce((maximum, end) => Math.max(maximum, end), 0) - (count ? gap : 0);
       for (let lane = 0; lane < laneCount; lane++) {
-        const indices = boxes.filter(box => box.lane === lane).map(box => box.index);
-        if (!indices.length) continue;
-        const laneBoxes = indices.map(index => boxes[index]);
-        bands.push({ index: lane, key: `lane:${lane}`, startIndex: Math.min(...indices), endIndex: Math.max(...indices),
+        if (!laneSizes[lane]) continue;
+        bands.push({ index: lane, key: `lane:${lane}`, startIndex: laneFirst[lane], endIndex: laneLast[lane],
           x: horizontal ? 0 : inset + lane * (cross + gap), y: horizontal ? inset + lane * (cross + gap) : 0,
-          width: horizontal ? extent : cross, height: horizontal ? cross : extent, size: indices.length });
+          width: horizontal ? extent : cross, height: horizontal ? cross : extent, size: laneSizes[lane] });
       }
       return { boxes, width: horizontal ? extent : width, height: horizontal ? height : extent, bandSize: laneCount, bands, lanes, bandIds };
     }
@@ -85,9 +87,10 @@
     const limit = horizontal ? height : width;
     let offset = 0, start = 0, generated = 0;
     const usedBands = new Set(bandHints.filter(key => key !== null && key !== undefined));
+    const emittedBands = new Set();
     while (start < count) {
       let end = start + 1, key = bandHints[start];
-      if (key !== null && key !== undefined && !bands.some(band => band.key === key)) {
+      if (key !== null && key !== undefined && (key !== key || !emittedBands.has(key))) {
         while (end < count && bandHints[end] === key) end++;
       } else {
         do { key = `band:${ordinalStart + start}:${generated++}`; } while (usedBands.has(key));
@@ -123,6 +126,7 @@
       bands.push({ index: bands.length, key, startIndex: start, endIndex: end - 1,
         x: horizontal ? offset - size - padding - gap : 0, y: horizontal ? 0 : offset - size - padding - caption - gap,
         width: horizontal ? size + padding : limit, height: horizontal ? limit : size + padding + caption, size: n });
+      emittedBands.add(key);
       start = end;
     }
     const counts = bands.map(band => band.size).sort((a, b) => a - b);

@@ -452,6 +452,25 @@
     if (positions.some(n => !Number.isFinite(n) || n <= 0) || new Set(positions).size !== candidates.length) return candidates;
     return candidates.map((node, index) => ({ node, position: positions[index] })).sort((a, b) => a.position - b.position).map(item => item.node);
   }
+  function slotMatcher(slots) {
+    const firstByNode = new Map();
+    for (let index = 0; index < slots.length; index++) {
+      const node = slots[index].node;
+      if (!firstByNode.has(node)) firstByNode.set(node, index);
+    }
+    return node => {
+      let found, first = Infinity;
+      for (let ancestor = node; ancestor; ancestor = ancestor.parentElement) {
+        const index = firstByNode.get(ancestor);
+        if (index !== undefined && index < first) {
+          found = slots[index];
+          first = index;
+          if (first === 0) break;
+        }
+      }
+      return found;
+    };
+  }
   function collectSnapshot(source, preferred = null, scopeHint = null) {
     const matches = node => [node.currentSrc, node.src, ...sources(node)].some(value => value && (value === source || key(value) === key(source)));
     let allMedia;
@@ -469,11 +488,12 @@
     const candidates = ordered(scope ? mediaNodes(scope) : selected ? [selected] : []);
     const nestedScope = knownNestedScope || Boolean(scope && nestedGalleryRows(scope));
     const slots = slotsFor(scope, candidates.includes(selected) ? selected : candidates.find(isVisibleCandidate), nestedScope);
+    const findSlot = slotMatcher(slots);
     const slotted = slots.length > 1 && (slots.some(slot => slot.pending) || slots.every(slot => slot.stable));
     const entries = [], matcher = entryMatcher(entries);
     const primaryByCard = new Map();
     for (const node of candidates) {
-      const slot = slots.find(item => item.node === node || item.node === node.parentElement || item.node.contains?.(node));
+      const slot = findSlot(node);
       if (slotted && !slot) continue;
       if (!eligible(node, selected, Boolean(scope))) continue;
       if (slot) {
