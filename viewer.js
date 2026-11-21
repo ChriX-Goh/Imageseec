@@ -1990,13 +1990,13 @@
       const current = entries[compareEnabled ? activeIndex() : index];
       if (!current) return;
       if (collection.scope && !collection.scope.isConnected && scopeParent?.isConnected) {
-        const replacement = [...scopeParent.children].find(node => {
+        const candidates = [...scopeParent.children].filter(node => {
           if (node === host || node.tagName !== collection.scope.tagName) return false;
-          return [...node.querySelectorAll('img')].some(image => {
-            const aliases = lens.gallery.sources(image).map(lens.gallery.key);
-            return entries.some(entry => (entry.identityAliases || entry.aliases || []).some(alias => aliases.includes(alias)));
-          });
+          return true;
         });
+        const media = candidates.flatMap(node => [...node.querySelectorAll('img')]);
+        const matches = lens.gallery.matchingNodes(entries, media);
+        const replacement = candidates.find(node => [...node.querySelectorAll('img')].some(image => matches.has(image)));
         if (replacement) collection.scope = replacement;
       }
       const newer = lens.gallery.collect(current.thumb, current.node, collection.scope);

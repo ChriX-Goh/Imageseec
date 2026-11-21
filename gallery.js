@@ -5,6 +5,9 @@
     'data-original', 'data-original-src', 'data-full', 'data-full-src', 'data-large-file',
     'data-src', 'data-lazy-src', 'data-image', 'data-image-src', 'data-url'
   ];
+  const canonicalSourceAttributes = ['data-original', 'data-original-src', 'data-full', 'data-full-src', 'data-large-file'];
+  const canonicalSourceAttributeSet = new Set(canonicalSourceAttributes);
+  const canonicalSourcePriority = [...canonicalSourceAttributes, 'link'];
   const srcsetAttributes = ['srcset', 'data-srcset', 'data-lazy-srcset', 'data-original-srcset'];
   const backgroundAttributes = ['data-bg', 'data-background', 'data-background-image'];
   const imageUrlParameters = new Set(['mediaurl', 'imgurl', 'imageurl', 'imagesrc', 'original', 'originalurl', 'originalimage', 'originalimageurl', 'fullimage', 'fullimageurl', 'fullsrc', 'fullsizeimage', 'contenturl', 'asseturl', 'fileurl', 'downloadurl']);
@@ -39,6 +42,14 @@
       // Query parameters may identify the picture, even when named q or width.
       return new URL(unwrap(value), document.baseURI).href;
     } catch { return value; }
+  }
+  function canonicalIdentityFrom(candidates) {
+    for (const kind of canonicalSourcePriority) {
+      const values = unique(candidates.filter(candidate => candidate.kind === kind).map(candidate => key(candidate.source)));
+      if (values.length > 1) return { identity: '', ambiguous: true };
+      if (values.length === 1) return { identity: values[0], ambiguous: false };
+    }
+    return { identity: '', ambiguous: false };
   }
   function srcset(value) {
     if (!value || value.startsWith('data:')) return [];
@@ -86,6 +97,7 @@
     const current = url(node.currentSrc || node.getAttribute('src'));
     const candidates = [];
     const declaredSources = [];
+    const canonicalSources = [];
     const anchor = node.closest('a[href]');
     if (anchor) {
       const linked = url(anchor.href);
@@ -93,12 +105,14 @@
       if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) {
         candidates.push(resolved);
         declaredSources.push(resolved);
+        canonicalSources.push({ kind: 'link', source: resolved });
       }
     }
     for (const name of sourceAttributes) {
       const value = url(node.getAttribute(name));
       candidates.push(value);
       if (value) declaredSources.push(value);
+      if (value && canonicalSourceAttributeSet.has(name)) canonicalSources.push({ kind: name, source: value });
     }
     const raw = unwrap(current);
     if (raw !== current) candidates.push(raw);
@@ -120,6 +134,7 @@
             const value = url(source.getAttribute(name));
             candidates.push(value);
             if (value) declaredSources.push(value);
+            if (value && canonicalSourceAttributeSet.has(name)) canonicalSources.push({ kind: name, source: value });
           }
         }
       }
@@ -129,7 +144,27 @@
       node.naturalWidth > 0 && node.naturalWidth <= 2 && node.naturalHeight <= 2));
     discoveryCache?.sources.set(node, result);
     discoveryCache?.declaredSources.set(node, unique(declaredSources));
+    discoveryCache?.canonicalEvidence.set(node, canonicalIdentityFrom(canonicalSources));
     return [...result];
+  }
+  function canonicalEvidenceFor(node) {
+    const cached = discoveryCache?.canonicalEvidence.get(node);
+    if (cached !== undefined) return cached;
+    if (node?.tagName !== 'IMG') return { identity: '', ambiguous: false };
+    const result = [];
+    const anchor = node.closest?.('a[href]');
+    if (anchor) {
+      const linked = url(anchor.href), resolved = linked && url(unwrap(linked));
+      if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) result.push({ kind: 'link', source: resolved });
+    }
+    for (const name of canonicalSourceAttributes) result.push({ kind: name, source: url(node.getAttribute?.(name)) });
+    const picture = node.closest?.('picture');
+    if (picture) for (const source of picture.querySelectorAll('source')) {
+      if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png|svg\+xml)/.test(source.type))) {
+        for (const name of canonicalSourceAttributes) result.push({ kind: name, source: url(source.getAttribute(name)) });
+      }
+    }
+    return canonicalIdentityFrom(result);
   }
   let discoveryCache = null;
   function images(root = document) {
@@ -332,6 +367,7 @@
     const first = variants.find(value => !/^data:image\/(?:gif|svg\+xml)/i.test(value)) || variants[0];
     const primaryKey = key(first);
     const aliases = unique(variants.map(key));
+    const canonicalEvidence = canonicalEvidenceFor(node);
     const liveSvgSources = unique([url(node.currentSrc), url(node.getAttribute?.('src'))]
       .filter(value => /^data:image\/svg\+xml(?:[;,])/i.test(value || '')).map(key));
     const hasExplicitPrimary = (discoveryCache?.declaredSources.get(node) || [])
@@ -355,7 +391,8 @@
       : declared && Number(declared[1]) > 0 && Number(declared[2]) > 0 ? Number(declared[1]) / Number(declared[2])
       : rect.width > 0 && rect.height > 0 ? rect.width / rect.height : 1;
     return {
-      key: primaryKey, aliases, identityAliases, sources: variants, thumb,
+      key: primaryKey, aliases, identityAliases, canonicalIdentity: canonicalEvidence.identity,
+      canonicalAmbiguous: canonicalEvidence.ambiguous, sources: variants, thumb,
       title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio,
       aspectRatioSource: knownSize ? 'intrinsic' : width > 0 && height > 0 || declared ? 'declared'
         : rect.width > 0 && rect.height > 0 ? 'measured' : 'fallback',
@@ -426,46 +463,159 @@
   function connectedEntryNode(entry, scope) {
     if (!entry) return null;
     const node = entry.node;
-    if (node?.isConnected) {
-      const candidates = sources(node).map(key);
-      if (matchAliases(entry).some(alias => candidates.includes(alias))) return node;
-    }
+    if (matchesNode(entry, node)) return node;
     if (entry.slotStable && entry.slotNode?.isConnected) {
       const slot = slotsFor(scope, node?.isConnected ? node : entry.slotNode).find(slot => slot.node === entry.slotNode);
       if (slot?.key === entry.slotKey && slot.pending) return slot.node;
     }
     return null;
   }
+  function matchesNode(entry, node) {
+    return matchingNodes(entry ? [entry] : [], node ? [node] : []).has(node);
+  }
+  function matchingNodes(entries, nodes) {
+    const previous = discoveryCache;
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
+    try {
+      const matcher = entryMatcher(entries), matched = new Set();
+      for (const node of nodes) {
+        if (!node?.isConnected) continue;
+        const candidates = sources(node).map(key);
+        const liveKey = candidates.find(value => !/^data:image\/(?:gif|svg\+xml)/i.test(value)) || candidates[0] || '';
+        const canonicalEvidence = canonicalEvidenceFor(node);
+        const candidate = { key: liveKey, aliases: candidates, identityAliases: candidates,
+          canonicalIdentity: canonicalEvidence.identity, canonicalAmbiguous: canonicalEvidence.ambiguous };
+        if (matcher.find(candidate)) matched.add(node);
+      }
+      return matched;
+    } finally { discoveryCache = previous; }
+  }
   function matchAliases(entry) {
     if (Array.isArray(entry.identityAliases)) return entry.identityAliases;
     if (entry.aliases) return entry.aliases;
     return entry.sources?.map(key) || [entry.key].filter(Boolean);
   }
+  function entryCanonicalIdentity(entry) {
+    return typeof entry.canonicalIdentity === 'string' ? entry.canonicalIdentity : '';
+  }
+  function entryCanonicalAmbiguous(entry) { return entry.canonicalAmbiguous === true; }
+  function canonicalConflict(a, b) {
+    if (entryCanonicalAmbiguous(a) || entryCanonicalAmbiguous(b)) return true;
+    const left = entryCanonicalIdentity(a), right = entryCanonicalIdentity(b);
+    return Boolean(left && right && left !== right);
+  }
   function sameEntry(a, b) {
-    if (a.key === b.key || (a.slotStable && b.slotStable && a.slotKey === b.slotKey)) return true;
+    if (canonicalConflict(a, b)) return false;
+    const stableSlotMatch = a.slotStable && b.slotStable && a.slotKey === b.slotKey;
+    if (a.key === b.key || stableSlotMatch) return true;
+    const leftCanonical = entryCanonicalIdentity(a), rightCanonical = entryCanonicalIdentity(b);
+    if (leftCanonical && rightCanonical) return leftCanonical === rightCanonical;
     const aliases = new Set(matchAliases(a));
     return matchAliases(b).some(value => aliases.has(value));
   }
   function entryMatcher(entries) {
-    const keyIndex = new Map(), slotIndex = new Map(), aliasIndex = new Map(), positions = new Map();
+    const keyIndex = new Map(), directKeyIndex = new Map(), slotIndex = new Map(), canonicalIndex = new Map();
+    const canonicalResourceIndex = new Map(), weakAliasIndex = new Map(), positions = new Map();
+    const indexedAliases = new WeakMap(), indexedCanonicalResources = new WeakMap(), indexedKeys = new WeakMap(), indexedDirectKeys = new WeakMap();
     const addTo = (map, value, entry) => {
       let candidates = map.get(value);
       if (!candidates) map.set(value, candidates = new Set());
       candidates.add(entry);
     };
+    const removeFrom = (map, value, entry) => {
+      const candidates = map.get(value);
+      if (!candidates) return;
+      candidates.delete(entry);
+      if (!candidates.size) map.delete(value);
+    };
+    const resourceBucket = value => {
+      let bucket = canonicalResourceIndex.get(value);
+      if (!bucket) canonicalResourceIndex.set(value, bucket = new Map());
+      return bucket;
+    };
+    const removeCanonicalResource = (value, canonical, entry) => {
+      const bucket = canonicalResourceIndex.get(value), candidates = bucket?.get(canonical);
+      if (!candidates) return;
+      candidates.delete(entry);
+      if (!candidates.size) bucket.delete(canonical);
+      if (!bucket.size) canonicalResourceIndex.delete(value);
+    };
     const add = (entry, position = positions.size) => {
       if (!positions.has(entry)) positions.set(entry, position);
-      addTo(keyIndex, entry.key, entry);
+      if (entryCanonicalAmbiguous(entry)) {
+        for (const [map, value] of indexedAliases.get(entry) || []) removeFrom(map, value, entry);
+        for (const [value, identity] of indexedCanonicalResources.get(entry) || []) removeCanonicalResource(value, identity, entry);
+        const oldKey = indexedKeys.get(entry);
+        if (oldKey) removeFrom(keyIndex, oldKey, entry);
+        const oldDirectKey = indexedDirectKeys.get(entry);
+        if (oldDirectKey) removeFrom(directKeyIndex, oldDirectKey, entry);
+        indexedAliases.set(entry, []);
+        indexedKeys.set(entry, '');
+        indexedDirectKeys.set(entry, '');
+        return;
+      }
+      const canonical = entryCanonicalIdentity(entry);
+      const previousKey = indexedKeys.get(entry);
+      if (previousKey) removeFrom(keyIndex, previousKey, entry);
+      const previousDirectKey = indexedDirectKeys.get(entry);
+      if (previousDirectKey) removeFrom(directKeyIndex, previousDirectKey, entry);
+      if (entry.key) {
+        addTo(directKeyIndex, entry.key, entry);
+        indexedDirectKeys.set(entry, entry.key);
+      } else indexedDirectKeys.set(entry, '');
+      if (!canonical || canonical === entry.key) {
+        addTo(keyIndex, entry.key, entry);
+        indexedKeys.set(entry, entry.key);
+      } else indexedKeys.set(entry, '');
       if (entry.slotStable) addTo(slotIndex, entry.slotKey, entry);
-      for (const value of matchAliases(entry)) addTo(aliasIndex, value, entry);
+      for (const [map, value] of indexedAliases.get(entry) || []) removeFrom(map, value, entry);
+      for (const [value, identity] of indexedCanonicalResources.get(entry) || []) removeCanonicalResource(value, identity, entry);
+      const postings = [], aliases = matchAliases(entry);
+      const resourcePostings = [];
+      const post = (map, values) => {
+        for (const value of values) { addTo(map, value, entry); postings.push([map, value]); }
+      };
+      if (canonical) {
+        post(canonicalIndex, [canonical]);
+        for (const value of aliases) {
+          const bucket = resourceBucket(value);
+          if (!bucket.has(canonical)) bucket.set(canonical, new Set());
+          bucket.get(canonical).add(entry);
+          resourcePostings.push([value, canonical]);
+        }
+      } else post(weakAliasIndex, aliases);
+      indexedAliases.set(entry, postings);
+      indexedCanonicalResources.set(entry, resourcePostings);
     };
     entries.forEach((entry, position) => add(entry, position));
     const find = entry => {
+      if (entryCanonicalAmbiguous(entry)) return null;
       const candidates = new Set();
       const include = (map, value) => { for (const candidate of map.get(value) || []) candidates.add(candidate); };
-      include(keyIndex, entry.key);
+      const canonical = entryCanonicalIdentity(entry), aliases = matchAliases(entry);
+      if (!canonical || canonical === entry.key) include(keyIndex, entry.key);
       if (entry.slotStable) include(slotIndex, entry.slotKey);
-      for (const value of matchAliases(entry)) include(aliasIndex, value);
+      if (canonical) {
+        include(canonicalIndex, canonical);
+        for (const value of aliases) include(weakAliasIndex, value);
+      } else {
+        const canonicalHits = new Set();
+        for (const value of aliases) {
+          include(weakAliasIndex, value);
+          for (const [identity, resourceEntries] of canonicalResourceIndex.get(value) || []) {
+            canonicalHits.add(identity);
+            if (canonicalHits.size > 1) {
+              const direct = directKeyIndex.get(entry.key);
+              if (direct?.size === 1) {
+                const [exact] = direct;
+                if (sameEntry(exact, entry)) return exact;
+              }
+              return null;
+            }
+            for (const candidate of resourceEntries) candidates.add(candidate);
+          }
+        }
+      }
       let found = null, earliest = Infinity;
       for (const candidate of candidates) {
         const position = positions.get(candidate);
@@ -486,9 +636,12 @@
         const aliases = unique([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(key)]);
         const identityAliases = Array.isArray(found.identityAliases) || Array.isArray(entry.identityAliases)
           ? unique([...matchAliases(found), ...matchAliases(entry)]) : null;
+        const canonicalIdentity = entryCanonicalIdentity(found) || entryCanonicalIdentity(entry);
+        const hasCanonicalIdentity = typeof found.canonicalIdentity === 'string' || typeof entry.canonicalIdentity === 'string';
         const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
           ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
-        Object.assign(found, entry, geometry, { key: id, aliases, ...(identityAliases ? { identityAliases } : {}) });
+        Object.assign(found, entry, geometry, { key: id, aliases,
+          ...(identityAliases ? { identityAliases } : {}), ...(hasCanonicalIdentity ? { canonicalIdentity } : {}) });
         matcher.add(found);
         matched.set(entry, found);
       }
@@ -591,9 +744,9 @@
   }
   function collect(source, preferred = null, scopeHint = null) {
     const previous = discoveryCache;
-    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap() };
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
     try { return collectSnapshot(source, preferred, scopeHint); }
     finally { discoveryCache = previous; }
   }
-  lens.gallery = { url, key, sources, collect, scopeFor, slotsFor, mergeEntries, sameEntry, connectedEntryNode, observedAttributes };
+  lens.gallery = { url, key, sources, collect, scopeFor, slotsFor, mergeEntries, sameEntry, matchesNode, matchingNodes, connectedEntryNode, observedAttributes };
 })();

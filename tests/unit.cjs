@@ -113,7 +113,7 @@ test('compare and overview controls are wired to group-scoped lazy scanning', ()
   assert.doesNotMatch(viewer, /settings\.overviewBuffer/);
   assert.match(viewer, /settings\.compareStep/);
   assert.match(viewer, /settings\.dividerMin/);
-  assert.match(viewer, /entry\.identityAliases \|\| entry\.aliases/);
+  assert.match(viewer, /lens\.gallery\.matchingNodes\(entries, media\)/);
   assert.doesNotMatch(viewer, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)/i);
 });
 test('overview scanner bounds placeholder waits and assigns visible holes to the active scroll direction', () => {
@@ -580,6 +580,171 @@ test('image identity preserves query identifiers, dimensions and signatures', ()
   }
 });
 
+test('different explicit originals veto a shared weak thumbnail alias across collection and rebind paths', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const shared = 'https://media.example.test/preview/shared-320.jpg?width=320';
+  const fullA = 'https://media.example.test/full-a.jpg?asset=a';
+  const fullB = 'https://media.example.test/full-b.jpg?asset=b';
+  const attributesA = { 'data-full': fullA,
+    srcset: `${shared} 320w, https://media.example.test/a-large.jpg 1600w` };
+  const attributesB = { 'data-full': fullB,
+    srcset: `${shared} 320w, https://media.example.test/b-large.jpg 1600w` };
+  const a = image('https://media.example.test/current-a.jpg', attributesA);
+  const b = image('https://media.example.test/current-b.jpg', attributesB);
+  const scopeA = albumFixture(c, [a]);
+  const scopeB = albumFixture(c, [b]);
+  const entryA = g.collect(fullA, a).entries[0];
+  const entryB = g.collect(fullB, b).entries[0];
+
+  assert.equal(entryA.canonicalIdentity, fullA);
+  assert.equal(entryB.canonicalIdentity, fullB);
+  assert.ok(entryA.identityAliases.includes(shared));
+  assert.ok(entryB.identityAliases.includes(shared));
+  assert.equal(g.sameEntry(entryA, entryB), false);
+  assert.equal(g.mergeEntries([entryA], [entryB]).length, 2);
+  assert.equal(g.connectedEntryNode(entryA, scopeA), a);
+  assert.equal(g.matchesNode(entryA, b), false);
+
+  attributesA['data-full'] = fullB;
+  assert.equal(g.connectedEntryNode(entryA, scopeA), null, 'a recycled node with a conflicting full identity cannot rebound through the shared thumbnail');
+  assert.equal(g.matchesNode(entryA, b), false);
+});
+
+test('different canonical originals cannot merge through a reused stable slot or bridge a later identity', () => {
+  const { c } = context(), g = c.ImageLens.gallery;
+  const sharedThumb = 'https://media.example.test/repeated/shared-320.jpg';
+  const entry = (key, canonicalIdentity, slotKey) => ({ key, canonicalIdentity, slotStable: true, slotKey,
+    aliases: [key, sharedThumb], identityAliases: [key, sharedThumb], sources: [key, sharedThumb] });
+  const a = entry('https://media.example.test/full-a.jpg', 'https://media.example.test/original-a.jpg', 'aria-posinset:4');
+  const b = entry('https://media.example.test/full-b.jpg', 'https://media.example.test/original-b.jpg', 'aria-posinset:4');
+  const cEntry = entry('https://media.example.test/full-c.jpg', 'https://media.example.test/original-a.jpg', 'aria-posinset:5');
+  assert.equal(g.sameEntry(a, b), false, 'reused stable positions cannot override different explicit identities');
+  assert.equal(g.mergeEntries([a], [b]).length, 2);
+  const firstMerge = g.mergeEntries([a], [cEntry]);
+  assert.equal(firstMerge.length, 1, 'the same canonical image may merge across a shared resource variant');
+  assert.equal(firstMerge[0].canonicalIdentity, a.canonicalIdentity, 'merge preserves one canonical identity rather than unioning a bridge set');
+  assert.equal(g.sameEntry(firstMerge[0], b), false, 'the merged entry cannot bridge to a different canonical image');
+  assert.equal(g.mergeEntries(firstMerge, [b]).length, 2);
+});
+
+test('scope matching reads each candidate source once regardless of gallery entry count', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const entries = Array.from({ length: 500 }, (_, index) => {
+    const canonical = `https://media.example.test/original-${index}.jpg`;
+    return { key: canonical, canonicalIdentity: canonical, aliases: [canonical, 'https://media.example.test/shared-thumb.jpg'],
+      identityAliases: [canonical, 'https://media.example.test/shared-thumb.jpg'], sources: [canonical] };
+  });
+  const node = image('https://media.example.test/current.jpg', {});
+  let reads = 0;
+  const getAttribute = node.getAttribute;
+  node.getAttribute = name => { reads++; return getAttribute(name); };
+  const before = reads;
+  g.matchingNodes(entries, [node]);
+  const singleCandidateReads = reads - before;
+  const additional = Array.from({ length: 500 }, (_, index) => {
+    const canonical = `https://media.example.test/extra-${index}.jpg`;
+    return { key: canonical, canonicalIdentity: canonical, aliases: [canonical, 'https://media.example.test/shared-thumb.jpg'],
+      identityAliases: [canonical, 'https://media.example.test/shared-thumb.jpg'], sources: [canonical] };
+  });
+  const beforeMore = reads;
+  g.matchingNodes([...entries, ...additional], [node]);
+  assert.equal(reads - beforeMore, singleCandidateReads, 'source parsing does not repeat for every entry in the matcher');
+  assert.ok(singleCandidateReads <= 20, `one candidate should require bounded source reads, got ${singleCandidateReads}`);
+});
+
+test('different direct image links are canonical and a shared srcset preview cannot join them', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const shared = 'https://media.example.test/preview/linked-shared-320.jpg';
+  const linkA = 'https://media.example.test/linked-a.jpg?asset=a';
+  const linkB = 'https://media.example.test/linked-b.jpg?asset=b';
+  const a = image('https://media.example.test/current-linked-a.jpg', { srcset: `${shared} 320w, https://media.example.test/linked-a-large.jpg 1600w` });
+  const b = image('https://media.example.test/current-linked-b.jpg', { srcset: `${shared} 320w, https://media.example.test/linked-b-large.jpg 1600w` });
+  const scopeA = albumFixture(c, [a]), scopeB = albumFixture(c, [b]);
+  a.closest = selector => selector === 'a[href]' ? { href: linkA } : selector.includes('[data-gallery]') ? scopeA : null;
+  b.closest = selector => selector === 'a[href]' ? { href: linkB } : selector.includes('[data-gallery]') ? scopeB : null;
+  const entryA = g.collect(linkA, a).entries[0], entryB = g.collect(linkB, b).entries[0];
+  assert.equal(entryA.canonicalIdentity, linkA);
+  assert.equal(entryB.canonicalIdentity, linkB);
+  assert.equal(g.sameEntry(entryA, entryB), false);
+  assert.equal(g.mergeEntries([entryA], [entryB]).length, 2);
+
+  const sameLinkNode = image('https://media.example.test/current-linked-same.jpg', {
+    srcset: 'https://media.example.test/same-link-small.jpg 320w, https://media.example.test/same-link-large.jpg 1600w'
+  });
+  const sameScope = albumFixture(c, [sameLinkNode]);
+  sameLinkNode.closest = selector => selector === 'a[href]' ? { href: linkA } : selector.includes('[data-gallery]') ? sameScope : null;
+  const sameLinkEntry = g.collect(linkA, sameLinkNode).entries[0];
+  assert.equal(g.sameEntry(entryA, sameLinkEntry), true, 'the same explicit link remains a stable logical identity across responsive variants');
+});
+
+test('same canonical original merges signed responsive resources while query conflicts stay distinct', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const canonical = 'https://media.example.test/original.jpg?asset=42';
+  const aAttrs = { 'data-original': canonical, 'data-full': 'https://cdn.example.test/image.jpg?token=left',
+    srcset: 'https://cdn.example.test/image.jpg?token=left 1x' };
+  const bAttrs = { 'data-original': canonical, 'data-full': 'https://cdn.example.test/image.jpg?token=right',
+    'data-srcset': 'https://cdn.example.test/image.jpg?token=right 1x' };
+  const a = image('https://media.example.test/current-a.jpg', aAttrs);
+  const b = image('https://media.example.test/current-b.jpg', bAttrs);
+  albumFixture(c, [a]); albumFixture(c, [b]);
+  const aEntry = g.collect(canonical, a).entries[0];
+  const bEntry = g.collect(canonical, b).entries[0];
+  assert.equal(aEntry.canonicalIdentity, canonical);
+  assert.equal(bEntry.canonicalIdentity, canonical);
+  assert.equal(g.sameEntry(aEntry, bEntry), true);
+  assert.equal(g.mergeEntries([aEntry], [bEntry]).length, 1);
+
+  const differentA = image('https://media.example.test/current-signed-a.jpg', {
+    'data-full': 'https://cdn.example.test/signed.jpg?token=alpha', srcset: 'https://media.example.test/preview/same.jpg 1x'
+  });
+  const differentB = image('https://media.example.test/current-signed-b.jpg', {
+    'data-full': 'https://cdn.example.test/signed.jpg?token=beta', srcset: 'https://media.example.test/preview/same.jpg 1x'
+  });
+  albumFixture(c, [differentA]); albumFixture(c, [differentB]);
+  const signedA = g.collect('https://cdn.example.test/signed.jpg?token=alpha', differentA).entries[0];
+  const signedB = g.collect('https://cdn.example.test/signed.jpg?token=beta', differentB).entries[0];
+  assert.notEqual(signedA.canonicalIdentity, signedB.canonicalIdentity);
+  assert.equal(g.sameEntry(signedA, signedB), false, 'query signatures remain part of explicit identity');
+});
+
+test('conflicting same-priority canonical evidence is marked ambiguous and cannot match by key, alias, or slot', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const node = image('https://media.example.test/current.jpg');
+  const conflictingSources = ['source-original-a.jpg', 'source-original-b.jpg'].map(name => ({ media: '', type: 'image/jpeg', getAttribute(attribute) {
+    if (attribute === 'data-original') return `https://media.example.test/${name}`;
+    if (attribute === 'srcset') return 'https://media.example.test/shared-thumb.jpg 1x';
+    return null;
+  } }));
+  const picture = { querySelectorAll: selector => selector === 'source' ? conflictingSources : [] };
+  const originalClosest = node.closest;
+  const peer = image('https://media.example.test/shared-thumb.jpg');
+  albumFixture(c, [node, peer]);
+  node.closest = selector => selector === 'picture' ? picture : originalClosest(selector);
+  const selected = g.collect(node.src, node).entries[0];
+  assert.equal(selected.canonicalIdentity, '');
+  assert.equal(selected.canonicalAmbiguous, true);
+
+  const other = { ...selected, canonicalAmbiguous: false, canonicalIdentity: 'https://media.example.test/other-original.jpg',
+    key: selected.key, slotStable: true, slotKey: 'aria-posinset:1' };
+  const ambiguousWithSlot = { ...selected, slotStable: true, slotKey: other.slotKey };
+  assert.equal(g.sameEntry(ambiguousWithSlot, other), false, 'ambiguous provenance cannot be overridden by an exact key or recycled stable slot');
+  assert.equal(g.mergeEntries([ambiguousWithSlot], [other]).length, 2);
+});
+
+test('a single explicit original keeps the existing alias fallback against an unclassified candidate', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const shared = 'https://media.example.test/preview/shared-320.jpg';
+  const full = 'https://media.example.test/full.jpg?id=42';
+  const explicit = image('https://media.example.test/current-explicit.jpg', { 'data-full': full, srcset: `${shared} 1x` });
+  const unclassified = image('https://media.example.test/current-unclassified.jpg', { srcset: `${shared} 1x` });
+  albumFixture(c, [explicit]); albumFixture(c, [unclassified]);
+  const explicitEntry = g.collect(full, explicit).entries[0];
+  const unclassifiedEntry = g.collect(shared, unclassified).entries[0];
+  assert.ok(explicitEntry.canonicalIdentity);
+  assert.equal(unclassifiedEntry.canonicalIdentity, '');
+  assert.equal(g.sameEntry(explicitEntry, unclassifiedEntry), true, 'the restricted conflict veto applies only when both entries have explicit identities');
+});
+
 test('shared inline SVG loading placeholder does not merge distinct explicit image identities', () => {
   const { c, image } = context(), g = c.ImageLens.gallery;
   const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="90"%3E%3Crect width="120" height="90" fill="%23394b62"/%3E%3C/svg%3E';
@@ -651,6 +816,8 @@ test('shared placeholder sources do not make entry matcher scan every prior card
   const c = vm.createContext({});
   vm.runInContext(`
     ${galleryFunction('matchAliases')}
+    ${galleryFunction('entryCanonicalIdentity')}
+    ${galleryFunction('entryCanonicalAmbiguous')}
     let identityComparisons = 0;
     function sameEntry(a, b) {
       identityComparisons++;
@@ -674,6 +841,106 @@ test('shared placeholder sources do not make entry matcher scan every prior card
   const result = plain(c.measure(2000));
   assert.equal(result.count, 2000);
   assert.ok(result.comparisons <= 2000, `expected indexed identity checks to remain linear, observed ${result.comparisons}`);
+});
+
+test('distinct canonical identities sharing one weak primary or thumbnail remain linearly indexed', () => {
+  const sameEntrySource = galleryFunction('sameEntry').replace('function sameEntry(', 'function sameEntryImpl(');
+  const c = vm.createContext({});
+  vm.runInContext(`
+    ${galleryFunction('matchAliases')}
+    ${galleryFunction('entryCanonicalIdentity')}
+    ${galleryFunction('entryCanonicalAmbiguous')}
+    ${galleryFunction('canonicalConflict')}
+    let comparisons = 0;
+    function sameEntry(a, b) { comparisons++; return sameEntryImpl(a, b); }
+    ${sameEntrySource}
+    ${galleryFunction('entryMatcher')}
+    globalThis.measure = count => {
+      const entries = [], matcher = entryMatcher(entries), shared = 'https://media.example.test/shared-thumb.jpg';
+      for (let i = 0; i < count; i++) {
+        const canonical = 'https://media.example.test/original-' + i + '.jpg';
+        // Models a picture source whose earlier srcset candidate is the entry key.
+        const entry = { key: shared, canonicalIdentity: canonical, aliases: [shared, canonical],
+          identityAliases: [shared, canonical], sources: [shared, canonical] };
+        const found = matcher.find(entry);
+        if (!found) { entries.push(entry); matcher.add(entry, entries.length - 1); }
+      }
+      return { count: entries.length, comparisons };
+    };
+  `, c);
+  const result = plain(c.measure(2000));
+  assert.equal(result.count, 2000);
+  assert.ok(result.comparisons <= 2000, `canonical conflicts should be filtered by indexes, not pairwise alias checks (observed ${result.comparisons})`);
+});
+
+test('weak candidate with multiple canonical preview hits is rejected unless one direct key is unique', () => {
+  const { c } = context(), merge = c.ImageLens.gallery.mergeEntries;
+  const preview = 'https://media.example.test/preview/shared.jpg?width=320';
+  const entry = (key, canonicalIdentity) => ({ key, canonicalIdentity, aliases: [key, preview],
+    identityAliases: [key, preview], sources: [key, preview] });
+  const originalA = 'https://media.example.test/original-a.jpg';
+  const originalB = 'https://media.example.test/original-b.jpg';
+  const a = entry(originalA, originalA), b = entry(originalB, originalB);
+  const weak = entry('https://media.example.test/current-unclassified.jpg', '');
+  weak.aliases.push(preview); weak.identityAliases.push(preview); weak.sources.push(preview);
+  const indexed = [a, b];
+  assert.equal(merge(indexed, [weak]).length, 3, 'multiple canonical resource identities make the weak candidate ambiguous');
+
+  const direct = entry(originalA, '');
+  direct.aliases.push(preview); direct.identityAliases.push(preview); direct.sources.push(preview);
+  const uniqueDirect = c.ImageLens.gallery.mergeEntries([a, b], [direct]);
+  assert.equal(uniqueDirect.length, 2, 'a unique direct key hit still reconnects its exact canonical record');
+  assert.equal(uniqueDirect[0], a);
+});
+
+test('unique preview key still wins when it is not the canonical identity key', () => {
+  const g = context().c.ImageLens.gallery;
+  const sharedPreview = 'https://media.example.test/preview/shared.jpg?width=320';
+  const previewA = 'https://media.example.test/preview/a.jpg?width=320';
+  const previewB = 'https://media.example.test/preview/b.jpg?width=320';
+  const originalA = 'https://media.example.test/original-a.jpg?id=a';
+  const originalB = 'https://media.example.test/original-b.jpg?id=b';
+  const record = (key, canonicalIdentity, aliases) => ({ key, canonicalIdentity, aliases,
+    identityAliases: aliases, sources: aliases });
+  const a = record(previewA, originalA, [previewA, sharedPreview]);
+  const b = record(previewB, originalB, [previewB, sharedPreview]);
+  const weak = record(previewA, '', [previewA, sharedPreview]);
+
+  const result = g.mergeEntries([a, b], [weak]);
+  assert.equal(result.length, 2, 'the unique exact resource key must resolve before weak aliases become ambiguous');
+  assert.equal(result[0], a);
+  assert.equal(result[0].canonicalIdentity, originalA);
+  assert.equal(result[1], b);
+});
+
+test('large shared preview fanout stops after detecting distinct canonical candidates', () => {
+  const c = vm.createContext({});
+  const sameEntrySource = galleryFunction('sameEntry').replace('function sameEntry(', 'function sameEntryImpl(');
+  vm.runInContext(`
+    ${galleryFunction('matchAliases')}
+    ${galleryFunction('entryCanonicalIdentity')}
+    ${galleryFunction('entryCanonicalAmbiguous')}
+    ${galleryFunction('canonicalConflict')}
+    let comparisons = 0;
+    function sameEntry(a, b) { comparisons++; return sameEntryImpl(a, b); }
+    ${sameEntrySource}
+    ${galleryFunction('entryMatcher')}
+    globalThis.measure = count => {
+      const entries = [], matcher = entryMatcher(entries), shared = 'https://media.example.test/shared-preview.jpg';
+      for (let i = 0; i < count; i++) {
+        const canonical = 'https://media.example.test/original-' + i + '.jpg';
+        const item = { key: canonical, canonicalIdentity: canonical, aliases: [canonical, shared], identityAliases: [canonical, shared] };
+        entries.push(item); matcher.add(item, i);
+      }
+      const ambiguous = { key: 'https://media.example.test/unclassified.jpg', canonicalIdentity: '',
+        aliases: [shared], identityAliases: [shared] };
+      return { entries: entries.length, match: matcher.find(ambiguous), comparisons };
+    };
+  `, c);
+  const result = c.measure(5000);
+  assert.equal(result.entries, 5000);
+  assert.equal(result.match, null);
+  assert.equal(result.comparisons, 0, 'no sameEntry scans should run once two different canonical identities are found');
 });
 
 test('external and standalone inline SVG images retain their real identity aliases', () => {

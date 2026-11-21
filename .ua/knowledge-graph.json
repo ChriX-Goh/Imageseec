@@ -16,13 +16,13 @@
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
     "analyzedAt": "2026-11-21 11:58:44",
     "gitCommitHash": "bb64c490ba35b19fe510c0e28935043bbdbd748b",
-    "versionName": "2.0 b19"
+    "versionName": "2.0 b20"
   },
   "sourceState": {
     "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b19",
+    "versionName": "2.0 b20",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
+      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
+      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -156,8 +156,8 @@
       "name": "albumFixture",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1139,
-        1139
+        1406,
+        1406
       ],
       "summary": "构造带语义容器、重复卡片和图片节点的图库夹具，用于测试分组、顺序与边界条件。",
       "tags": [
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
+      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -175,8 +175,8 @@
       "name": "background",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1607,
-        1607
+        1874,
+        1874
       ],
       "summary": "模拟 Chrome storage、runtime、contextMenus、scripting 和 tabs API，以验证后台消息路由。",
       "tags": [
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
+      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "a68db559bc3c686d940d2b8cf7d9d3287b23ac7ec06a6d3b8d28498e6b3ab071",
+      "sourceHash": "8bb13b287ed222c4c8a186487b0cca4e80006f32c372e8a63d00657e012ad913",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1315,7 +1315,7 @@
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1612,8 +1612,8 @@
       "name": "url",
       "filePath": "gallery.js",
       "lineRange": [
-        14,
-        14
+        17,
+        17
       ],
       "summary": "规范安全的图片地址，并保留页面提供的查询参数。",
       "tags": [
@@ -1622,7 +1622,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1631,8 +1631,8 @@
       "name": "key",
       "filePath": "gallery.js",
       "lineRange": [
-        36,
-        36
+        39,
+        39
       ],
       "summary": "为图片来源生成保留查询标识的稳定身份键。",
       "tags": [
@@ -1641,7 +1641,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1650,8 +1650,8 @@
       "name": "sources",
       "filePath": "gallery.js",
       "lineRange": [
-        77,
-        77
+        88,
+        88
       ],
       "summary": "收集并缓存显式来源，包含 srcset、picture 响应式候选、可加载原图、缩略图及数据 URI。",
       "tags": [
@@ -1659,7 +1659,7 @@
         "per-collection-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1668,8 +1668,8 @@
       "name": "scopeFor",
       "filePath": "gallery.js",
       "lineRange": [
-        273,
-        273
+        308,
+        308
       ],
       "summary": "从语义结构和重复卡片中选择范围受限的同组图库。",
       "tags": [
@@ -1678,7 +1678,7 @@
         "scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1687,8 +1687,8 @@
       "name": "slotsFor",
       "filePath": "gallery.js",
       "lineRange": [
-        367,
-        367
+        404,
+        404
       ],
       "summary": "从重复卡片和行结构发现同组槽位；图片候选与空槽共用唯一 ARIA 顺序。",
       "tags": [
@@ -1697,7 +1697,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1706,8 +1706,8 @@
       "name": "connectedEntryNode",
       "filePath": "gallery.js",
       "lineRange": [
-        426,
-        426
+        463,
+        463
       ],
       "summary": "依据身份别名和稳定槽位验证虚拟列表连接节点，避免共享占位图导致错误回连。",
       "tags": [
@@ -1716,7 +1716,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1725,17 +1725,17 @@
       "name": "sameEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        444,
-        444
+        507,
+        507
       ],
-      "summary": "依据身份键、稳定槽位或身份别名判断两条目是否相同，保留真实 SVG。",
+      "summary": "优先检查明确原图身份冲突，再依据身份键、稳定槽位或身份别名匹配，保留真实 SVG。",
       "tags": [
         "gallery-discovery",
         "image-identity",
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1744,8 +1744,8 @@
       "name": "mergeEntries",
       "filePath": "gallery.js",
       "lineRange": [
-        479,
-        479
+        629,
+        629
       ],
       "summary": "按身份别名及槽位合并图片，保留资源别名、排列顺序和原有几何。",
       "tags": [
@@ -1754,7 +1754,7 @@
         "identity-merge"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1763,8 +1763,8 @@
       "name": "collect",
       "filePath": "gallery.js",
       "lineRange": [
-        592,
-        592
+        745,
+        745
       ],
       "summary": "在当前图片可用时局部发现并复用单次调用内的媒体节点结果；每次重新建立快照。",
       "tags": [
@@ -1773,7 +1773,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2288,7 +2288,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2516,7 +2516,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2535,7 +2535,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2554,7 +2554,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2572,7 +2572,7 @@
         "nested-scroll"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2591,7 +2591,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2610,7 +2610,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2630,7 +2630,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2649,7 +2649,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2668,7 +2668,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2687,7 +2687,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2706,7 +2706,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2725,7 +2725,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2744,7 +2744,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2763,7 +2763,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2782,7 +2782,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2801,7 +2801,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2820,7 +2820,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2839,7 +2839,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2858,7 +2858,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2877,7 +2877,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2896,7 +2896,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2915,7 +2915,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2934,7 +2934,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2953,7 +2953,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2972,7 +2972,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2991,7 +2991,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3010,7 +3010,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3029,7 +3029,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3048,7 +3048,7 @@
         "cache-invalidation"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3067,7 +3067,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3086,7 +3086,7 @@
         "bounded-queue"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3105,7 +3105,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3124,7 +3124,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3144,7 +3144,7 @@
         "refresh-throttle"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3164,7 +3164,7 @@
         "viewer-runtime"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3185,7 +3185,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3206,7 +3206,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3225,7 +3225,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3244,7 +3244,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3263,7 +3263,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3282,7 +3282,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3301,7 +3301,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3320,7 +3320,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3339,7 +3339,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3358,7 +3358,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3377,7 +3377,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3396,7 +3396,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3415,7 +3415,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3434,7 +3434,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3473,7 +3473,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3493,7 +3493,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3512,7 +3512,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3531,7 +3531,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3550,7 +3550,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3569,7 +3569,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3644,7 +3644,7 @@
         "page-style"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3664,7 +3664,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3683,7 +3683,7 @@
         "automatic-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3703,7 +3703,7 @@
         "lazy-scanning"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3722,7 +3722,7 @@
         "bounds"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3741,7 +3741,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3760,7 +3760,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3798,7 +3798,7 @@
         "layout"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3817,7 +3817,7 @@
         "cache"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3892,7 +3892,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3910,7 +3910,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3928,7 +3928,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3948,7 +3948,7 @@
         "overview-interaction"
       ],
       "complexity": "complex",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3967,7 +3967,7 @@
         "geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3986,7 +3986,7 @@
         "input"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4004,7 +4004,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4022,7 +4022,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4040,7 +4040,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4058,7 +4058,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4076,7 +4076,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4097,7 +4097,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4116,7 +4116,7 @@
         "controls"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4125,17 +4125,17 @@
       "name": "makeEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        329,
-        329
+        364,
+        364
       ],
-      "summary": "创建图片条目，分离资源别名和身份别名，避免显式原图与共享 SVG 占位图误合并。",
+      "summary": "创建图片条目，分离明确原图身份、资源别名与身份别名，避免共享缩略图及 SVG 占位图误合并。",
       "tags": [
         "gallery-discovery",
         "identity",
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4188,7 +4188,7 @@
         "placeholder"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4226,7 +4226,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4261,7 +4261,7 @@
         "source-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4280,7 +4280,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4299,7 +4299,7 @@
         "slot-attempts"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4318,7 +4318,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4337,7 +4337,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4356,7 +4356,7 @@
         "scoped-image"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4375,7 +4375,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4394,7 +4394,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4413,7 +4413,7 @@
         "aria"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4432,7 +4432,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4451,7 +4451,7 @@
         "scan-scheduling"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4476,8 +4476,8 @@
       "name": "ordered",
       "filePath": "gallery.js",
       "lineRange": [
-        509,
-        509
+        662,
+        662
       ],
       "summary": "当所有候选均有唯一有效 ARIA 序号时，按该序号排列图片节点和图库槽位。",
       "tags": [
@@ -4486,7 +4486,7 @@
         "stable-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4505,7 +4505,7 @@
         "pending-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4524,7 +4524,7 @@
         "preload"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4542,7 +4542,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4560,7 +4560,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4578,7 +4578,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4596,7 +4596,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4614,7 +4614,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4632,7 +4632,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4650,7 +4650,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4668,7 +4668,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4686,7 +4686,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4695,8 +4695,8 @@
       "name": "nestedGalleryRows",
       "filePath": "gallery.js",
       "lineRange": [
-        235,
-        235
+        270,
+        270
       ],
       "summary": "使用最多 24 行、每行最多 10 张图的样本判断重复行，图库总图数不作为拒绝条件。",
       "tags": [
@@ -4705,7 +4705,7 @@
         "bounded-sampling"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4850,8 +4850,8 @@
       "name": "entryMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        449,
-        449
+        516,
+        516
       ],
       "summary": "以身份键、槽位与身份别名建立索引，避免共享占位符引起误匹配。",
       "tags": [
@@ -4860,7 +4860,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4878,7 +4878,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4896,7 +4896,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4914,7 +4914,7 @@
         "scan-state"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4932,7 +4932,7 @@
         "cleanup"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4950,7 +4950,7 @@
         "scan-resume"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4959,8 +4959,8 @@
       "name": "collectSnapshot",
       "filePath": "gallery.js",
       "lineRange": [
-        536,
-        536
+        689,
+        689
       ],
       "summary": "在有界同组范围内收集图片和槽位，将每个媒体候选关联到最早匹配的祖先槽位。",
       "tags": [
@@ -4969,7 +4969,7 @@
         "slot-matching"
       ],
       "complexity": "complex",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4978,8 +4978,8 @@
       "name": "slotMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        517,
-        517
+        670,
+        670
       ],
       "summary": "按 DOM 祖先建立槽位索引，保留原槽位数组中最早匹配项，避免逐候选扫描整组槽位。",
       "tags": [
@@ -4988,7 +4988,7 @@
         "performance"
       ],
       "complexity": "moderate",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5007,7 +5007,7 @@
         "performance"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5026,7 +5026,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5045,7 +5045,7 @@
         "bounded-concurrency"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5064,7 +5064,7 @@
         "decode"
       ],
       "complexity": "moderate",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5083,7 +5083,7 @@
         "decode"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5102,7 +5102,7 @@
         "retry"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5121,7 +5121,7 @@
         "cancellation"
       ],
       "complexity": "simple",
-      "sourceHash": "7367dd684c909d580c5a11e6121a4e9aa146f44ed88859fcd068e0bc7b59d5ef",
+      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5169,11 +5169,11 @@
         "image-identity",
         "proxy-source"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        21,
-        21
+        24,
+        24
       ]
     },
     {
@@ -5187,11 +5187,11 @@
         "dom-order",
         "shadow-dom"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        135,
-        135
+        170,
+        170
       ]
     },
     {
@@ -5205,11 +5205,11 @@
         "mixed-media",
         "dom-order"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        143,
-        143
+        178,
+        178
       ]
     },
     {
@@ -5222,11 +5222,11 @@
         "image-source",
         "css-background"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        66,
-        66
+        77,
+        77
       ]
     },
     {
@@ -5239,11 +5239,11 @@
         "gallery-structure",
         "media"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        189,
-        189
+        224,
+        224
       ]
     },
     {
@@ -5256,11 +5256,11 @@
         "gallery-structure",
         "repeated-cards"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        196,
-        196
+        231,
+        231
       ]
     },
     {
@@ -5274,11 +5274,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        209,
-        209
+        244,
+        244
       ]
     },
     {
@@ -5291,11 +5291,11 @@
         "image-source",
         "detail-link"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        262,
-        262
+        297,
+        297
       ]
     },
     {
@@ -5309,11 +5309,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        220,
-        220
+        255,
+        255
       ]
     },
     {
@@ -5326,11 +5326,11 @@
         "visibility",
         "gallery-discovery"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        184,
-        184
+        219,
+        219
       ]
     },
     {
@@ -5344,11 +5344,11 @@
         "eligibility",
         "placeholders"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        302,
-        302
+        337,
+        337
       ]
     },
     {
@@ -5362,11 +5362,11 @@
         "thumbnail",
         "lazy-loading"
       ],
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        312,
-        312
+        347,
+        347
       ]
     },
     {
@@ -5375,8 +5375,8 @@
       "name": "matchAliases",
       "filePath": "gallery.js",
       "lineRange": [
-        439,
-        439
+        493,
+        493
       ],
       "summary": "优先返回图片身份别名，并为未带新字段的已有条目保留兼容回退。",
       "tags": [
@@ -5385,7 +5385,7 @@
         "deduplication"
       ],
       "complexity": "simple",
-      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
