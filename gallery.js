@@ -713,15 +713,97 @@
     // A recycled virtual window may have no overlap with the previous window.
     // Prepend its whole ordered block, rather than reversing it one insert at a time.
     if (!matched.size) return direction < 0 ? [...incoming, ...result] : [...result, ...incoming];
+    // Normal unchanged or source-updated scans usually match every incoming
+    // image. Their merge effects are already applied above, so skip rebuilding
+    // a linked list when there are no new positions to insert.
+    if (incoming.every(entry => matched.has(entry))) return result;
+
+    // Keep the legacy insertion semantics for repeated object references. In
+    // that uncommon case Map and Array#indexOf intentionally resolve the same
+    // object identity, which can represent multiple positions in the arrays.
+    const references = new Set();
+    let repeatedReference = false;
+    for (const entry of existing) {
+      if (references.has(entry)) { repeatedReference = true; break; }
+      references.add(entry);
+    }
+    if (!repeatedReference) for (const entry of incoming) {
+      if (references.has(entry)) { repeatedReference = true; break; }
+      references.add(entry);
+    }
+    if (repeatedReference) {
+      for (let n = 0; n < incoming.length; n++) {
+        const entry = incoming[n];
+        if (matched.has(entry)) continue;
+        const previous = incoming.slice(0, n).reverse().map(item => matched.get(item)).find(Boolean);
+        const next = incoming.slice(n + 1).map(item => matched.get(item)).find(Boolean);
+        const at = previous ? result.indexOf(previous) + 1 : next ? result.indexOf(next) : direction < 0 ? 0 : result.length;
+        result.splice(at, 0, entry); matched.set(entry, entry);
+      }
+      return result;
+    }
+
+    // Use stable linked nodes so each ordered insertion is O(1), then flatten
+    // once. The old implementation copied and searched incoming prefixes and
+    // suffixes for every miss, making a mixed refresh quadratic.
+    const head = { entry: null, previous: null, next: null };
+    head.previous = head.next = head;
+    const firstNodeForEntry = new Map();
+    for (const entry of result) {
+      const node = { entry, previous: head.previous, next: head };
+      head.previous.next = node; head.previous = node;
+      if (!firstNodeForEntry.has(entry)) firstNodeForEntry.set(entry, node);
+    }
+    const insertBefore = (target, node) => {
+      node.previous = target.previous; node.next = target;
+      target.previous.next = node; target.previous = node;
+    };
+    const nextAnchor = new Array(incoming.length);
+    let next = null;
+    for (let n = incoming.length - 1; n >= 0; n--) {
+      nextAnchor[n] = next;
+      if (matched.has(incoming[n])) next = firstNodeForEntry.get(matched.get(incoming[n])) || next;
+    }
+    let previous = null;
     for (let n = 0; n < incoming.length; n++) {
       const entry = incoming[n];
-      if (matched.has(entry)) continue;
-      const previous = incoming.slice(0, n).reverse().map(e => matched.get(e)).find(Boolean);
-      const next = incoming.slice(n + 1).map(e => matched.get(e)).find(Boolean);
-      const at = previous ? result.indexOf(previous) + 1 : next ? result.indexOf(next) : direction < 0 ? 0 : result.length;
-      result.splice(at, 0, entry); matched.set(entry, entry);
+      if (matched.has(entry)) {
+        previous = firstNodeForEntry.get(matched.get(entry)) || previous;
+        continue;
+      }
+      const node = { entry, previous: null, next: null };
+      if (previous) insertBefore(previous.next, node);
+      else if (nextAnchor[n]) insertBefore(nextAnchor[n], node);
+      else if (direction < 0) insertBefore(head.next, node);
+      else insertBefore(head, node);
+      matched.set(entry, entry);
+      if (!firstNodeForEntry.has(entry)) firstNodeForEntry.set(entry, node);
+      previous = firstNodeForEntry.get(entry) || node;
     }
+    result.length = 0;
+    for (let node = head.next; node !== head; node = node.next) result.push(node.entry);
     return result;
+  }
+  function preferredRefreshMatches(node, previousEntry, previousSource) {
+    if (!node?.isConnected || !previousEntry || previousEntry.canonicalAmbiguous) return false;
+    const previousCanonical = entryCanonicalIdentity(previousEntry);
+    if (!previousCanonical) {
+      const live = url(node.currentSrc || node.getAttribute?.('src'));
+      if (!live || /^data:image\/(?:gif|svg\+xml)/i.test(live)) return false;
+      const evidence = canonicalEvidenceFor(node);
+      // Without a canonical identity, keep the old node only when its currently
+      // selected resource is still exactly the prior thumbnail. Declared
+      // aliases such as a shared preview URL do not prove node identity.
+      return Boolean(previousSource) && key(live) === key(previousSource) && !evidence.ambiguous && !evidence.identity;
+    }
+    const next = canonicalEvidenceFor(node);
+    return !next.ambiguous && Boolean(next.identity) && next.identity === previousCanonical;
+  }
+  function refreshFallbackMedia(previousEntry, scopeHint, preferred) {
+    const slot = previousEntry?.slotNode;
+    if (!scopeHint?.isConnected || !slot?.isConnected || !scopeHint.contains?.(slot)) return [];
+    const candidates = slot.tagName === 'IMG' ? [slot] : mediaNodes(slot);
+    return candidates.filter(node => node !== preferred);
   }
   function ordered(candidates) {
     const positions = candidates.map(node => {
@@ -750,19 +832,31 @@
       return found;
     };
   }
-  function collectSnapshot(source, preferred = null, scopeHint = null) {
+  function collectSnapshot(source, preferred = null, scopeHint = null, previousEntry = null) {
     const matches = node => [node.currentSrc, ...identitySourcesFor(node)].some(value => value && (value === source || key(value) === key(source)));
     let allMedia;
     const pageMedia = () => allMedia ||= [...images(), ...mediaNodes(document, true, true)];
-    const seed = preferred?.isConnected && matches(preferred) ? preferred : pageMedia().find(matches);
+    let seed = null;
+    if (previousEntry) {
+      const inHint = node => !scopeHint?.isConnected || Boolean(scopeHint.contains?.(node));
+      if (preferred?.isConnected && inHint(preferred) && preferredRefreshMatches(preferred, previousEntry, source)) seed = preferred;
+      if (!seed && scopeHint?.isConnected) {
+        seed = refreshFallbackMedia(previousEntry, scopeHint, preferred)
+          .find(node => preferredRefreshMatches(node, previousEntry, source)) || null;
+      }
+    } else seed = preferred?.isConnected && matches(preferred) ? preferred : pageMedia().find(matches);
     const modal = seed?.closest('[role="dialog"], dialog, [aria-modal="true"]');
-    const albumSeed = modal && pageMedia().find(node => !node.closest('[role="dialog"], dialog, [aria-modal="true"]') && matches(node) && scopeFor(node));
+    const albumSeed = modal && pageMedia().find(node => !node.closest('[role="dialog"], dialog, [aria-modal="true"]') &&
+      (previousEntry ? preferredRefreshMatches(node, previousEntry, source) : matches(node)) && scopeFor(node));
     const selected = albumSeed || seed;
     const knownNestedScope = scopeHint?.isConnected && nestedGalleryRows(scopeHint);
     const discovered = knownNestedScope ? scopeHint : scopeFor(selected);
     const scope = scopeHint?.isConnected
       ? discovered && discovered !== scopeHint && discovered.contains?.(scopeHint) ? discovered : scopeHint
       : discovered;
+    if (previousEntry && !selected && !scope) {
+      return { entries: [], index: -1, seed: null, scope: null, slots: [], confidence: 'none', adapter: lens.i18n.text('galleryGeneric') };
+    }
     // Never widen an uncertain result to the whole page; the structural passes above must find a group.
     const candidates = ordered(scope ? mediaNodes(scope) : selected ? [selected] : []);
     const nestedScope = knownNestedScope || Boolean(scope && nestedGalleryRows(scope));
@@ -806,10 +900,10 @@
     }
     return { entries, index, seed: selected, scope, slots, confidence: scope ? 'group' : 'seed', adapter: lens.i18n.text('galleryGeneric') };
   }
-  function collect(source, preferred = null, scopeHint = null) {
+  function collect(source, preferred = null, scopeHint = null, previousEntry = null) {
     const previous = discoveryCache;
     discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), identitySources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
-    try { return collectSnapshot(source, preferred, scopeHint); }
+    try { return collectSnapshot(source, preferred, scopeHint, previousEntry); }
     finally { discoveryCache = previous; }
   }
   lens.gallery = { url, key, sources, collect, scopeFor, slotsFor, mergeEntries, sameEntry, matchesNode, matchingNodes, connectedEntryNode, observedAttributes };

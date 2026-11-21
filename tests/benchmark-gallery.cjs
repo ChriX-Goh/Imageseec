@@ -78,6 +78,48 @@ function runTimed(merge, existing, incoming, expectedKeys) {
   return elapsed;
 }
 
+function makeMixedGallery(count, mode) {
+  const existing = Array.from({ length: count }, (_, index) => {
+    const key = `https://benchmark.example/${mode}/existing-${index}.jpg`;
+    return { key, aliases: [key], sources: [key], thumb: key, title: `Existing ${index}`, aspectRatio: 4 / 3 };
+  });
+  const matched = index => ({ ...existing[index], aliases: [...existing[index].aliases], sources: [...existing[index].sources], title: `Updated ${index}` });
+  const added = index => {
+    const key = `https://benchmark.example/${mode}/new-${index}.jpg`;
+    return { key, aliases: [key], sources: [key], thumb: key, title: `New ${index}`, aspectRatio: 3 / 2 };
+  };
+  const incoming = [];
+  if (mode === 'prefix-new') {
+    const boundary = Math.floor(count / 2);
+    for (let index = 0; index < boundary; index++) incoming.push(added(index));
+    for (let index = boundary; index < count; index++) incoming.push(matched(index));
+  } else if (mode === 'tail-new') {
+    const boundary = Math.floor(count / 2);
+    for (let index = 0; index < boundary; index++) incoming.push(matched(index));
+    for (let index = 0; index < count - boundary; index++) incoming.push(added(index));
+  } else if (mode === 'alternating') {
+    for (let index = 0; index < count; index++) {
+      if (index % 2 === 0) incoming.push(matched(Math.floor(index / 2)));
+      else incoming.push(added(Math.floor(index / 2)));
+    }
+  } else throw new Error(`Unknown mixed gallery mode: ${mode}`);
+
+  // The old ordered algorithm provides the expected order once per case; the
+  // timed loops below independently run it for the comparison column.
+  const expectedKeys = referenceMerge(structuredClone(existing), structuredClone(incoming))
+    .map(entry => entry.key);
+  return { existing, incoming, expectedKeys };
+}
+
+function runMixedTimed(merge, existing, incoming, expectedKeys) {
+  const resultExisting = structuredClone(existing), resultIncoming = structuredClone(incoming);
+  const started = performance.now();
+  const result = merge(resultExisting, resultIncoming);
+  const elapsed = performance.now() - started;
+  assert.deepEqual(result.map(entry => entry.key), expectedKeys);
+  return elapsed;
+}
+
 const repetitions = 21;
 const rows = [];
 for (const count of [250, 500, 1000, 2000]) {
@@ -108,3 +150,28 @@ for (const count of [250, 500, 1000, 2000]) {
 
 console.log('Synthetic Node benchmark only; not a browser, network, decode, scroll, or live-site performance result.');
 console.table(rows);
+
+const mixedRows = [];
+for (const count of [250, 500, 1000, 2000]) {
+  for (const mode of ['prefix-new', 'tail-new', 'alternating']) {
+    const { existing, incoming, expectedKeys } = makeMixedGallery(count, mode);
+    const oldSamples = [], indexedSamples = [];
+    for (let repeat = 0; repeat < 3; repeat++) {
+      if (repeat % 2 === 0) {
+        oldSamples.push(runMixedTimed(referenceMerge, existing, incoming, expectedKeys));
+        indexedSamples.push(runMixedTimed(gallery.mergeEntries, existing, incoming, expectedKeys));
+      } else {
+        indexedSamples.push(runMixedTimed(gallery.mergeEntries, existing, incoming, expectedKeys));
+        oldSamples.push(runMixedTimed(referenceMerge, existing, incoming, expectedKeys));
+      }
+    }
+    mixedRows.push({
+      images: count, mode, repetitions: 3,
+      orderedReferenceMedianMs: +median(oldSamples).toFixed(2),
+      indexedMedianMs: +median(indexedSamples).toFixed(2),
+      speedup: +(median(oldSamples) / median(indexedSamples)).toFixed(1)
+    });
+  }
+}
+console.log('Mixed-hit/miss insertion benchmark; prefix, tail, and alternating anchors use the legacy ordered merge for expected order.');
+console.table(mixedRows);

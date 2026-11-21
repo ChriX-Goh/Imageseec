@@ -2135,7 +2135,7 @@
         const replacement = candidates.find(node => [...node.querySelectorAll('img')].some(image => matches.has(image)));
         if (replacement) collection.scope = replacement;
       }
-      const newer = lens.gallery.collect(current.thumb, current.node, collection.scope);
+      const newer = lens.gallery.collect(current.thumb, current.node, collection.scope, current);
       if (newer.scope) { collection.scope = newer.scope; scopeParent = newer.scope.parentElement; }
       refreshScrollCandidates(collection.scope, !scanPromise);
       collection.slots = newer.slots || [];

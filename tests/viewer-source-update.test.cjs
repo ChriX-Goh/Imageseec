@@ -6,6 +6,7 @@ const {readFileSync}=require('node:fs');
 const {join}=require('node:path');
 const root=join(__dirname,'..');
 const viewer=readFileSync(join(root,'viewer.js'),'utf8');
+const gallerySource=readFileSync(join(root,'gallery.js'),'utf8');
 function block(start,end){const a=viewer.indexOf(start);assert.notEqual(a,-1,`source start ${start}`);const b=viewer.indexOf(end,a+start.length);assert.notEqual(b,-1,`source end ${end}`);return viewer.slice(a,b).trim();}
 const poolBlock=block('  class ImagePool {','\n\n  lens.open');
 const singleBlock=block('    async function showSingle(nextIndex) {','\n    function entryIdentity');
@@ -46,8 +47,9 @@ test('image cache revisions update only the changed slot and keep thumb-only reu
   assert.equal(TestImage.instances[2].src,'https://media.test/a-original-v2.jpg','revised target loads from new source');
 });
 
-function refreshHarness({initial,newer,compareEnabled=true}){
-  const calls={single:[],pair:[],cache:0,counters:[]},scope={isConnected:true,parentElement:null};
+function refreshHarness({initial,newer,compareEnabled=true,galleryApi=null,scopeOverride}={}){
+  const calls={single:[],pair:[],cache:0,counters:[],collectArgs:null};
+  const scope=scopeOverride===undefined?{isConnected:true,parentElement:null}:scopeOverride;
   const labels=new Map();const $=selector=>{if(!labels.has(selector))labels.set(selector,{textContent:'',classList:{contains:()=>false}});return labels.get(selector);};
   const prelude=`
     let closed=false,standalone=false,scanningDirection=1,compareEnabled=${compareEnabled},compareLeft=0,compareRight=${compareEnabled?1:-1},index=0,activePane=0,lockedPane=null;
@@ -68,24 +70,84 @@ function refreshHarness({initial,newer,compareEnabled=true}){
     globalThis.runRefresh=refresh;
     globalThis.state=()=>({entries,compareLeft,compareRight,index});
   `;
-  const c=vm.createContext({URL,Image:TestImage,setTimeout,clearTimeout,calls,$,scope,initialEntries:initial,
-    lens:{gallery:{collect:()=>({scope,slots:[],entries:newer}),mergeEntries(existing,incoming){
+  const activeGallery=galleryApi?{
+    collect:(...args)=>{calls.collectArgs=args;return galleryApi.collect(...args);},
+    mergeEntries:(existing,incoming,direction)=>galleryApi.mergeEntries(existing,incoming,direction)
+  }:{collect:(...args)=>{calls.collectArgs=args;return {scope,slots:[],entries:newer};},mergeEntries(existing,incoming){
       const output=existing.slice();
       for(const incomingEntry of incoming){const prior=output.find(item=>item.slotKey===incomingEntry.slotKey);
         if(prior)Object.assign(prior,incomingEntry);else output.push(incomingEntry);}
       return output;
-    }}}});
+    }};
+  const c=vm.createContext({URL,Image:TestImage,setTimeout,clearTimeout,calls,$,scope,initialEntries:initial,
+    lens:{gallery:activeGallery}});
   vm.runInContext(`${identityHelpersBlock}\n${refreshBlock}\n${prelude}`,c);
   return {c,calls};
 }
 
+function liveGallery({source,canonical='',sharedPreview=''}){
+  const attrs=new Map([['src',source]]);
+  if(canonical)attrs.set('data-full',canonical);
+  if(sharedPreview)attrs.set('data-srcset',`${sharedPreview} 640w`);
+  const image={tagName:'IMG',isConnected:true,alt:'',title:'',className:'',currentSrc:source,complete:false,naturalWidth:0,naturalHeight:0,style:{},
+    get src(){return attrs.get('src')||'';},set src(value){attrs.set('src',String(value));},
+    getAttribute(name){return attrs.get(name)||null;},hasAttribute(name){return attrs.has(name);},closest(){return null;},
+    getBoundingClientRect(){return {left:0,top:0,right:240,bottom:160,width:240,height:160};},querySelectorAll(){return [];}};
+  const document={baseURI:'https://media.example.test/page',querySelectorAll(selector){return selector==='img'?[image]:[];}};
+  const c=vm.createContext({URL,document,ImageLens:{i18n:{text:()=>''}},getComputedStyle:()=>({display:'block',visibility:'visible',backgroundImage:'none',aspectRatio:''})});
+  vm.runInContext(gallerySource,c);
+  return {gallery:c.ImageLens.gallery,image,attrs,initial:c.ImageLens.gallery.collect(source,image)};
+}
+
+test('real refresh preserves unchanged unscoped nodes, blocks shared-preview reuse, and keeps canonical source refresh',()=>{
+  const unchanged=liveGallery({source:'https://media.example.test/unchanged.jpg'});
+  assert.equal(unchanged.initial.scope,null);
+  const unchangedEntry=unchanged.initial.entries[0],unchangedSources=[...unchangedEntry.sources];
+  const unchangedRefresh=refreshHarness({initial:unchanged.initial.entries,galleryApi:unchanged.gallery,scopeOverride:null,compareEnabled:false});
+  unchangedRefresh.c.runRefresh();
+  assert.equal(unchangedRefresh.c.state().entries[0].node,unchanged.image,'no-change refresh keeps the original source node');
+  assert.deepEqual(Array.from(unchangedRefresh.c.state().entries[0].sources),unchangedSources);
+  assert.equal(unchangedRefresh.calls.single.length,0,'no-change refresh does not request a replacement image');
+  assert.equal(unchangedRefresh.calls.cache,0,'no-change refresh does not rebuild the neighbor cache');
+
+  const shared='https://media.example.test/shared-preview.jpg';
+  const recycled=liveGallery({source:shared,sharedPreview:shared});
+  const recycledEntry=recycled.initial.entries[0];
+  recycled.image.src='https://media.example.test/new-item.jpg';
+  recycled.image.currentSrc='https://media.example.test/new-item.jpg';
+  const reused=refreshHarness({initial:recycled.initial.entries,galleryApi:recycled.gallery,scopeOverride:null,compareEnabled:false});
+  reused.c.runRefresh();
+  assert.equal(reused.c.state().entries.length,1);
+  assert.equal(reused.c.state().entries[0].node,recycled.image,'the last known source node remains anchored');
+  assert.deepEqual(Array.from(reused.c.state().entries[0].sources),Array.from(recycledEntry.sources),'a shared preview alias cannot replace the old snapshot');
+  assert.equal(reused.calls.single.length,0,'recycled shared preview does not trigger a stale or unrelated reload');
+  assert.equal(reused.calls.cache,0);
+
+  const original='https://origin.example.test/photo.jpg';
+  const revised=liveGallery({source:'https://media.example.test/photo-v1.jpg',canonical:original});
+  const revisedEntry=revised.initial.entries[0];
+  revised.image.src='https://media.example.test/photo-v2.jpg';
+  revised.image.currentSrc='https://media.example.test/photo-v2.jpg';
+  const canonicalRefresh=refreshHarness({initial:revised.initial.entries,galleryApi:revised.gallery,scopeOverride:null,compareEnabled:false});
+  canonicalRefresh.c.runRefresh();
+  assert.equal(canonicalRefresh.c.state().entries[0].canonicalIdentity,original);
+  assert.ok(canonicalRefresh.c.state().entries[0].sources.includes(revised.image.currentSrc));
+  assert.equal(canonicalRefresh.calls.single.length,1,'the same stable canonical identity still refreshes changed bytes');
+  assert.equal(canonicalRefresh.calls.single[0].id,`canonical:${original}`);
+  assert.equal(revisedEntry.node,revised.image);
+});
+
 test('same-count refresh reloads the visible source and preserves stable-slot indices on count growth',()=>{
   const oldA=entry('slot:A','old-key-A','https://img.test/a-v1.jpg');
   const oldB=entry('slot:B','key-B','https://img.test/b.jpg');
+  const oldAThumb=oldA.thumb,oldANode=oldA.node;
   const newA=entry('slot:A','new-key-A','https://img.test/a-v2.jpg');
   const sameCount=refreshHarness({initial:[oldA,oldB],newer:[newA,{...oldB,sources:[...oldB.sources]}]});
   sameCount.c.runRefresh();
   const state=sameCount.c.state();
+  assert.equal(sameCount.calls.collectArgs[0],oldAThumb,'refresh keeps the original seed URL for the snapshot request');
+  assert.equal(sameCount.calls.collectArgs[1],oldANode,'refresh passes the original connected DOM node as a candidate');
+  assert.equal(sameCount.calls.collectArgs[3],oldA,'gallery can revalidate the node against its previous logical entry');
   assert.equal(state.entries.length,2);
   assert.equal(state.compareLeft,0);assert.equal(state.compareRight,1);
   assert.equal(sameCount.calls.cache,1);

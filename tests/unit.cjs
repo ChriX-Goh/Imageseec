@@ -1069,6 +1069,87 @@ test('indexed gallery merge is equivalent to the ordered reference across random
     assert.deepEqual(plain(actual), plain(expected), `seed 0x6d2b79f5, trial ${trial}`);
   }
 });
+test('mixed gallery insertion preserves reference order across prefix, suffix, interleaved and randomized updates', () => {
+  const { c } = context(), gallery = c.ImageLens.gallery;
+  const record = (id, extra = {}) => {
+    const key = `https://merge-order.example/${id}.jpg`;
+    return { key, aliases: [key], sources: [key], thumb: key, title: `item-${id}`, ...extra };
+  };
+  const referenceMerge = (existing, incoming, direction = 1) => {
+    const result = existing.slice(), matched = new Map();
+    for (const entry of incoming) {
+      const found = result.find(old => gallery.sameEntry(old, entry));
+      if (!found) continue;
+      const id = found.key;
+      const aliases = [...new Set([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(gallery.key)].filter(Boolean))];
+      const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
+        ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
+      Object.assign(found, entry, geometry, { key: id, aliases });
+      matched.set(entry, found);
+    }
+    if (!matched.size) return direction < 0 ? [...incoming, ...result] : [...result, ...incoming];
+    for (let n = 0; n < incoming.length; n++) {
+      const entry = incoming[n];
+      if (matched.has(entry)) continue;
+      const previous = incoming.slice(0, n).reverse().map(item => matched.get(item)).find(Boolean);
+      const next = incoming.slice(n + 1).map(item => matched.get(item)).find(Boolean);
+      const at = previous ? result.indexOf(previous) + 1 : next ? result.indexOf(next) : direction < 0 ? 0 : result.length;
+      result.splice(at, 0, entry); matched.set(entry, entry);
+    }
+    return result;
+  };
+  const assertEquivalent = (existing, incoming, direction, label) => {
+    const actual = gallery.mergeEntries(plain(existing), plain(incoming), direction);
+    const expected = referenceMerge(plain(existing), plain(incoming), direction);
+    assert.deepEqual(plain(actual), plain(expected), label);
+  };
+
+  const a = record('anchor-a'), b = record('anchor-b'), c1 = record('anchor-c');
+  assertEquivalent([a, b, c1], [record('prefix-0'), record('prefix-1'), record('anchor-b'), record('anchor-c')], 1, 'multiple new entries before first matched anchor retain input order');
+  assertEquivalent([a, b], [record('anchor-a'), record('tail-0'), record('tail-1')], 1, 'new entries after a matched anchor append in input order');
+  assertEquivalent([a, b, c1], [record('anchor-a'), record('between-0'), record('anchor-b'), record('between-1'), record('anchor-c')], 1, 'interleaved misses stay between the nearest matched anchors');
+  assertEquivalent([a, b], [record('head-0'), record('head-1'), record('anchor-a'), record('tail-0')], -1, 'backward mixed refresh preserves prefix and tail order');
+
+  let seed = 0x2a91b21;
+  const random = limit => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed % limit; };
+  for (let trial = 0; trial < 2000; trial++) {
+    const oldCount = random(24), existing = Array.from({ length: oldCount }, (_, index) => record(`old-${trial}-${index}`));
+    const incomingCount = random(40), incoming = [];
+    let newId = 0;
+    for (let index = 0; index < incomingCount; index++) {
+      if (existing.length && random(3) === 0) {
+        const matched = existing[random(existing.length)];
+        incoming.push({ ...matched, aliases: [...matched.aliases], sources: [...matched.sources], title: `updated-${trial}-${index}` });
+      } else incoming.push(record(`new-${trial}-${newId++}`));
+    }
+    assertEquivalent(existing, incoming, random(2) ? 1 : -1, `seed 0x2a91b21, trial ${trial}`);
+  }
+});
+test('all-hit gallery merge updates aliases and metadata before skipping insertion structures', () => {
+  const { c } = context(), gallery = c.ImageLens.gallery;
+  const previous = { key: 'https://merge-all-hit.example/thumb.jpg?width=320',
+    thumb: 'https://merge-all-hit.example/thumb.jpg?width=320',
+    sources: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/full-v1.jpg'],
+    aliases: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/old-alias.jpg'],
+    identityAliases: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/old-alias.jpg'],
+    title: 'Before refresh', dimensions: [1200, 800], aspectRatio: 1.5, aspectRatioSource: 'intrinsic' };
+  const next = { key: previous.key, thumb: previous.thumb,
+    sources: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/full-v2.jpg'],
+    aliases: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/new-alias.jpg'],
+    identityAliases: ['https://merge-all-hit.example/thumb.jpg?width=320', 'https://merge-all-hit.example/new-alias.jpg'],
+    title: 'After refresh' };
+  const result = gallery.mergeEntries([previous], [next]);
+  assert.equal(result.length, 1);
+  assert.equal(result[0], previous, 'the existing logical entry object remains the merge target');
+  assert.equal(result[0].title, 'After refresh');
+  assert.ok(result[0].sources.includes('https://merge-all-hit.example/full-v2.jpg'));
+  assert.ok(result[0].aliases.includes('https://merge-all-hit.example/old-alias.jpg'));
+  assert.ok(result[0].aliases.includes('https://merge-all-hit.example/new-alias.jpg'));
+  assert.ok(result[0].identityAliases.includes('https://merge-all-hit.example/old-alias.jpg'));
+  assert.ok(result[0].identityAliases.includes('https://merge-all-hit.example/new-alias.jpg'));
+  assert.deepEqual(plain(result[0].dimensions), [1200, 800], 'confirmed dimensions survive a same-thumb metadata refresh');
+  assert.equal(result[0].aspectRatio, 1.5);
+});
 test('gallery source attributes are cached only for one synchronous collection', () => {
   const { c, image } = context(), node = image('https://img.example/cached.jpg'), reads = new Map();
   node.getAttribute = name => {
@@ -1416,6 +1497,164 @@ function albumFixture(c, pictures, { semantic = true, hidden = false, positions 
   });
   return grid;
 }
+
+test('source refresh follows a connected node only while its stable slot still identifies that item', () => {
+  const makePage = () => {
+    const { c, image, images } = context();
+    const body = { tagName: 'BODY', children: [], parentElement: null, querySelectorAll: () => [] };
+    const all = root => (root.children || []).flatMap(child => [child, ...all(child)]);
+    const grid = { tagName: 'DIV', className: 'photo-grid', children: [], parentElement: body, isConnected: true,
+      attributes: [{ name: 'data-gallery' }], getAttribute: name => name === 'data-gallery' ? 'true' : null,
+      querySelectorAll(selector) { const nodes = all(this); return selector === 'img' ? nodes.filter(node => node.tagName === 'IMG') : nodes; },
+      contains(node) { for (let current = node; current; current = current.parentElement) if (current === this) return true; return false; } };
+    body.children.push(grid); c.document.body = body;
+    const addCard = (id, url) => {
+      const card = { tagName: 'FIGURE', className: 'photo-card', children: [], parentElement: grid, isConnected: true, itemId: id,
+        attributes: [{ name: 'data-item-id' }], getAttribute(name) { return name === 'data-item-id' ? this.itemId : null; },
+        getBoundingClientRect: () => ({ left: 0, top: 0, right: 320, bottom: 240, width: 320, height: 240 }),
+        contains(node) { return node === this || this.children.includes(node); },
+        querySelectorAll(selector) { return selector === 'img' ? this.children.filter(node => node.tagName === 'IMG') : this.children; },
+        querySelector(selector) { return selector.includes('img') ? this.children.find(node => node.tagName === 'IMG') || null : null; },
+        closest: () => null };
+      const photo = image(url); photo.parentElement = card; photo.getBoundingClientRect = card.getBoundingClientRect;
+      photo.closest = selector => selector.includes('[data-gallery]') ? grid : null;
+      photo.getAttribute = name => name === 'src' ? photo.src : null;
+      photo.hasAttribute = name => name === 'src';
+      card.children.push(photo); grid.children.push(card);
+      return { card, photo };
+    };
+    return { c, images, grid, addCard };
+  };
+  const firstPage = makePage();
+  const first = firstPage.addCard('item-a', 'https://media.example.test/a-preview.jpg');
+  firstPage.addCard('item-b', 'https://media.example.test/b.jpg');
+  const gallery = firstPage.c.ImageLens.gallery;
+  const initial = gallery.collect(first.photo.src, first.photo, firstPage.grid);
+  const prior = initial.entries.find(entry => entry.node === first.photo);
+  assert.ok(prior?.slotStable); assert.equal(initial.entries.length, 2);
+
+  // With an explicit still-connected scope, the normal group collection finds
+  // the updated node even without node-identity fallback. This is existing
+  // behavior and must remain intact.
+  first.photo.src = first.photo.currentSrc = 'https://media.example.test/a-original-v2.jpg';
+  first.photo.getAttribute = name => name === 'src' ? first.photo.src : null;
+  const refreshed = gallery.collect(prior.thumb, first.photo, firstPage.grid);
+  const merged = gallery.mergeEntries(initial.entries, refreshed.entries);
+  assert.equal(merged.length, 2, 'a source revision in the same stable slot does not create a duplicate');
+  assert.ok(merged.find(entry => entry.slotKey === prior.slotKey).sources.includes(first.photo.currentSrc));
+
+  const reusedPage = makePage();
+  const reused = reusedPage.addCard('item-a', 'https://media.example.test/a-preview.jpg');
+  reusedPage.addCard('item-b', 'https://media.example.test/b.jpg');
+  const reusedGallery = reusedPage.c.ImageLens.gallery;
+  const reusedSnapshot = reusedGallery.collect(reused.photo.src, reused.photo, reusedPage.grid);
+  const oldEntry = reusedSnapshot.entries.find(entry => entry.node === reused.photo);
+  reused.card.itemId = 'item-c';
+  reused.photo.src = reused.photo.currentSrc = 'https://media.example.test/c.jpg';
+  reused.photo.getAttribute = name => name === 'src' ? reused.photo.src : null;
+  const afterReuse = reusedGallery.collect(oldEntry.thumb, reused.photo, reusedPage.grid, oldEntry);
+  const retained = reusedGallery.mergeEntries(reusedSnapshot.entries, afterReuse.entries);
+  assert.equal(retained.length, 3, 'the same IMG recycled into a different stable slot stays a separate entry');
+  assert.ok(retained.some(entry => entry.slotKey === oldEntry.slotKey && entry.sources.includes(oldEntry.thumb)));
+  assert.ok(retained.some(entry => entry.slotKey === 'data-item-id:item-c' && entry.sources.includes(reused.photo.currentSrc)));
+
+  const detachedPage = makePage();
+  const detached = detachedPage.addCard('item-a', 'https://media.example.test/a-preview.jpg');
+  detachedPage.addCard('item-b', 'https://media.example.test/b.jpg');
+  const detachedGallery = detachedPage.c.ImageLens.gallery;
+  const detachedSnapshot = detachedGallery.collect(detached.photo.src, detached.photo, detachedPage.grid);
+  const detachedEntry = detachedSnapshot.entries.find(entry => entry.node === detached.photo);
+  detached.photo.isConnected = false; detached.card.isConnected = false;
+  detachedPage.images.splice(detachedPage.images.indexOf(detached.photo), 1);
+  detached.card.itemId = 'item-c';
+  // A replacement node is inserted into a different stable slot; the stale
+  // preferred node must not be promoted merely because the old scope survives.
+  const newPhoto = { ...detached.photo, src: 'https://media.example.test/c.jpg', currentSrc: 'https://media.example.test/c.jpg', isConnected: true };
+  newPhoto.getAttribute = name => name === 'src' ? newPhoto.src : null;
+  newPhoto.closest = selector => selector.includes('[data-gallery]') ? detachedPage.grid : null;
+  newPhoto.getBoundingClientRect = detached.card.getBoundingClientRect;
+  newPhoto.parentElement = detached.card; detached.card.children = [newPhoto]; detached.card.isConnected = true;
+  detachedPage.images.push(newPhoto);
+  const detachedRefresh = detachedGallery.collect(detachedEntry.thumb, detached.photo, detachedPage.grid, detachedEntry);
+  const detachedMerged = detachedGallery.mergeEntries(detachedSnapshot.entries, detachedRefresh.entries);
+  assert.equal(detachedMerged.length, 3, 'a disconnected prior node cannot force a different item into its old identity');
+  assert.ok(detachedMerged.some(entry => entry.slotKey === detachedEntry.slotKey && entry.sources.includes(detachedEntry.thumb)));
+  assert.ok(detachedMerged.some(entry => entry.slotKey === 'data-item-id:item-c' && entry.sources.includes(newPhoto.currentSrc)));
+
+  // On an unscoped image, the new fallback is useful only when persistent
+  // canonical evidence proves the connected node still represents the same
+  // image. Without that evidence the refresh remains fail-closed (covered by
+  // tests/local-only/b21-source-mutation-negative.cjs).
+  const isolated = context();
+  const isolatedPhoto = isolated.image('https://media.example.test/isolated-preview.jpg');
+  const original = 'https://media.example.test/isolated-original.jpg';
+  isolatedPhoto.getAttribute = name => name === 'src' ? isolatedPhoto.src : name === 'data-full' ? original : null;
+  const isolatedGallery = isolated.c.ImageLens.gallery;
+  const isolatedBefore = isolatedGallery.collect(isolatedPhoto.src, isolatedPhoto);
+  const isolatedEntry = isolatedBefore.entries[0];
+  assert.equal(isolatedBefore.scope, null);
+  isolatedPhoto.src = isolatedPhoto.currentSrc = 'https://media.example.test/isolated-original-v2.jpg';
+  isolatedPhoto.getAttribute = name => name === 'src' ? isolatedPhoto.src : name === 'data-full' ? original : null;
+  const staleSeed = isolatedGallery.collect(isolatedEntry.thumb, isolatedPhoto).entries[0];
+  assert.ok(staleSeed.sources.includes('https://media.example.test/isolated-preview.jpg'), 'without prior identity the old-source fallback remains conservative');
+  const identityChecked = isolatedGallery.collect(isolatedEntry.thumb, isolatedPhoto, null, isolatedEntry);
+  const identityMerged = isolatedGallery.mergeEntries(isolatedBefore.entries, identityChecked.entries);
+  assert.equal(identityMerged.length, 1);
+  assert.ok(identityMerged[0].sources.includes(isolatedPhoto.currentSrc), 'stable canonical evidence allows the visible image source to refresh');
+
+  // A virtual list may recycle the same IMG while retaining a shared preview
+  // alias. With no canonical identity on the old entry, that weak overlap must
+  // not authorize the new node source as a refresh of the old image.
+  const sharedPreview = 'https://media.example.test/shared-preview.jpg';
+  const sharedOldSource = 'https://media.example.test/old-item-thumb.jpg';
+  const sharedNewSource = 'https://media.example.test/new-item-thumb.jpg';
+  const sharedNewOriginal = 'https://media.example.test/new-item-original.jpg';
+  const sharedContext = context();
+  const sharedImage = sharedContext.image(sharedOldSource, { 'data-srcset': `${sharedPreview} 640w` });
+  let sharedAttributes = { 'data-srcset': `${sharedPreview} 640w` };
+  sharedImage.getAttribute = name => name === 'src' ? sharedImage.src : sharedAttributes[name] || null;
+  sharedImage.hasAttribute = name => name === 'src' || Object.hasOwn(sharedAttributes, name);
+  const sharedGallery = sharedContext.c.ImageLens.gallery;
+  const sharedBefore = sharedGallery.collect(sharedOldSource, sharedImage);
+  const sharedPrior = sharedBefore.entries[0];
+  assert.equal(sharedPrior.canonicalIdentity, '');
+  assert.ok(sharedPrior.identityAliases.includes(sharedPreview));
+  sharedAttributes = { 'data-srcset': `${sharedPreview} 640w`, 'data-full': sharedNewOriginal };
+  sharedImage.src = sharedImage.currentSrc = sharedNewSource;
+  const recycledCandidate = sharedGallery.collect(sharedNewSource, sharedImage).entries[0];
+  assert.equal(recycledCandidate.canonicalIdentity, sharedNewOriginal);
+  assert.ok(recycledCandidate.identityAliases.includes(sharedPreview), 'the recycled node still advertises the old shared preview alias');
+  const guardedRefresh = sharedGallery.collect(sharedPrior.thumb, sharedImage, null, sharedPrior);
+  const guardedMerge = sharedGallery.mergeEntries(sharedBefore.entries, guardedRefresh.entries);
+  assert.ok(guardedMerge.every(entry => !entry.sources.includes(sharedNewSource) && !entry.sources.includes(sharedNewOriginal)),
+    'shared preview overlap cannot upgrade an unclassified old image to a different canonical image');
+});
+
+test('refresh fallback candidate reads stay bounded to the prior slot in 2000 and 5000 item scopes', () => {
+  const fallback = galleryFunction('refreshFallbackMedia');
+  for (const count of [2000, 5000]) {
+    const slot = { tagName: 'ARTICLE', isConnected: true };
+    const priorCandidate = { id: 'current-slot-media', isConnected: true };
+    const galleryMedia = Array.from({ length: count }, (_, index) => ({ id: `media-${index}`, isConnected: true }));
+    const rootsRead = [];
+    let wholeGalleryCandidatesRead = 0;
+    const scope = { isConnected: true, contains(node) { return node === slot; } };
+    const c = vm.createContext({ scope, slot, preferred: null, previousEntry: { slotNode: slot },
+      mediaNodes(root) {
+        rootsRead.push(root);
+        if (root === slot) return [priorCandidate];
+        if (root === scope) { wholeGalleryCandidatesRead += galleryMedia.length; return galleryMedia; }
+        return [];
+      } });
+    vm.runInContext(`${fallback}\nglobalThis.search = (entry, root, preferredNode) => refreshFallbackMedia(entry, root, preferredNode);`, c);
+    const candidates = c.search(c.previousEntry, c.scope, c.preferred);
+    assert.equal(candidates.length, 1);
+    assert.equal(candidates[0].id, 'current-slot-media');
+    assert.deepEqual(rootsRead, [slot], 'fallback queries only the previous entry slot');
+    assert.equal(wholeGalleryCandidatesRead, 0, 'fallback never scans the rest of a large gallery');
+    process.stdout.write(JSON.stringify({ scopeItems: count, fallbackRoots: rootsRead.length, fallbackCandidates: candidates.length, wholeGalleryCandidatesRead }) + '\n');
+  }
+});
 
 function structuralMediaPage(c, image, role) {
   const body = { tagName: 'BODY', className: '', children: [], parentElement: null };
