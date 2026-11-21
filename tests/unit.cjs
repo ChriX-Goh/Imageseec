@@ -1630,6 +1630,191 @@ test('source refresh follows a connected node only while its stable slot still i
     'shared preview overlap cannot upgrade an unclassified old image to a different canonical image');
 });
 
+test('unscoped CSS background refresh uses one exact painted URL and rejects hints or ambiguity', () => {
+  const makePage = (computedBackground, attrs = {}) => {
+    const { c } = context();
+    const body = { tagName: 'BODY', children: [], parentElement: null, querySelectorAll: selector => selector === '*' ? body.children : [] };
+    const node = { tagName: 'DIV', src: '', currentSrc: '', isConnected: true, parentElement: body,
+      className: '', alt: '', title: '', style: { backgroundImage: 'none' }, attrs: { ...attrs },
+      getAttribute(name) { return name === 'src' ? this.src : this.attrs[name] ?? null; },
+      hasAttribute(name) { return Object.hasOwn(this.attrs, name); },
+      closest() { return null; }, querySelectorAll() { return []; },
+      getBoundingClientRect() { return { left: 0, top: 0, right: 240, bottom: 160, width: 240, height: 160 }; } };
+    body.children.push(node);
+    c.document.body = body;
+    c.document.images = [];
+    c.document.querySelectorAll = selector => selector === 'img' ? [] : selector === '*' ? [node] : [];
+    c.getComputedStyle = target => ({ display: 'block', visibility: 'visible', backgroundImage: target === node ? node.computedBackground : 'none', aspectRatio: '' });
+    node.computedBackground = computedBackground;
+    return { c, node, setBackground(value) { node.computedBackground = value; } };
+  };
+
+  const original = 'https://media.example.test/background.jpg?asset=7&width=640';
+  const page = makePage(`url("${original}")`);
+  const before = page.c.ImageLens.gallery.collect(original, page.node);
+  assert.equal(before.scope, null);
+  assert.equal(before.entries.length, 1);
+  const prior = before.entries[0];
+  const same = page.c.ImageLens.gallery.collect(prior.thumb, page.node, null, prior);
+  assert.equal(same.seed, page.node, 'one exact current computed background is enough to keep the source node');
+  assert.equal(same.entries.length, 1);
+
+  page.setBackground('url("https://media.example.test/recycled.jpg")');
+  page.node.attrs['data-bg'] = `url("${original}")`;
+  const changed = page.c.ImageLens.gallery.collect(prior.thumb, page.node, null, prior);
+  assert.equal(changed.entries.length, 0, 'a stale data-bg hint cannot rebind a changed painted background');
+
+  const hinted = makePage('none', { 'data-bg': `url("${original}")` });
+  const hintedRefresh = hinted.c.ImageLens.gallery.collect(original, hinted.node, null, prior);
+  assert.equal(hintedRefresh.entries.length, 0, 'a lazy hint with no currently painted image is not a refresh identity');
+
+  const canonical = makePage(`url("${original}")`, { 'data-full': 'https://origin.example/another-image.jpg' });
+  const canonicalRefresh = canonical.c.ImageLens.gallery.collect(original, canonical.node, null, prior);
+  assert.equal(canonicalRefresh.entries.length, 0, 'new canonical evidence cannot be attached to an old unclassified preview');
+
+  const canonicalUrl = 'https://origin.example.test/background-original.jpg?asset=42';
+  const revisedBackground = makePage(`url("${original}")`, { 'data-full': canonicalUrl });
+  const revisedBefore = revisedBackground.c.ImageLens.gallery.collect(original, revisedBackground.node);
+  const revisedPrior = revisedBefore.entries[0];
+  assert.equal(revisedPrior.canonicalIdentity, canonicalUrl, 'background entries preserve verified canonical evidence');
+  revisedBackground.setBackground('url("https://media.example.test/background-v2.jpg?asset=42")');
+  const sameCanonicalRefresh = revisedBackground.c.ImageLens.gallery.collect(revisedPrior.thumb, revisedBackground.node, null, revisedPrior);
+  assert.equal(sameCanonicalRefresh.seed, revisedBackground.node, 'same canonical identity permits a refreshed background resource URL');
+  assert.ok(sameCanonicalRefresh.entries[0].sources.includes('https://media.example.test/background-v2.jpg?asset=42'));
+
+  revisedBackground.node.attrs['data-full'] = 'https://origin.example.test/different-background.jpg?asset=99';
+  const conflictingCanonical = revisedBackground.c.ImageLens.gallery.collect(revisedPrior.thumb, revisedBackground.node, null, revisedPrior);
+  assert.equal(conflictingCanonical.entries.length, 0, 'conflicting canonical identity cannot reconnect by the old background preview');
+
+  const variantA = makePage('url("https://media.example.test/variant-a.jpg?width=640")', { 'data-full': canonicalUrl });
+  const variantB = makePage('url("https://media.example.test/variant-b.jpg?width=1280")', { 'data-full': canonicalUrl });
+  const backgroundA = variantA.c.ImageLens.gallery.collect('https://media.example.test/variant-a.jpg?width=640', variantA.node).entries[0];
+  const backgroundB = variantB.c.ImageLens.gallery.collect('https://media.example.test/variant-b.jpg?width=1280', variantB.node).entries[0];
+  assert.equal(variantA.c.ImageLens.gallery.mergeEntries([backgroundA], [backgroundB]).length, 1,
+    'different background variants with the same declared original remain one logical image');
+
+  const sharedBg = 'https://media.example.test/shared-background-preview.jpg?width=320';
+  const distinctA = makePage(`url("${sharedBg}")`, { 'data-full': 'https://origin.example.test/background-A.jpg' });
+  const distinctB = makePage(`url("${sharedBg}")`, { 'data-full': 'https://origin.example.test/background-B.jpg' });
+  const entryA = distinctA.c.ImageLens.gallery.collect(sharedBg, distinctA.node).entries[0];
+  const entryB = distinctB.c.ImageLens.gallery.collect(sharedBg, distinctB.node).entries[0];
+  assert.equal(distinctA.c.ImageLens.gallery.mergeEntries([entryA], [entryB]).length, 2,
+    'different background canonical identities cannot merge through a shared preview');
+
+  const stacked = makePage(`url("${original}"), url("https://media.example.test/overlay.png")`);
+  stacked.node.attrs['data-full'] = canonicalUrl;
+  const stackedBefore = stacked.c.ImageLens.gallery.collect(original, stacked.node);
+  const stackedRefresh = stacked.c.ImageLens.gallery.collect(stackedBefore.entries[0]?.thumb || original, stacked.node, null, stackedBefore.entries[0]);
+  assert.equal(stackedRefresh.entries.length, 0, 'multiple computed image layers have no single safe identity');
+
+  const inlineData = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E';
+  const dataPage = makePage(`url("${inlineData}")`);
+  const dataBefore = dataPage.c.ImageLens.gallery.collect(inlineData, dataPage.node);
+  assert.equal(dataBefore.entries.length, 1);
+  assert.equal(dataPage.c.ImageLens.gallery.collect(inlineData, dataPage.node, null, dataBefore.entries[0]).entries.length, 0,
+    'shared inline SVG/GIF-style sources are not stable refresh identities');
+
+  const imageContext = context();
+  const image = { tagName: 'IMG', src: original, currentSrc: original, isConnected: true, complete: false,
+    naturalWidth: 0, naturalHeight: 0, alt: '', title: '', className: '', parentElement: null,
+    getAttribute(name) { return name === 'src' ? this.src : null; }, closest() { return null; },
+    getBoundingClientRect() { return { left: 0, top: 0, right: 240, bottom: 160, width: 240, height: 160 }; }, querySelectorAll() { return []; } };
+  const imagePrior = { key: original, thumb: original, sources: [original], canonicalIdentity: '', canonicalAmbiguous: false, node: image };
+  // The non-IMG check is an early branch; IMG behavior still uses currentSrc.
+  imageContext.images.push(image);
+  const imagePageMedia = imageContext.c.ImageLens.gallery.collect(original, image, null, imagePrior);
+  assert.equal(imagePageMedia.seed, image);
+});
+
+test('CSS backgrounds never inherit canonical identity from a shared ancestor link', () => {
+  const makePage = definitions => {
+    const { c, images } = context();
+    const box = { left: 0, top: 0, right: 240, bottom: 160, width: 240, height: 160 };
+    const body = { tagName: 'BODY', children: [], parentElement: null, getBoundingClientRect: () => box };
+    const list = { tagName: 'DIV', className: 'photo-grid', attrs: { 'data-gallery': 'true' }, children: [], parentElement: body,
+      getBoundingClientRect: () => box };
+    const descendants = root => (root.children || []).flatMap(child => [child, ...descendants(child)]);
+    const makeNode = (tagName, attrs, parent, backgroundImage = 'none') => {
+      const node = { tagName, attrs: { ...attrs }, attributes: Object.keys(attrs).map(name => ({ name })),
+        children: [], parentElement: parent, isConnected: true, className: '', style: { backgroundImage },
+        getAttribute(name) { return name === 'src' ? this.src || null : this.attrs[name] ?? null; },
+        hasAttribute(name) { return Object.hasOwn(this.attrs, name); },
+        contains(other) { for (let current = other; current; current = current.parentElement) if (current === this) return true; return false; },
+        closest(selector) {
+          for (let current = this; current; current = current.parentElement) {
+            if (selector.includes('a[href]') && current.tagName === 'A' && current.href) return current;
+            if (selector.includes('[data-gallery]') && current.hasAttribute?.('data-gallery')) return current;
+            if (selector.includes('[role="list"]') && current.getAttribute?.('role') === 'list') return current;
+            if (selector === 'picture' && current.tagName === 'PICTURE') return current;
+          }
+          return null;
+        },
+        getBoundingClientRect() { return { left: 0, top: 0, right: 240, bottom: 160, width: 240, height: 160 }; },
+        querySelectorAll(selector) {
+          const all = descendants(this);
+          if (selector === 'img') return all.filter(item => item.tagName === 'IMG');
+          if (selector === 'source') return all.filter(item => item.tagName === 'SOURCE');
+          if (selector === 'a[href]') return all.filter(item => item.tagName === 'A' && item.href);
+          return all;
+        },
+        querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
+      };
+      if (parent) parent.children.push(node);
+      return node;
+    };
+    body.children.push(list);
+    list.parentElement = body;
+    const link = makeNode('A', {}, list);
+    link.href = 'https://origin.example.test/shared-link-target.jpg';
+    for (const definition of definitions) {
+      const attrs = { ...(definition.attrs || {}) };
+      if (definition.kind === 'img') {
+        const img = makeNode('IMG', attrs, link);
+        img.src = img.currentSrc = definition.url;
+        img.getAttribute = function(name) { return name === 'src' ? this.src : this.attrs[name] ?? null; };
+        img.complete = false; img.naturalWidth = 0; img.naturalHeight = 0;
+        images.push(img);
+      } else {
+        makeNode('DIV', attrs, link, `url("${definition.url}")`);
+      }
+    }
+    const all = () => descendants(body);
+    body.querySelectorAll = selector => selector === 'img' ? all().filter(node => node.tagName === 'IMG') : all();
+    list.querySelectorAll = selector => selector === 'img' ? descendants(list).filter(node => node.tagName === 'IMG') : descendants(list);
+    list.contains = node => { for (let current = node; current; current = current.parentElement) if (current === list) return true; return false; };
+    c.document.body = body;
+    c.document.documentElement = body;
+    c.document.querySelectorAll = selector => selector === 'img' ? all().filter(node => node.tagName === 'IMG') : all();
+    c.getComputedStyle = node => ({ display: 'block', visibility: 'visible', backgroundImage: node.style?.backgroundImage || 'none', aspectRatio: '' });
+    return { c, list, link, media: link.children };
+  };
+
+  const sharedLink = makePage([
+    { kind: 'img', url: 'https://media.example.test/linked-thumb.jpg' },
+    { kind: 'background', url: 'https://media.example.test/background-a.jpg' },
+    { kind: 'background', url: 'https://media.example.test/background-b.jpg' }
+  ]);
+  const backgroundA = sharedLink.media[1], backgroundB = sharedLink.media[2];
+  const collected = sharedLink.c.ImageLens.gallery.collect('https://media.example.test/background-a.jpg', backgroundA);
+  assert.equal(collected.entries.length, 3,
+    'a parent link target cannot merge an IMG and distinct CSS backgrounds into one image');
+  assert.equal(collected.entries.find(entry => entry.node === sharedLink.media[0]).canonicalIdentity,
+    'https://origin.example.test/shared-link-target.jpg', 'IMG keeps the existing linked-original evidence');
+  assert.equal(collected.entries.find(entry => entry.node === backgroundA).canonicalIdentity, '');
+  assert.equal(collected.entries.find(entry => entry.node === backgroundB).canonicalIdentity, '');
+
+  const explicitA = makePage([{ kind: 'background', url: 'https://media.example.test/explicit-preview-a.jpg',
+    attrs: { 'data-full': 'https://origin.example.test/explicit-original.jpg' } }]);
+  const explicitB = makePage([{ kind: 'background', url: 'https://media.example.test/explicit-preview-b.jpg',
+    attrs: { 'data-full': 'https://origin.example.test/explicit-original.jpg' } }]);
+  const entryA = explicitA.c.ImageLens.gallery.collect('https://media.example.test/explicit-preview-a.jpg', explicitA.media[0]).entries[0];
+  const entryB = explicitB.c.ImageLens.gallery.collect('https://media.example.test/explicit-preview-b.jpg', explicitB.media[0]).entries[0];
+  assert.equal(entryA.canonicalIdentity, 'https://origin.example.test/explicit-original.jpg');
+  assert.equal(entryB.canonicalIdentity, entryA.canonicalIdentity);
+  assert.equal(explicitA.c.ImageLens.gallery.mergeEntries([entryA], [entryB]).length, 1,
+    'same canonical attrs on the background nodes still merge distinct preview resources');
+});
+
 test('refresh fallback candidate reads stay bounded to the prior slot in 2000 and 5000 item scopes', () => {
   const fallback = galleryFunction('refreshFallbackMedia');
   for (const count of [2000, 5000]) {

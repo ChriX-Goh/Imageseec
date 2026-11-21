@@ -209,7 +209,11 @@
   function canonicalEvidenceFor(node) {
     const cached = discoveryCache?.canonicalEvidence.get(node);
     if (cached !== undefined) return cached;
-    if (node?.tagName !== 'IMG') return { identity: '', ambiguous: false };
+    if (node?.tagName !== 'IMG') {
+      const evidence = backgroundCanonicalEvidenceFor(node);
+      discoveryCache?.canonicalEvidence.set(node, evidence);
+      return evidence;
+    }
     const result = [];
     const anchor = node.closest?.('a[href]');
     if (anchor) {
@@ -228,6 +232,16 @@
       return agreesWithBase ? base : { identity: '', ambiguous: true };
     }
     return canonicalIdentityFrom([...result, ...pictureSelection.attributes]);
+  }
+  function backgroundCanonicalEvidenceFor(node) {
+    if (!node || node.tagName === 'IMG') return { identity: '', ambiguous: false };
+    // A link can wrap several distinct media nodes (for example an IMG plus
+    // CSS-background decorations or a collage). Its href identifies the link
+    // target, not each non-IMG background independently. Only an explicit
+    // canonical attribute on this exact node can identify its background.
+    return canonicalIdentityFrom(canonicalSourceAttributes.map(name => ({
+      kind: name, source: url(node.getAttribute?.(name))
+    })));
   }
   let discoveryCache = null;
   function images(root = document) {
@@ -787,6 +801,22 @@
   function preferredRefreshMatches(node, previousEntry, previousSource) {
     if (!node?.isConnected || !previousEntry || previousEntry.canonicalAmbiguous) return false;
     const previousCanonical = entryCanonicalIdentity(previousEntry);
+    if (node.tagName !== 'IMG') {
+      const evidence = canonicalEvidenceFor(node);
+      if (evidence.ambiguous) return false;
+      let serializedBackground;
+      try { serializedBackground = String(getComputedStyle(node).backgroundImage || '').trim(); }
+      catch { return false; }
+      // Accept only one serialized url() token. cssUrls() alone would also
+      // extract the URLs inside image-set(), cross-fade(), or layered images
+      // and could mistake an unselected candidate for the painted resource.
+      const singleUrl = serializedBackground.match(/^url\(\s*(?:"([^"]*)"|'([^']*)'|([^)]*))\s*\)$/i);
+      const liveBackground = singleUrl && url(singleUrl[1] ?? singleUrl[2] ?? singleUrl[3]?.trim());
+      if (!liveBackground || /^data:image\/(?:gif|svg\+xml)/i.test(liveBackground)) return false;
+      if (previousCanonical) return evidence.identity === previousCanonical;
+      if (evidence.identity) return false;
+      return Boolean(previousSource) && key(liveBackground) === key(previousSource);
+    }
     if (!previousCanonical) {
       const live = url(node.currentSrc || node.getAttribute?.('src'));
       if (!live || /^data:image\/(?:gif|svg\+xml)/i.test(live)) return false;
