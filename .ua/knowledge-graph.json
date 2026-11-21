@@ -11412,6 +11412,22 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:sources",
+      "target": "function:gallery.js:canonicalIdentityFrom",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:matchingNodes",
+      "target": "function:gallery.js:sources",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
     }
   ],
   "layers": [
