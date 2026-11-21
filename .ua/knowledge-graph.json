@@ -16,13 +16,13 @@
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
     "analyzedAt": "2026-11-21 11:58:44",
     "gitCommitHash": "bb64c490ba35b19fe510c0e28935043bbdbd748b",
-    "versionName": "2.0 b20"
+    "versionName": "2.0 b21"
   },
   "sourceState": {
     "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b20",
+    "versionName": "2.0 b21",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
+      "sourceHash": "529ef5047c6de5bbe3bd08bd57f33435996dbb7cc977ba0a135024a975dca21f",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
+      "sourceHash": "529ef5047c6de5bbe3bd08bd57f33435996dbb7cc977ba0a135024a975dca21f",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -156,8 +156,8 @@
       "name": "albumFixture",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1406,
-        1406
+        1409,
+        1409
       ],
       "summary": "构造带语义容器、重复卡片和图片节点的图库夹具，用于测试分组、顺序与边界条件。",
       "tags": [
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
+      "sourceHash": "529ef5047c6de5bbe3bd08bd57f33435996dbb7cc977ba0a135024a975dca21f",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -175,8 +175,8 @@
       "name": "background",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1874,
-        1874
+        1877,
+        1877
       ],
       "summary": "模拟 Chrome storage、runtime、contextMenus、scripting 和 tabs API，以验证后台消息路由。",
       "tags": [
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "522449b2246932214f6908615fe636b93fb09358552cb2d557d1768676168b03",
+      "sourceHash": "529ef5047c6de5bbe3bd08bd57f33435996dbb7cc977ba0a135024a975dca21f",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "8bb13b287ed222c4c8a186487b0cca4e80006f32c372e8a63d00657e012ad913",
+      "sourceHash": "a6efd55e57fb67495dfd4ea2f34e25cc811606f858788e0ed81af5b0d45a469c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1315,7 +1315,7 @@
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1622,7 +1622,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1641,7 +1641,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1650,8 +1650,8 @@
       "name": "sources",
       "filePath": "gallery.js",
       "lineRange": [
-        88,
-        88
+        120,
+        120
       ],
       "summary": "收集并缓存显式来源，包含 srcset、picture 响应式候选、可加载原图、缩略图及数据 URI。",
       "tags": [
@@ -1659,7 +1659,7 @@
         "per-collection-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1668,8 +1668,8 @@
       "name": "scopeFor",
       "filePath": "gallery.js",
       "lineRange": [
-        308,
-        308
+        371,
+        371
       ],
       "summary": "从语义结构和重复卡片中选择范围受限的同组图库。",
       "tags": [
@@ -1678,7 +1678,7 @@
         "scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1687,8 +1687,8 @@
       "name": "slotsFor",
       "filePath": "gallery.js",
       "lineRange": [
-        404,
-        404
+        468,
+        468
       ],
       "summary": "从重复卡片和行结构发现同组槽位；图片候选与空槽共用唯一 ARIA 顺序。",
       "tags": [
@@ -1697,7 +1697,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1706,8 +1706,8 @@
       "name": "connectedEntryNode",
       "filePath": "gallery.js",
       "lineRange": [
-        463,
-        463
+        527,
+        527
       ],
       "summary": "依据身份别名和稳定槽位验证虚拟列表连接节点，避免共享占位图导致错误回连。",
       "tags": [
@@ -1716,7 +1716,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1725,8 +1725,8 @@
       "name": "sameEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        507,
-        507
+        571,
+        571
       ],
       "summary": "优先检查明确原图身份冲突，再依据身份键、稳定槽位或身份别名匹配，保留真实 SVG。",
       "tags": [
@@ -1735,7 +1735,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1744,8 +1744,8 @@
       "name": "mergeEntries",
       "filePath": "gallery.js",
       "lineRange": [
-        629,
-        629
+        693,
+        693
       ],
       "summary": "按身份别名及槽位合并图片，保留资源别名、排列顺序和原有几何。",
       "tags": [
@@ -1754,7 +1754,7 @@
         "identity-merge"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1763,8 +1763,8 @@
       "name": "collect",
       "filePath": "gallery.js",
       "lineRange": [
-        745,
-        745
+        809,
+        809
       ],
       "summary": "在当前图片可用时局部发现并复用单次调用内的媒体节点结果；每次重新建立快照。",
       "tags": [
@@ -1773,7 +1773,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2288,7 +2288,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2516,7 +2516,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2535,7 +2535,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2554,7 +2554,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2572,7 +2572,7 @@
         "nested-scroll"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2591,7 +2591,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2610,7 +2610,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2619,8 +2619,8 @@
       "name": "close",
       "filePath": "viewer.js",
       "lineRange": [
-        432,
-        432
+        436,
+        436
       ],
       "summary": "先同步卸载查看器并恢复网页位置，再将活动图片或阅览中央缩略图动画到目标来源并描边提示。",
       "tags": [
@@ -2630,7 +2630,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2639,8 +2639,8 @@
       "name": "status",
       "filePath": "viewer.js",
       "lineRange": [
-        556,
-        556
+        560,
+        560
       ],
       "summary": "显示图片加载或失败状态；真实等待期间显示原创菊花动画。",
       "tags": [
@@ -2649,7 +2649,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2658,8 +2658,8 @@
       "name": "activeIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        562,
-        562
+        566,
+        566
       ],
       "summary": "计算单图或双图模式的活动图片索引，并遵守锁定栏规则。",
       "tags": [
@@ -2668,7 +2668,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2677,8 +2677,8 @@
       "name": "updateCompareControls",
       "filePath": "viewer.js",
       "lineRange": [
-        573,
-        573
+        577,
+        577
       ],
       "summary": "updateCompareControls 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2687,7 +2687,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2696,8 +2696,8 @@
       "name": "updateOverviewButton",
       "filePath": "viewer.js",
       "lineRange": [
-        590,
-        590
+        594,
+        594
       ],
       "summary": "更新模式按钮、工具栏样式和当前模式适用的倍率名称。",
       "tags": [
@@ -2706,7 +2706,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2715,8 +2715,8 @@
       "name": "transformCompare",
       "filePath": "viewer.js",
       "lineRange": [
-        599,
-        599
+        603,
+        603
       ],
       "summary": "transformCompare 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2725,7 +2725,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2734,8 +2734,8 @@
       "name": "transform",
       "filePath": "viewer.js",
       "lineRange": [
-        622,
-        622
+        626,
+        626
       ],
       "summary": "transform 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2744,7 +2744,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2753,8 +2753,8 @@
       "name": "updateRuler",
       "filePath": "viewer.js",
       "lineRange": [
-        634,
-        634
+        638,
+        638
       ],
       "summary": "按当前模式更新倍率尺；全览使用独立缩略图倍率范围。",
       "tags": [
@@ -2763,7 +2763,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2772,8 +2772,8 @@
       "name": "fit",
       "filePath": "viewer.js",
       "lineRange": [
-        658,
-        658
+        662,
+        662
       ],
       "summary": "fit 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2782,7 +2782,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2791,8 +2791,8 @@
       "name": "zoom",
       "filePath": "viewer.js",
       "lineRange": [
-        674,
-        674
+        678,
+        678
       ],
       "summary": "zoom 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2801,7 +2801,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2810,8 +2810,8 @@
       "name": "setScale",
       "filePath": "viewer.js",
       "lineRange": [
-        687,
-        687
+        691,
+        691
       ],
       "summary": "setScale 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2820,7 +2820,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2829,8 +2829,8 @@
       "name": "updateLock",
       "filePath": "viewer.js",
       "lineRange": [
-        724,
-        724
+        728,
+        728
       ],
       "summary": "updateLock 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2839,7 +2839,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2848,8 +2848,8 @@
       "name": "updateFullscreenLabel",
       "filePath": "viewer.js",
       "lineRange": [
-        730,
-        730
+        734,
+        734
       ],
       "summary": "updateFullscreenLabel 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2858,7 +2858,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2867,8 +2867,8 @@
       "name": "bindPreferences",
       "filePath": "viewer.js",
       "lineRange": [
-        737,
-        737
+        741,
+        741
       ],
       "summary": "bindPreferences 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2877,7 +2877,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2886,8 +2886,8 @@
       "name": "savePreferences",
       "filePath": "viewer.js",
       "lineRange": [
-        742,
-        742
+        746,
+        746
       ],
       "summary": "保存偏好并立即更新工具栏隐藏、全览倍率与锚定布局。",
       "tags": [
@@ -2896,7 +2896,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2905,8 +2905,8 @@
       "name": "refreshLanguage",
       "filePath": "viewer.js",
       "lineRange": [
-        756,
-        756
+        760,
+        760
       ],
       "summary": "刷新本地化控件并保留当前图片或全览模式。",
       "tags": [
@@ -2915,7 +2915,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2924,8 +2924,8 @@
       "name": "cacheNeighbors",
       "filePath": "viewer.js",
       "lineRange": [
-        794,
-        794
+        798,
+        798
       ],
       "summary": "cacheNeighbors 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2934,7 +2934,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2943,8 +2943,8 @@
       "name": "renderStrip",
       "filePath": "viewer.js",
       "lineRange": [
-        809,
-        809
+        814,
+        814
       ],
       "summary": "renderStrip 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2953,7 +2953,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2962,8 +2962,8 @@
       "name": "showStrip",
       "filePath": "viewer.js",
       "lineRange": [
-        832,
-        832
+        837,
+        837
       ],
       "summary": "showStrip 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2972,7 +2972,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2981,8 +2981,8 @@
       "name": "updateEdgePreviews",
       "filePath": "viewer.js",
       "lineRange": [
-        837,
-        837
+        842,
+        842
       ],
       "summary": "updateEdgePreviews 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -2991,7 +2991,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3010,7 +3010,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3019,8 +3019,8 @@
       "name": "updateNavigationButtons",
       "filePath": "viewer.js",
       "lineRange": [
-        853,
-        853
+        858,
+        858
       ],
       "summary": "结合当前邻接边界和前后扫描状态更新导航可用性。",
       "tags": [
@@ -3029,7 +3029,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3038,8 +3038,8 @@
       "name": "renderOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1257,
-        1257
+        1266,
+        1266
       ],
       "summary": "复用全览卡片并按图片比例排版，更新布局、缩略图任务和缓存需求。",
       "tags": [
@@ -3048,7 +3048,7 @@
         "cache-invalidation"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3057,8 +3057,8 @@
       "name": "layoutOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1305,
-        1305
+        1314,
+        1314
       ],
       "summary": "按绝对序号和固定比例布置行优先或列优先槽位；应用方向、对齐、间距和缩放，同时恢复中央图片锚点。",
       "tags": [
@@ -3067,7 +3067,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3076,8 +3076,8 @@
       "name": "updateOverviewThumbnails",
       "filePath": "viewer.js",
       "lineRange": [
-        1493,
-        1493
+        1502,
+        1502
       ],
       "summary": "仅调度可见及缓存范围缩略图，通过有界队列按可见优先级加载、解码并保留近期完成项。",
       "tags": [
@@ -3086,7 +3086,7 @@
         "bounded-queue"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3095,8 +3095,8 @@
       "name": "scanDelay",
       "filePath": "viewer.js",
       "lineRange": [
-        1584,
-        1584
+        1593,
+        1593
       ],
       "summary": "scanDelay 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3105,7 +3105,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3114,8 +3114,8 @@
       "name": "done",
       "filePath": "viewer.js",
       "lineRange": [
-        1588,
-        1588
+        1597,
+        1597
       ],
       "summary": "done 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3124,7 +3124,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3133,8 +3133,8 @@
       "name": "scanSegment",
       "filePath": "viewer.js",
       "lineRange": [
-        1592,
-        1592
+        1601,
+        1601
       ],
       "summary": "分段触发同组图库懒加载；观察槽位与资源变化，按有界频率刷新快照并恢复源滚动位置。",
       "tags": [
@@ -3144,7 +3144,7 @@
         "refresh-throttle"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3153,8 +3153,8 @@
       "name": "scanMore",
       "filePath": "viewer.js",
       "lineRange": [
-        1713,
-        1713
+        1722,
+        1722
       ],
       "summary": "按前后方向驱动限时分段扫描；根据图库条目、槽位、资源加载与当前全览需求决定继续或暂停。",
       "tags": [
@@ -3164,7 +3164,7 @@
         "viewer-runtime"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3173,8 +3173,8 @@
       "name": "enterOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1792,
-        1792
+        1801,
+        1801
       ],
       "summary": "保存单图或双图状态并打开全览，以当前活动图片为锚点；只在进入全览时播放图片到缩略图过渡。",
       "tags": [
@@ -3185,7 +3185,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3194,8 +3194,8 @@
       "name": "exitOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1824,
-        1824
+        1833,
+        1833
       ],
       "summary": "结束全览按压/拖拽状态，取消后台扫描，并恢复进入前的图片状态或切换到选中的单图/双图。",
       "tags": [
@@ -3206,7 +3206,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3225,7 +3225,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3234,8 +3234,8 @@
       "name": "showSingle",
       "filePath": "viewer.js",
       "lineRange": [
-        1868,
-        1868
+        1877,
+        1877
       ],
       "summary": "加载并显示指定图片，更新尺寸、倍率状态和加载提示。",
       "tags": [
@@ -3244,7 +3244,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3253,8 +3253,8 @@
       "name": "showPair",
       "filePath": "viewer.js",
       "lineRange": [
-        1898,
-        1898
+        2006,
+        2006
       ],
       "summary": "加载并显示双图对照，更新两栏尺寸与导航状态。",
       "tags": [
@@ -3263,7 +3263,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3272,8 +3272,8 @@
       "name": "show",
       "filePath": "viewer.js",
       "lineRange": [
-        1931,
-        1931
+        2057,
+        2057
       ],
       "summary": "show 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3282,7 +3282,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3291,8 +3291,8 @@
       "name": "navigate",
       "filePath": "viewer.js",
       "lineRange": [
-        1932,
-        1932
+        2058,
+        2058
       ],
       "summary": "navigate 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3301,7 +3301,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3310,8 +3310,8 @@
       "name": "setCompare",
       "filePath": "viewer.js",
       "lineRange": [
-        1966,
-        1966
+        2092,
+        2092
       ],
       "summary": "切换单图双图；从全览切换时按焦点或中央缩略图选择起点。",
       "tags": [
@@ -3320,7 +3320,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3329,8 +3329,8 @@
       "name": "refresh",
       "filePath": "viewer.js",
       "lineRange": [
-        1986,
-        1986
+        2112,
+        2112
       ],
       "summary": "刷新图库和已发现图片，并用身份别名验证虚拟列表替换容器。",
       "tags": [
@@ -3339,7 +3339,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3348,8 +3348,8 @@
       "name": "storageChanged",
       "filePath": "viewer.js",
       "lineRange": [
-        2035,
-        2035
+        2196,
+        2196
       ],
       "summary": "应用保存的偏好并更新工具栏、全览倍率和当前布局。",
       "tags": [
@@ -3358,7 +3358,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3367,8 +3367,8 @@
       "name": "fullscreen",
       "filePath": "viewer.js",
       "lineRange": [
-        2310,
-        2310
+        2471,
+        2471
       ],
       "summary": "fullscreen 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3377,7 +3377,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3386,8 +3386,8 @@
       "name": "startHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2350,
-        2350
+        2511,
+        2511
       ],
       "summary": "startHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3396,7 +3396,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3405,8 +3405,8 @@
       "name": "followHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2394,
-        2394
+        2555,
+        2555
       ],
       "summary": "followHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3415,7 +3415,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3424,8 +3424,8 @@
       "name": "endHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2421,
-        2421
+        2582,
+        2582
       ],
       "summary": "endHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3434,7 +3434,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3462,8 +3462,8 @@
       "name": "rememberSourceAnchors",
       "filePath": "viewer.js",
       "lineRange": [
-        465,
-        465
+        469,
+        469
       ],
       "summary": "记录当前图库条目相对页面与嵌套滚动容器的位置，供关闭后即时恢复和定位。",
       "tags": [
@@ -3473,7 +3473,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3482,8 +3482,8 @@
       "name": "revealSource",
       "filePath": "viewer.js",
       "lineRange": [
-        512,
-        512
+        516,
+        516
       ],
       "summary": "关闭查看器后优先恢复记录的页面坐标，再用 instant 滚动定位来源图片并播放短暂回跳提示；虚拟节点可在限时内重新挂载，用户输入可取消。",
       "tags": [
@@ -3493,7 +3493,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3502,8 +3502,8 @@
       "name": "centralOverviewIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        1115,
-        1115
+        1124,
+        1124
       ],
       "summary": "返回阅览视口中心最近的可见缩略图索引。",
       "tags": [
@@ -3512,7 +3512,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3521,8 +3521,8 @@
       "name": "captureOverviewAnchor",
       "filePath": "viewer.js",
       "lineRange": [
-        1137,
-        1137
+        1146,
+        1146
       ],
       "summary": "保存中央缩略图及其相对视口位置。",
       "tags": [
@@ -3531,7 +3531,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3540,8 +3540,8 @@
       "name": "restoreOverviewAnchor",
       "filePath": "viewer.js",
       "lineRange": [
-        1144,
-        1144
+        1153,
+        1153
       ],
       "summary": "布局或图库变化后恢复中央缩略图锚点。",
       "tags": [
@@ -3550,7 +3550,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3559,8 +3559,8 @@
       "name": "pictureState",
       "filePath": "viewer.js",
       "lineRange": [
-        1785,
-        1785
+        1794,
+        1794
       ],
       "summary": "快照当前单图或双图、锁定、缩放、分隔线与来源状态。",
       "tags": [
@@ -3569,7 +3569,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3644,7 +3644,7 @@
         "page-style"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3653,8 +3653,8 @@
       "name": "centerSourceNode",
       "filePath": "viewer.js",
       "lineRange": [
-        480,
-        480
+        484,
+        484
       ],
       "summary": "用 instant 滚动将重新连接的来源图片置于网页或嵌套滚动视口中央。",
       "tags": [
@@ -3664,7 +3664,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3673,8 +3673,8 @@
       "name": "overviewCacheCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1352,
-        1352
+        1361,
+        1361
       ],
       "summary": "按视觉带和设置计算前后目标图片数量；自动前缓存初始一带，向前操作后扩为两带。",
       "tags": [
@@ -3683,7 +3683,7 @@
         "automatic-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3692,8 +3692,8 @@
       "name": "activateOverviewBackward",
       "filePath": "viewer.js",
       "lineRange": [
-        1358,
-        1358
+        1367,
+        1367
       ],
       "summary": "只在当前阅读轴收到明确向前输入后，将自动前缓存扩展到两视觉带并恢复需要的前向扫描。",
       "tags": [
@@ -3703,7 +3703,7 @@
         "lazy-scanning"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3712,8 +3712,8 @@
       "name": "overviewCacheWindow",
       "filePath": "viewer.js",
       "lineRange": [
-        1365,
-        1365
+        1374,
+        1374
       ],
       "summary": "把中央可见带和前后设置换算为独立、有界的缩略图预载区间。",
       "tags": [
@@ -3722,7 +3722,7 @@
         "bounds"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3731,8 +3731,8 @@
       "name": "scheduleOverviewCacheCheck",
       "filePath": "viewer.js",
       "lineRange": [
-        1542,
-        1542
+        1551,
+        1551
       ],
       "summary": "延迟重试缓存缺口检查，避免连续触发扫描。",
       "tags": [
@@ -3741,7 +3741,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3750,8 +3750,8 @@
       "name": "checkOverviewCache",
       "filePath": "viewer.js",
       "lineRange": [
-        1546,
-        1546
+        1555,
+        1555
       ],
       "summary": "根据可见图片和前后缓存余量提前触发对应方向的扫描。",
       "tags": [
@@ -3760,7 +3760,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3798,7 +3798,7 @@
         "layout"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3807,8 +3807,8 @@
       "name": "overviewVisibleRange",
       "filePath": "viewer.js",
       "lineRange": [
-        1339,
-        1339
+        1348,
+        1348
       ],
       "summary": "根据瀑布流空间索引计算可见范围，并在位置不变时复用结果。",
       "tags": [
@@ -3817,7 +3817,7 @@
         "cache"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3883,8 +3883,8 @@
       "name": "activeSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        567,
-        567
+        571,
+        571
       ],
       "summary": "捕获单图或双图活动栏可见部分作为模式切换反馈源。",
       "tags": [
@@ -3892,7 +3892,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3910,7 +3910,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3928,7 +3928,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3948,7 +3948,7 @@
         "overview-interaction"
       ],
       "complexity": "complex",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3957,8 +3957,8 @@
       "name": "overviewCardBox",
       "filePath": "viewer.js",
       "lineRange": [
-        1152,
-        1152
+        1161,
+        1161
       ],
       "summary": "读取固定布局赋给卡片的矩形，不使用图片自然尺寸重排框格。",
       "tags": [
@@ -3967,7 +3967,7 @@
         "geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3976,8 +3976,8 @@
       "name": "queueOverviewCommit",
       "filePath": "viewer.js",
       "lineRange": [
-        1157,
-        1157
+        1166,
+        1166
       ],
       "summary": "合并短时间的图库变化并延后布局提交；用户按住缩略图时暂挂会改变命中目标的更新。",
       "tags": [
@@ -3986,7 +3986,7 @@
         "input"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3995,8 +3995,8 @@
       "name": "setOverviewSize",
       "filePath": "viewer.js",
       "lineRange": [
-        649,
-        649
+        653,
+        653
       ],
       "summary": "限制并保存全览缩略图 25% 至 300% 大小，保持锚点并重算布局。",
       "tags": [
@@ -4004,7 +4004,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4013,8 +4013,8 @@
       "name": "overviewEdgeDistance",
       "filePath": "viewer.js",
       "lineRange": [
-        864,
-        864
+        869,
+        869
       ],
       "summary": "按阅读方向计算全览内容到指定端点的距离。",
       "tags": [
@@ -4022,7 +4022,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4031,8 +4031,8 @@
       "name": "updateOverviewStatus",
       "filePath": "viewer.js",
       "lineRange": [
-        980,
-        980
+        993,
+        993
       ],
       "summary": "分别显示两端的加载、失败、可重试暂停和图库边界提示。",
       "tags": [
@@ -4040,7 +4040,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4049,8 +4049,8 @@
       "name": "resetOverviewEdge",
       "filePath": "viewer.js",
       "lineRange": [
-        1015,
-        1015
+        1028,
+        1028
       ],
       "summary": "释放端点位移，并按结束状态执行回弹或平滑归位。",
       "tags": [
@@ -4058,7 +4058,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4067,8 +4067,8 @@
       "name": "pushOverviewEdge",
       "filePath": "viewer.js",
       "lineRange": [
-        1029,
-        1029
+        1042,
+        1042
       ],
       "summary": "在已知边界或端点扫描加载时按滚动量阻尼移动全览层。",
       "tags": [
@@ -4076,7 +4076,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4085,8 +4085,8 @@
       "name": "releaseOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2110,
-        2110
+        2271,
+        2271
       ],
       "summary": "在指针释放、取消、窗口失焦或无按键移动时结束拖拽，保护点击选择并刷新缓存需求。",
       "tags": [
@@ -4097,7 +4097,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4116,7 +4116,7 @@
         "controls"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4125,8 +4125,8 @@
       "name": "makeEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        364,
-        364
+        427,
+        427
       ],
       "summary": "创建图片条目，分离明确原图身份、资源别名与身份别名，避免共享缩略图及 SVG 占位图误合并。",
       "tags": [
@@ -4135,7 +4135,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4178,8 +4178,8 @@
       "name": "collectOverviewItems",
       "filePath": "viewer.js",
       "lineRange": [
-        1201,
-        1201
+        1210,
+        1210
       ],
       "summary": "按稳定槽位合并真实图片与待加载占位；保留已分配轨道，填入中间新图并删除失效占位。",
       "tags": [
@@ -4188,7 +4188,7 @@
         "placeholder"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4216,8 +4216,8 @@
       "name": "overviewEdgeIntent",
       "filePath": "viewer.js",
       "lineRange": [
-        1046,
-        1046
+        1059,
+        1059
       ],
       "summary": "在图库端点提供滚动阻力；只有同向累积意图达到阈值才解除暂停或结束状态并重试一次。",
       "tags": [
@@ -4226,7 +4226,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4251,8 +4251,8 @@
       "name": "overviewSourceLoads",
       "filePath": "viewer.js",
       "lineRange": [
-        869,
-        869
+        874,
+        874
       ],
       "summary": "确认当前扫描方向的缓存范围内，图库图像来源是否仍在实际网络加载。",
       "tags": [
@@ -4261,7 +4261,7 @@
         "source-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4270,8 +4270,8 @@
       "name": "overviewScanDemandSatisfied",
       "filePath": "viewer.js",
       "lineRange": [
-        881,
-        881
+        886,
+        886
       ],
       "summary": "检查当前缓存范围的缩略图任务、待解析槽位与额外图片发现缺口；任务在队列中不代表已解码。",
       "tags": [
@@ -4280,7 +4280,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4289,8 +4289,8 @@
       "name": "overviewSlotPending",
       "filePath": "viewer.js",
       "lineRange": [
-        896,
-        896
+        901,
+        901
       ],
       "summary": "按稳定槽位的有限重试次数判断空卡片是否仍需懒加载触发。",
       "tags": [
@@ -4299,7 +4299,7 @@
         "slot-attempts"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4308,8 +4308,8 @@
       "name": "scanResolvedSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        921,
-        921
+        936,
+        936
       ],
       "summary": "从同组图库条目、来源与稳定槽位创建扫描状态快照。",
       "tags": [
@@ -4318,7 +4318,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4327,8 +4327,8 @@
       "name": "scanResolvedProgress",
       "filePath": "viewer.js",
       "lineRange": [
-        938,
-        938
+        951,
+        951
       ],
       "summary": "比较扫描前后的同组图库来源、条目和稳定槽位身份，判断是否取得实际进展。",
       "tags": [
@@ -4337,7 +4337,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4346,8 +4346,8 @@
       "name": "scanViewportSourceLoad",
       "filePath": "viewer.js",
       "lineRange": [
-        944,
-        944
+        957,
+        957
       ],
       "summary": "只定位同组图库扫描视口附近尚未完成的有效图片来源，用于区分网络加载与无进展。",
       "tags": [
@@ -4356,7 +4356,7 @@
         "scoped-image"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4365,8 +4365,8 @@
       "name": "scanSlotSignature",
       "filePath": "viewer.js",
       "lineRange": [
-        1065,
-        1065
+        1078,
+        1078
       ],
       "summary": "为同组图库稳定槽位计算来源、顺序及待加载状态签名。",
       "tags": [
@@ -4375,7 +4375,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4384,8 +4384,8 @@
       "name": "scanOneSlotSignature",
       "filePath": "viewer.js",
       "lineRange": [
-        1074,
-        1074
+        1085,
+        1085
       ],
       "summary": "计算一个待加载槽位的来源与状态签名，为有限重试计数提供依据。",
       "tags": [
@@ -4394,7 +4394,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4403,8 +4403,8 @@
       "name": "explicitScanBoundary",
       "filePath": "viewer.js",
       "lineRange": [
-        1080,
-        1080
+        1089,
+        1089
       ],
       "summary": "仅当完整可靠的 ARIA 槽位顺序、总数和图片解析状态一致时确认图库端点。",
       "tags": [
@@ -4413,7 +4413,7 @@
         "aria"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4422,8 +4422,8 @@
       "name": "scanSourceFailureCount",
       "filePath": "viewer.js",
       "lineRange": [
-        1097,
-        1097
+        1106,
+        1106
       ],
       "summary": "只统计扫描方向上的同组图库失败图像来源，不把无关页面图片算作扫描失败。",
       "tags": [
@@ -4432,7 +4432,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4441,8 +4441,8 @@
       "name": "queueGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2071,
-        2071
+        2232,
+        2232
       ],
       "summary": "以尾随延迟和最大等待合并 DOM 与图片事件；扫描期间将图库刷新延后至扫描结束。",
       "tags": [
@@ -4451,7 +4451,7 @@
         "scan-scheduling"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4476,8 +4476,8 @@
       "name": "ordered",
       "filePath": "gallery.js",
       "lineRange": [
-        662,
-        662
+        726,
+        726
       ],
       "summary": "当所有候选均有唯一有效 ARIA 序号时，按该序号排列图片节点和图库槽位。",
       "tags": [
@@ -4486,7 +4486,7 @@
         "stable-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4495,8 +4495,8 @@
       "name": "overviewImageRange",
       "filePath": "viewer.js",
       "lineRange": [
-        1377,
-        1377
+        1386,
+        1386
       ],
       "summary": "按真实图片来源统计前后缩略图缓存；空白预留槽不消耗目标图片数量。",
       "tags": [
@@ -4505,7 +4505,7 @@
         "pending-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4514,8 +4514,8 @@
       "name": "overviewNeedsDiscovery",
       "filePath": "viewer.js",
       "lineRange": [
-        1381,
-        1381
+        1390,
+        1390
       ],
       "summary": "在图片缓存余量前检查一个视觉带，决定何时继续发现同组图库图片。",
       "tags": [
@@ -4524,7 +4524,7 @@
         "preload"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4533,8 +4533,8 @@
       "name": "scanSlotPending",
       "filePath": "viewer.js",
       "lineRange": [
-        899,
-        899
+        904,
+        904
       ],
       "summary": "判断空图库槽位是否属于当前全览需求，忽略视口投影之外的无关旧槽。",
       "tags": [
@@ -4542,7 +4542,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4551,8 +4551,8 @@
       "name": "overviewPendingForSide",
       "filePath": "viewer.js",
       "lineRange": [
-        908,
-        908
+        923,
+        923
       ],
       "summary": "按阅读方向把可见空槽需求分配给前向或后向扫描。",
       "tags": [
@@ -4560,7 +4560,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4569,8 +4569,8 @@
       "name": "clearOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2098,
-        2098
+        2259,
+        2259
       ],
       "summary": "立即结束全览按压状态，释放可信指针捕获并恢复仍在查看器中的动画。",
       "tags": [
@@ -4578,7 +4578,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4587,8 +4587,8 @@
       "name": "scrollSourceTo",
       "filePath": "viewer.js",
       "lineRange": [
-        912,
-        912
+        927,
+        927
       ],
       "summary": "沿源图库滚动轴使用 instant 行为移动一个扫描区段，并返回实际滚动位置。",
       "tags": [
@@ -4596,7 +4596,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4605,8 +4605,8 @@
       "name": "moveHeldImage",
       "filePath": "viewer.js",
       "lineRange": [
-        2399,
-        2399
+        2560,
+        2560
       ],
       "summary": "按指针位移更新普通图或双图查看器的拖拽位置，不依赖系统滚动平滑样式。",
       "tags": [
@@ -4614,7 +4614,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4623,8 +4623,8 @@
       "name": "visibleSourceBox",
       "filePath": "viewer.js",
       "lineRange": [
-        483,
-        483
+        487,
+        487
       ],
       "summary": "将来源图片可见区域裁切到页面视口与嵌套滚动容器边界，作为返回提示的落点。",
       "tags": [
@@ -4632,7 +4632,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4641,8 +4641,8 @@
       "name": "finishSourceReturn",
       "filePath": "viewer.js",
       "lineRange": [
-        500,
-        500
+        504,
+        504
       ],
       "summary": "居中来源节点并在网页 top layer 播放缩图及目标描边。",
       "tags": [
@@ -4650,7 +4650,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4659,8 +4659,8 @@
       "name": "centralOverviewItem",
       "filePath": "viewer.js",
       "lineRange": [
-        1120,
-        1120
+        1129,
+        1129
       ],
       "summary": "找出阅览视口中离画面中心最近的图片卡片。",
       "tags": [
@@ -4668,7 +4668,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4677,8 +4677,8 @@
       "name": "overviewSnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        508,
-        508
+        512,
+        512
       ],
       "summary": "截取全览视口中的中央缩略图，以便关闭时将其动画回网页来源。",
       "tags": [
@@ -4686,7 +4686,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4695,8 +4695,8 @@
       "name": "nestedGalleryRows",
       "filePath": "gallery.js",
       "lineRange": [
-        270,
-        270
+        333,
+        333
       ],
       "summary": "使用最多 24 行、每行最多 10 张图的样本判断重复行，图库总图数不作为拒绝条件。",
       "tags": [
@@ -4705,7 +4705,7 @@
         "bounded-sampling"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4850,8 +4850,8 @@
       "name": "entryMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        516,
-        516
+        580,
+        580
       ],
       "summary": "以身份键、槽位与身份别名建立索引，避免共享占位符引起误匹配。",
       "tags": [
@@ -4860,7 +4860,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4869,8 +4869,8 @@
       "name": "refreshScrollCandidates",
       "filePath": "viewer.js",
       "lineRange": [
-        287,
-        287
+        291,
+        291
       ],
       "summary": "发现同组图库祖先中的可滚动及潜在 overflow 容器，保存原始坐标以供懒加载扫描后恢复。",
       "tags": [
@@ -4878,7 +4878,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4887,8 +4887,8 @@
       "name": "scanTargetFor",
       "filePath": "viewer.js",
       "lineRange": [
-        305,
-        305
+        309,
+        309
       ],
       "summary": "优先选取已溢出的近端滚动容器，无容器溢出时保留可增长的 auto 容器。",
       "tags": [
@@ -4896,7 +4896,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4905,8 +4905,8 @@
       "name": "refreshScanScroller",
       "filePath": "viewer.js",
       "lineRange": [
-        323,
-        323
+        327,
+        327
       ],
       "summary": "在图库尺寸变化后更新扫描容器和方向游标，避免继续驱动已不适用的滚动轴。",
       "tags": [
@@ -4914,7 +4914,7 @@
         "scan-state"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4923,8 +4923,8 @@
       "name": "cancelGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2054,
-        2054
+        2215,
+        2215
       ],
       "summary": "关闭查看器时取消延迟图库刷新并清空排队状态。",
       "tags": [
@@ -4932,7 +4932,7 @@
         "cleanup"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4941,8 +4941,8 @@
       "name": "flushGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2057,
-        2057
+        2218,
+        2218
       ],
       "summary": "合并刷新当前图库，比较来源签名并在内容确有变化时恢复扫描状态。",
       "tags": [
@@ -4950,7 +4950,7 @@
         "scan-resume"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4959,8 +4959,8 @@
       "name": "collectSnapshot",
       "filePath": "gallery.js",
       "lineRange": [
-        689,
-        689
+        753,
+        753
       ],
       "summary": "在有界同组范围内收集图片和槽位，将每个媒体候选关联到最早匹配的祖先槽位。",
       "tags": [
@@ -4969,7 +4969,7 @@
         "slot-matching"
       ],
       "complexity": "complex",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4978,8 +4978,8 @@
       "name": "slotMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        670,
-        670
+        734,
+        734
       ],
       "summary": "按 DOM 祖先建立槽位索引，保留原槽位数组中最早匹配项，避免逐候选扫描整组槽位。",
       "tags": [
@@ -4988,7 +4988,7 @@
         "performance"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4997,8 +4997,8 @@
       "name": "scanRefreshDue",
       "filePath": "viewer.js",
       "lineRange": [
-        281,
-        281
+        285,
+        285
       ],
       "summary": "限制扫描期间的全量图库刷新频率：持续结构变化时按 240ms 采样，安静时保留 600ms 兜底。",
       "tags": [
@@ -5007,7 +5007,7 @@
         "performance"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5016,8 +5016,8 @@
       "name": "queueOverviewThumbnail",
       "filePath": "viewer.js",
       "lineRange": [
-        1459,
-        1459
+        1468,
+        1468
       ],
       "summary": "为可见或缓存范围内的图库项创建、复用并排队缩略图加载任务。",
       "tags": [
@@ -5026,7 +5026,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5035,8 +5035,8 @@
       "name": "pumpOverviewThumbnails",
       "filePath": "viewer.js",
       "lineRange": [
-        1452,
-        1452
+        1461,
+        1461
       ],
       "summary": "按有界并发启动仍有效的缩略图任务。",
       "tags": [
@@ -5045,7 +5045,7 @@
         "bounded-concurrency"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5054,8 +5054,8 @@
       "name": "startOverviewThumbnail",
       "filePath": "viewer.js",
       "lineRange": [
-        1431,
-        1431
+        1440,
+        1440
       ],
       "summary": "加载并解码缩略图，处理超时、失败和当前任务身份校验。",
       "tags": [
@@ -5064,7 +5064,7 @@
         "decode"
       ],
       "complexity": "moderate",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5073,8 +5073,8 @@
       "name": "markOverviewThumbnailReady",
       "filePath": "viewer.js",
       "lineRange": [
-        1397,
-        1397
+        1406,
+        1406
       ],
       "summary": "确认当前缩略图任务已解码，更新卡片状态并安排布局和缓存复查。",
       "tags": [
@@ -5083,7 +5083,7 @@
         "decode"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5092,8 +5092,8 @@
       "name": "failOverviewThumbnail",
       "filePath": "viewer.js",
       "lineRange": [
-        1418,
-        1418
+        1427,
+        1427
       ],
       "summary": "标记缩略图失败，释放并发占用并按退避计划安排重试。",
       "tags": [
@@ -5102,7 +5102,7 @@
         "retry"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5111,8 +5111,8 @@
       "name": "dropOverviewThumbnail",
       "filePath": "viewer.js",
       "lineRange": [
-        1388,
-        1388
+        1397,
+        1397
       ],
       "summary": "取消缩略图任务，释放活动槽位并按需移除图像来源。",
       "tags": [
@@ -5121,7 +5121,7 @@
         "cancellation"
       ],
       "complexity": "simple",
-      "sourceHash": "388b215763aa4f29eb3946c12bf788214e5f60bb16d3679b852bb81982fe99fc",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5169,7 +5169,7 @@
         "image-identity",
         "proxy-source"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
         24,
@@ -5187,11 +5187,11 @@
         "dom-order",
         "shadow-dom"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        170,
-        170
+        233,
+        233
       ]
     },
     {
@@ -5205,11 +5205,11 @@
         "mixed-media",
         "dom-order"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        178,
-        178
+        241,
+        241
       ]
     },
     {
@@ -5222,11 +5222,11 @@
         "image-source",
         "css-background"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        77,
-        77
+        109,
+        109
       ]
     },
     {
@@ -5239,11 +5239,11 @@
         "gallery-structure",
         "media"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        224,
-        224
+        287,
+        287
       ]
     },
     {
@@ -5256,11 +5256,11 @@
         "gallery-structure",
         "repeated-cards"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        231,
-        231
+        294,
+        294
       ]
     },
     {
@@ -5274,11 +5274,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        244,
-        244
+        307,
+        307
       ]
     },
     {
@@ -5291,11 +5291,11 @@
         "image-source",
         "detail-link"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        297,
-        297
+        360,
+        360
       ]
     },
     {
@@ -5309,11 +5309,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        255,
-        255
+        318,
+        318
       ]
     },
     {
@@ -5326,11 +5326,11 @@
         "visibility",
         "gallery-discovery"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        219,
-        219
+        282,
+        282
       ]
     },
     {
@@ -5344,11 +5344,11 @@
         "eligibility",
         "placeholders"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        337,
-        337
+        400,
+        400
       ]
     },
     {
@@ -5362,11 +5362,11 @@
         "thumbnail",
         "lazy-loading"
       ],
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        347,
-        347
+        410,
+        410
       ]
     },
     {
@@ -5375,8 +5375,8 @@
       "name": "matchAliases",
       "filePath": "gallery.js",
       "lineRange": [
-        493,
-        493
+        557,
+        557
       ],
       "summary": "优先返回图片身份别名，并为未带新字段的已有条目保留兼容回退。",
       "tags": [
@@ -5385,7 +5385,7 @@
         "deduplication"
       ],
       "complexity": "simple",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5403,7 +5403,7 @@
         "gallery-discovery"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5412,8 +5412,8 @@
       "name": "canonicalEvidenceFor",
       "filePath": "gallery.js",
       "lineRange": [
-        150,
-        150
+        209,
+        209
       ],
       "summary": "为图片提取可用于身份判断的显式原图来源，不将普通缩略图当作权威身份。",
       "tags": [
@@ -5421,7 +5421,7 @@
         "gallery-discovery"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5430,8 +5430,8 @@
       "name": "matchingNodes",
       "filePath": "gallery.js",
       "lineRange": [
-        476,
-        476
+        540,
+        540
       ],
       "summary": "为候选媒体建立临时来源缓存并复用条目匹配索引，检查虚拟图库的回连候选。",
       "tags": [
@@ -5439,7 +5439,211 @@
         "gallery-discovery"
       ],
       "complexity": "moderate",
-      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/picture-selection.test.cjs",
+      "type": "file",
+      "name": "picture-selection.test.cjs",
+      "filePath": "tests/picture-selection.test.cjs",
+      "summary": "验证 picture 的选中来源、歧义及未选资源对身份和加载的影响。",
+      "tags": [
+        "test",
+        "regression"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "5c9d66e86ae75599d3e5d8604400787e999167a8f1d230105e0ea9992e9e8b5f",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/scan-picture-progress.test.cjs",
+      "type": "file",
+      "name": "scan-picture-progress.test.cjs",
+      "filePath": "tests/scan-picture-progress.test.cjs",
+      "summary": "验证图片来源及空槽变化的扫描进度，排除未选备选源。",
+      "tags": [
+        "test",
+        "regression"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "599d1ed1ef49d4475b9c7fbbc123cd1089f3787a36676e9393d668abed238dcc",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/viewer-source-update.test.cjs",
+      "type": "file",
+      "name": "viewer-source-update.test.cjs",
+      "filePath": "tests/viewer-source-update.test.cjs",
+      "summary": "验证来源版本缓存、虚拟槽身份、刷新与关闭竞态，以及大图库快照索引复杂度。",
+      "tags": [
+        "test",
+        "regression"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "b43efcdf77e93d5fd53ee3704e08065e61683972d00ed394dd5937fe8a908295",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:pictureSourceSelection",
+      "type": "function",
+      "name": "pictureSourceSelection",
+      "filePath": "gallery.js",
+      "lineRange": [
+        54,
+        54
+      ],
+      "summary": "处理 pictureSourceSelection 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "ef61c2002830cb0f2a1602de0f5796807ce348d8d7f5f74064c73bf2ec80f026",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:scanSlotHasSelectedSource",
+      "type": "function",
+      "name": "scanSlotHasSelectedSource",
+      "filePath": "viewer.js",
+      "lineRange": [
+        913,
+        913
+      ],
+      "summary": "处理 scanSlotHasSelectedSource 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:entryIdentity",
+      "type": "function",
+      "name": "entryIdentity",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1909,
+        1909
+      ],
+      "summary": "处理 entryIdentity 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:entrySourceRevision",
+      "type": "function",
+      "name": "entrySourceRevision",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1918,
+        1918
+      ],
+      "summary": "处理 entrySourceRevision 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:findEntryIndex",
+      "type": "function",
+      "name": "findEntryIndex",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1921,
+        1921
+      ],
+      "summary": "处理 findEntryIndex 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:createPreviousEntrySnapshotIndex",
+      "type": "function",
+      "name": "createPreviousEntrySnapshotIndex",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1931,
+        1931
+      ],
+      "summary": "处理 createPreviousEntrySnapshotIndex 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:previousEntrySnapshot",
+      "type": "function",
+      "name": "previousEntrySnapshot",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1948,
+        1948
+      ],
+      "summary": "处理 previousEntrySnapshot 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:refreshSingleSource",
+      "type": "function",
+      "name": "refreshSingleSource",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1962,
+        1962
+      ],
+      "summary": "处理 refreshSingleSource 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:viewer.js:refreshCompareSource",
+      "type": "function",
+      "name": "refreshCompareSource",
+      "filePath": "viewer.js",
+      "lineRange": [
+        1986,
+        1986
+      ],
+      "summary": "处理 refreshCompareSource 相关的来源身份、缓存或扫描刷新。",
+      "tags": [
+        "image-identity",
+        "source-refresh"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "4f7837c7e0487fd5a3c5580648ed38720522ee08e6c357dbacfe62fc611fbb29",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
@@ -11428,6 +11632,110 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:sources",
+      "target": "function:gallery.js:pictureSourceSelection",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:gallery.js:canonicalEvidenceFor",
+      "target": "function:gallery.js:pictureSourceSelection",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:gallery.js:pictureSourceSelection",
+      "target": "file:tests/picture-selection.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refresh",
+      "target": "function:viewer.js:createPreviousEntrySnapshotIndex",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refresh",
+      "target": "function:viewer.js:previousEntrySnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refresh",
+      "target": "function:viewer.js:refreshSingleSource",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refresh",
+      "target": "function:viewer.js:refreshCompareSource",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:createPreviousEntrySnapshotIndex",
+      "target": "file:tests/viewer-source-update.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:previousEntrySnapshot",
+      "target": "file:tests/viewer-source-update.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refreshSingleSource",
+      "target": "file:tests/viewer-source-update.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:refreshCompareSource",
+      "target": "file:tests/viewer-source-update.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:scanResolvedSnapshot",
+      "target": "function:viewer.js:scanSlotHasSelectedSource",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
+    },
+    {
+      "source": "function:viewer.js:scanSlotHasSelectedSource",
+      "target": "file:tests/scan-picture-progress.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片来源选择与刷新路径的依赖及回归。"
     }
   ],
   "layers": [

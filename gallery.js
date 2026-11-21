@@ -51,6 +51,38 @@
     }
     return { identity: '', ambiguous: false };
   }
+  function pictureSourceSelection(node, picture = node?.closest?.('picture')) {
+    const current = url(node?.currentSrc);
+    const fallback = new Set([...srcset(node?.getAttribute?.('srcset')), url(node?.getAttribute?.('src'))].filter(Boolean));
+    if (!picture || !current) return { sources: [], fallback: fallback.has(current), attributes: [], includeVariants: false, ambiguous: false };
+    const matchingSources = [...picture.querySelectorAll('source')].filter(source => {
+      let mediaMatches = true;
+      if (source.media) {
+        try { mediaMatches = typeof matchMedia === 'function' && matchMedia(source.media).matches; }
+        catch { mediaMatches = false; }
+      }
+      if (!mediaMatches) return false;
+      // Use native srcset only. data-srcset is a page's lazy-loader hint, not
+      // proof that the browser selected this source.
+      return srcset(source.getAttribute('srcset')).some(candidate => url(candidate) === current);
+    });
+    const matchesFallback = fallback.has(current);
+    const attributesFor = source => canonicalSourceAttributes.map(name => ({ kind: name, source: url(source.getAttribute(name)) })).filter(item => item.source);
+    const evidence = matchingSources.map(source => {
+      const attributes = attributesFor(source);
+      return { attributes, identity: canonicalIdentityFrom(attributes) };
+    });
+    if (matchesFallback) return { sources: matchingSources, fallback: true, attributes: [], includeVariants: false,
+      ambiguous: evidence.some(item => item.attributes.length > 0 || item.identity.ambiguous), evidence };
+    if (matchingSources.length === 1) return { sources: matchingSources, fallback: false, attributes: evidence[0].attributes,
+      includeVariants: !evidence[0].identity.ambiguous, ambiguous: evidence[0].identity.ambiguous, evidence };
+    if (!matchingSources.length) return { sources: [], fallback: false, attributes: [], includeVariants: false, ambiguous: false, evidence };
+    const sameIdentity = evidence.every(item => !item.identity.ambiguous && item.identity.identity === evidence[0].identity.identity);
+    const ambiguous = !sameIdentity;
+    return { sources: matchingSources, fallback: false,
+      attributes: ambiguous ? [] : evidence.flatMap(item => item.attributes),
+      includeVariants: !ambiguous && Boolean(evidence[0].identity.identity), ambiguous, evidence };
+  }
   function srcset(value) {
     if (!value || value.startsWith('data:')) return [];
     const candidates = [];
@@ -92,12 +124,19 @@
     if (node.tagName !== 'IMG') {
       const result = backgroundSources(node);
       discoveryCache?.sources.set(node, result);
+      discoveryCache?.identitySources.set(node, [...result]);
       return [...result];
     }
-    const current = url(node.currentSrc || node.getAttribute('src'));
+    const selectedCurrent = url(node.currentSrc);
+    const current = selectedCurrent || url(node.getAttribute('src'));
     const candidates = [];
     const declaredSources = [];
     const canonicalSources = [];
+    const picture = node.closest('picture');
+    const pictureSelection = pictureSourceSelection(node, picture);
+    const suppressFallbackSources = Boolean(picture && (pictureSelection.includeVariants || pictureSelection.ambiguous ||
+      pictureSelection.fallback && pictureSelection.sources.length));
+    const identitySources = [];
     const anchor = node.closest('a[href]');
     if (anchor) {
       const linked = url(anchor.href);
@@ -105,47 +144,67 @@
       if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) {
         candidates.push(resolved);
         declaredSources.push(resolved);
+        identitySources.push(resolved);
         canonicalSources.push({ kind: 'link', source: resolved });
       }
     }
     for (const name of sourceAttributes) {
       const value = url(node.getAttribute(name));
       candidates.push(value);
+      identitySources.push(value);
       if (value) declaredSources.push(value);
       if (value && canonicalSourceAttributeSet.has(name)) canonicalSources.push({ kind: name, source: value });
     }
     const raw = unwrap(current);
-    if (raw !== current) candidates.push(raw);
-    for (const name of srcsetAttributes) {
-      const values = srcset(node.getAttribute(name));
-      candidates.push(...values);
-      declaredSources.push(...values);
-    }
-    const picture = node.closest('picture');
-    if (picture) {
-      for (const source of picture.querySelectorAll('source')) {
-        if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png|svg\+xml)/.test(source.type))) {
-          for (const name of srcsetAttributes) {
-            const values = srcset(source.getAttribute(name));
-            candidates.push(...values);
-            declaredSources.push(...values);
-          }
-          for (const name of sourceAttributes) {
-            const value = url(source.getAttribute(name));
-            candidates.push(value);
-            if (value) declaredSources.push(value);
-            if (value && canonicalSourceAttributeSet.has(name)) canonicalSources.push({ kind: name, source: value });
-          }
-        }
+    if (raw !== current) { candidates.push(raw); identitySources.push(raw); }
+    if (!suppressFallbackSources) {
+      for (const name of srcsetAttributes) {
+        const values = srcset(node.getAttribute(name));
+        candidates.push(...values);
+        identitySources.push(...values);
+        declaredSources.push(...values);
       }
     }
-    candidates.push(current, url(node.getAttribute('src')));
+    if (pictureSelection.includeVariants) {
+      for (const source of pictureSelection.sources) {
+        const values = srcset(source.getAttribute('srcset'));
+        candidates.push(...values);
+        identitySources.push(...values);
+        declaredSources.push(...values);
+      }
+    }
+    for (const item of pictureSelection.attributes) {
+      candidates.push(item.source);
+      identitySources.push(item.source);
+      declaredSources.push(item.source);
+      canonicalSources.push(item);
+    }
+    candidates.push(current);
+    identitySources.push(current);
+    const fallbackSrc = url(node.getAttribute('src'));
+    if (!suppressFallbackSources && fallbackSrc !== current) {
+      candidates.push(fallbackSrc);
+      identitySources.push(fallbackSrc);
+    }
     const result = unique(candidates).filter(value => !(/^data:image\//i.test(value) && node.complete &&
       node.naturalWidth > 0 && node.naturalWidth <= 2 && node.naturalHeight <= 2));
     discoveryCache?.sources.set(node, result);
+    discoveryCache?.identitySources.set(node, unique(identitySources).filter(value => result.includes(value)));
     discoveryCache?.declaredSources.set(node, unique(declaredSources));
-    discoveryCache?.canonicalEvidence.set(node, canonicalIdentityFrom(canonicalSources));
+    let canonicalEvidence = canonicalIdentityFrom(canonicalSources);
+    if (pictureSelection.ambiguous) {
+      const imageEvidence = canonicalIdentityFrom(canonicalSources.filter(item => item.kind === 'link' || canonicalSourceAttributeSet.has(item.kind) && !pictureSelection.attributes.some(selected => selected.kind === item.kind && selected.source === item.source)));
+      const pictureIdentities = pictureSelection.evidence?.map(item => item.identity) || [];
+      const agreesWithImage = imageEvidence.identity && pictureIdentities.every(item => !item.ambiguous && (!item.identity || item.identity === imageEvidence.identity));
+      if (!agreesWithImage) canonicalEvidence = { identity: '', ambiguous: true };
+      else canonicalEvidence = imageEvidence;
+    }
+    discoveryCache?.canonicalEvidence.set(node, canonicalEvidence);
     return [...result];
+  }
+  function identitySourcesFor(node) {
+    const cached = discoveryCache?.identitySources.get(node);
+    return cached ? [...cached] : sources(node).map(key);
   }
   function canonicalEvidenceFor(node) {
     const cached = discoveryCache?.canonicalEvidence.get(node);
@@ -158,13 +217,17 @@
       if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) result.push({ kind: 'link', source: resolved });
     }
     for (const name of canonicalSourceAttributes) result.push({ kind: name, source: url(node.getAttribute?.(name)) });
-    const picture = node.closest?.('picture');
-    if (picture) for (const source of picture.querySelectorAll('source')) {
-      if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png|svg\+xml)/.test(source.type))) {
-        for (const name of canonicalSourceAttributes) result.push({ kind: name, source: url(source.getAttribute(name)) });
-      }
+    const base = canonicalIdentityFrom(result);
+    const pictureSelection = pictureSourceSelection(node);
+    if (!pictureSelection.sources.length || !pictureSelection.attributes.length) {
+      if (!pictureSelection.ambiguous) return base;
     }
-    return canonicalIdentityFrom(result);
+    if (pictureSelection.ambiguous) {
+      const sourceEvidence = pictureSelection.evidence?.map(item => item.identity) || [];
+      const agreesWithBase = base.identity && sourceEvidence.every(item => !item.ambiguous && (!item.identity || item.identity === base.identity));
+      return agreesWithBase ? base : { identity: '', ambiguous: true };
+    }
+    return canonicalIdentityFrom([...result, ...pictureSelection.attributes]);
   }
   let discoveryCache = null;
   function images(root = document) {
@@ -379,7 +442,8 @@
     const svgPlaceholder = hasExplicitPrimary
       ? liveSvgSources.find(value => value !== primaryKey) || ''
       : '';
-    const identityAliases = svgPlaceholder ? aliases.filter(value => value !== svgPlaceholder) : aliases;
+    const identityAliases = unique(identitySourcesFor(node).map(key));
+    const filteredIdentityAliases = svgPlaceholder ? identityAliases.filter(value => value !== svgPlaceholder) : identityAliases;
     const rect = node.getBoundingClientRect?.() || {};
     const thumb = thumbSource(node, variants);
     const knownSize = node.naturalWidth > 2 && node.naturalHeight > 2 && url(node.currentSrc || node.getAttribute?.('src')) === thumb;
@@ -391,7 +455,7 @@
       : declared && Number(declared[1]) > 0 && Number(declared[2]) > 0 ? Number(declared[1]) / Number(declared[2])
       : rect.width > 0 && rect.height > 0 ? rect.width / rect.height : 1;
     return {
-      key: primaryKey, aliases, identityAliases, canonicalIdentity: canonicalEvidence.identity,
+      key: primaryKey, aliases, identityAliases: filteredIdentityAliases, canonicalIdentity: canonicalEvidence.identity,
       canonicalAmbiguous: canonicalEvidence.ambiguous, sources: variants, thumb,
       title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio,
       aspectRatioSource: knownSize ? 'intrinsic' : width > 0 && height > 0 || declared ? 'declared'
@@ -475,12 +539,12 @@
   }
   function matchingNodes(entries, nodes) {
     const previous = discoveryCache;
-    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), identitySources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
     try {
       const matcher = entryMatcher(entries), matched = new Set();
       for (const node of nodes) {
         if (!node?.isConnected) continue;
-        const candidates = sources(node).map(key);
+        const candidates = identitySourcesFor(node);
         const liveKey = candidates.find(value => !/^data:image\/(?:gif|svg\+xml)/i.test(value)) || candidates[0] || '';
         const canonicalEvidence = canonicalEvidenceFor(node);
         const candidate = { key: liveKey, aliases: candidates, identityAliases: candidates,
@@ -687,7 +751,7 @@
     };
   }
   function collectSnapshot(source, preferred = null, scopeHint = null) {
-    const matches = node => [node.currentSrc, node.src, ...sources(node)].some(value => value && (value === source || key(value) === key(source)));
+    const matches = node => [node.currentSrc, ...identitySourcesFor(node)].some(value => value && (value === source || key(value) === key(source)));
     let allMedia;
     const pageMedia = () => allMedia ||= [...images(), ...mediaNodes(document, true, true)];
     const seed = preferred?.isConnected && matches(preferred) ? preferred : pageMedia().find(matches);
@@ -744,7 +808,7 @@
   }
   function collect(source, preferred = null, scopeHint = null) {
     const previous = discoveryCache;
-    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), identitySources: new WeakMap(), declaredSources: new WeakMap(), canonicalEvidence: new WeakMap() };
     try { return collectSnapshot(source, preferred, scopeHint); }
     finally { discoveryCache = previous; }
   }

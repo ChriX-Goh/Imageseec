@@ -199,15 +199,19 @@
 
   class ImagePool {
     constructor() { this.records = new Map(); this.queue = []; this.active = 0; this.closed = false; }
+    cacheKey(entry) {
+      return JSON.stringify([entry.key, ...(entry.sources || [])]);
+    }
     get(entry, urgent = false) {
-      const old = this.records.get(entry.key);
+      const key = this.cacheKey(entry);
+      const old = this.records.get(key);
       if (old) {
         if (urgent && !old.started) { this.queue = this.queue.filter(r => r !== old); this.queue.unshift(old); this.pump(); }
         return old.promise;
       }
-      const record = { entry, started: false, done: false, cancelled: false, img: new Image() };
+      const record = { key, entry, started: false, done: false, cancelled: false, img: new Image() };
       record.promise = new Promise(resolve => { record.resolve = resolve; });
-      this.records.set(entry.key, record);
+      this.records.set(key, record);
       if (urgent) this.queue.unshift(record); else this.queue.push(record);
       this.pump();
       return record.promise;
@@ -404,7 +408,7 @@
     const message = $('.message');
     const strip = $('.strip');
     const form = $('.settings');
-    let closed = false, serial = 0, scale = 1, panX = 0, panY = 0, width = 0, height = 0, hold = null, scanTimer = 0, scanQueuedAt = 0, galleryRefreshQueued = false, wasFullscreen = false, returningToPage = false, lastWheel = 0, lastFineWheel = 0;
+    let closed = false, serial = 0, singleSourceRefreshId = 0, compareSourceRefreshIds = [0, 0], scale = 1, panX = 0, panY = 0, width = 0, height = 0, hold = null, scanTimer = 0, scanQueuedAt = 0, galleryRefreshQueued = false, wasFullscreen = false, returningToPage = false, lastWheel = 0, lastFineWheel = 0;
     let lockedScale = null;
     let preset = null, rulerMaximum = 100, sliding = false;
     let compareEnabled = settings.compareEnabled, compareLeft = index, compareRight = index + 1, activePane = 0, lockedPane = null, pairNeedsAnchor = false;
@@ -798,13 +802,14 @@
         for (let offset = 0; offset <= Math.max(settings.cacheBefore, settings.cacheAfter); offset++) {
           for (const n of offset === 0 ? [center] : [center - offset, center + offset]) {
             if (n < 0 || n >= entries.length || n < center - settings.cacheBefore || n > center + settings.cacheAfter) continue;
-            if (keys.has(entries[n].key)) continue;
-            keys.add(entries[n].key); nearby.push(entries[n]);
+            const entry = entries[n], key = pool.cacheKey(entry);
+            if (keys.has(key)) continue;
+            keys.add(key); nearby.push({ entry, index: n });
           }
         }
       }
       pool.retain(keys);
-      for (const entry of nearby) pool.get(entry, centers.includes(entries.findIndex(item => item.key === entry.key)));
+      for (const item of nearby) pool.get(item.entry, centers.includes(item.index));
     }
     function renderStrip() {
       const container = $('.thumbs');
@@ -905,6 +910,16 @@
       // current viewport in a loading state indefinitely.
       return item?.slotNode === slot.node && overviewSlotPending(item, side);
     }
+    function scanSlotHasSelectedSource(slot) {
+      if (!slot?.node) return false;
+      const media = [slot.node, ...slot.node.querySelectorAll('img, [role="img"], [data-bg], [data-background], [data-background-image], [data-image], [data-image-src]')];
+      return media.some(node => {
+        const selected = node.tagName === 'IMG'
+          ? node.currentSrc || node.getAttribute('src') || ''
+          : lens.gallery.sources(node)[0] || '';
+        return Boolean(selected) && !/^data:image\/(?:gif|svg\+xml)/i.test(selected);
+      });
+    }
     function overviewPendingForSide(side, pendingBefore, pendingVisible, pendingAfter, activeDirection) {
       return side < 0 ? pendingBefore || (pendingVisible && activeDirection < 0)
         : pendingAfter || (pendingVisible && activeDirection > 0);
@@ -919,26 +934,24 @@
       return sourcePosition();
     }
     function scanResolvedSnapshot() {
-      const entryKeys = new Set(), sources = new Set(), slotKeys = new Set(), positions = [];
+      const entryKeys = new Set(), slotKeys = new Set(), resolvedSlotKeys = new Set(), positions = [];
       for (const entry of entries) {
-        for (const value of [entry.key, ...(entry.aliases || []), ...(entry.sources || []).map(lens.gallery.key)]) if (value) entryKeys.add(value);
+        const identity = entryIdentity(entry);
+        if (identity) entryKeys.add(identity);
       }
       for (const slot of collection.slots || []) {
         slotKeys.add(slot.key);
+        if (scanSlotHasSelectedSource(slot)) resolvedSlotKeys.add(slot.key);
         const rawPosition = slot.node.getAttribute('aria-posinset') || slot.node.getAttribute('aria-rowindex');
         const position = Number(rawPosition);
         if (Number.isInteger(position) && position > 0) positions.push(position);
-        const media = [slot.node, ...slot.node.querySelectorAll('img, [role="img"], [data-bg], [data-background], [data-background-image], [data-image], [data-image-src]')];
-        for (const node of media) for (const source of lens.gallery.sources(node)) {
-          if (!/^data:image\/(?:gif|svg\+xml)/i.test(source)) sources.add(lens.gallery.key(source));
-        }
       }
-      return { entries: entryKeys, sources, slotKeys, minPosition: positions.length ? Math.min(...positions) : null, maxPosition: positions.length ? Math.max(...positions) : null };
+      return { entries: entryKeys, slotKeys, resolvedSlotKeys, minPosition: positions.length ? Math.min(...positions) : null, maxPosition: positions.length ? Math.max(...positions) : null };
     }
     function scanResolvedProgress(before, after) {
       for (const key of after.entries) if (!before.entries.has(key)) return true;
-      for (const source of after.sources) if (!before.sources.has(source)) return true;
       for (const key of after.slotKeys) if (!before.slotKeys.has(key)) return true;
+      for (const key of after.resolvedSlotKeys) if (!before.resolvedSlotKeys.has(key)) return true;
       return false;
     }
     function scanViewportSourceLoad(direction, state, viewport, origin) {
@@ -1064,18 +1077,14 @@
     }
     function scanSlotSignature() {
       return (collection.slots || []).map(slot => {
-        const media = [slot.node, ...slot.node.querySelectorAll('img, [role="img"], [data-bg], [data-background], [data-background-image], [data-image], [data-image-src]')];
-        const sources = media.map(node => lens.gallery.sources(node).join(',')).join(';');
         const order = slot.node.getAttribute('aria-posinset') || slot.node.getAttribute('aria-rowindex') || '';
         const total = slot.node.getAttribute('aria-setsize') || collection.scope?.getAttribute('aria-setsize') || '';
-        return `${slot.key}:${order}:${total}:${slot.pending ? 1 : 0}:${sources}`;
+        return `${slot.key}:${order}:${total}:${slot.pending ? 1 : 0}:${scanSlotHasSelectedSource(slot) ? 1 : 0}`;
       }).join('|');
     }
     function scanOneSlotSignature(slot) {
       if (!slot?.node?.isConnected) return '';
-      const media = [slot.node, ...slot.node.querySelectorAll('img, [role="img"], [data-bg], [data-background], [data-background-image], [data-image], [data-image-src]')];
-      const sources = media.map(node => lens.gallery.sources(node).map(lens.gallery.key).join(',')).join(';');
-      return `${slot.pending ? 1 : 0}:${sources}`;
+      return `${slot.pending ? 1 : 0}:${scanSlotHasSelectedSource(slot) ? 1 : 0}`;
     }
     function explicitScanBoundary(direction) {
       const slots = collection.slots || [];
@@ -1878,10 +1887,12 @@
       $('.resolution').textContent = '';
       $('.fit').textContent = '—';
       status(t('loading'));
+      const identity = entryIdentity(entry), revision = entrySourceRevision(entry);
       const loading = pool.get(entry, true); cacheNeighbors();
       if (strip.classList.contains('visible')) renderStrip();
       const image = await loading;
       if (closed || id !== serial) return;
+      if (!entries[index] || entryIdentity(entries[index]) !== identity || entrySourceRevision(entries[index]) !== revision) return;
       if (!image) { status(t('loadFailed'), true); return; }
       photo.src = image.src; photo.alt = entry.title || t('imageN', index + 1);
       width = image.naturalWidth; height = image.naturalHeight;
@@ -1895,30 +1906,145 @@
       if (note) $('.resolution').title = note;
       $('.sr').textContent = t('imageCount', index + 1, entries.length);
     }
+    function entryIdentity(entry) {
+      if (entry?.slotStable && entry.slotKey) {
+        if (entry.canonicalIdentity) return `slot:${entry.slotKey}\u0000canonical:${entry.canonicalIdentity}`;
+        if (entry.canonicalAmbiguous) return `slot:${entry.slotKey}\u0000ambiguous:${entry.key || ''}`;
+        return `slot:${entry.slotKey}`;
+      }
+      if (entry?.canonicalIdentity) return `canonical:${entry.canonicalIdentity}`;
+      return `key:${entry?.key || ''}`;
+    }
+    function entrySourceRevision(entry) {
+      return JSON.stringify(entry?.sources || []);
+    }
+    function findEntryIndex(identity, key, fallback) {
+      let found = identity ? entries.findIndex(entry => entryIdentity(entry) === identity) : -1;
+      if (found < 0 && key) found = entries.findIndex(entry => entry.key === key);
+      return found >= 0 ? found : Math.max(0, Math.min(entries.length - 1, fallback));
+    }
+    function snapshotBucket(map, key) {
+      let bucket = map.get(key);
+      if (!bucket) map.set(key, bucket = []);
+      return bucket;
+    }
+    function createPreviousEntrySnapshotIndex(entries) {
+      const byIdentity = new Map(), byStableSlotAndKey = new Map();
+      for (const entry of entries) {
+        snapshotBucket(byIdentity, entryIdentity(entry)).push(entry);
+        if (!entry.slotStable || !entry.slotKey || !entry.key) continue;
+        const key = JSON.stringify([entry.slotKey, entry.key]);
+        let bucket = byStableSlotAndKey.get(key);
+        if (!bucket) byStableSlotAndKey.set(key, bucket = { total: 0, ambiguous: 0, only: null, unclassified: [], byCanonical: new Map() });
+        bucket.total++;
+        bucket.only = bucket.total === 1 ? entry : null;
+        if (entry.canonicalAmbiguous) { bucket.ambiguous++; continue; }
+        const canonical = typeof entry.canonicalIdentity === 'string' ? entry.canonicalIdentity : '';
+        if (canonical) snapshotBucket(bucket.byCanonical, canonical).push(entry);
+        else bucket.unclassified.push(entry);
+      }
+      return { byIdentity, byStableSlotAndKey };
+    }
+    function previousEntrySnapshot(entry, index) {
+      const identity = entryIdentity(entry);
+      const exact = index.byIdentity.get(identity) || [];
+      if (exact.length === 1) return exact[0];
+      if (exact.length > 1 || entry.canonicalAmbiguous) return null;
+      if (!entry.slotStable || !entry.slotKey || !entry.key) return null;
+      const bucket = index.byStableSlotAndKey.get(JSON.stringify([entry.slotKey, entry.key]));
+      if (!bucket || bucket.ambiguous) return null;
+      const canonical = typeof entry.canonicalIdentity === 'string' ? entry.canonicalIdentity : '';
+      if (!canonical) return bucket.total === 1 ? bucket.only : null;
+      const candidates = (bucket.byCanonical.get(canonical)?.length || 0) + bucket.unclassified.length;
+      if (candidates !== 1) return null;
+      return bucket.byCanonical.get(canonical)?.[0] || bucket.unclassified[0] || null;
+    }
+    function refreshSingleSource(entry, identity, revision) {
+      const viewSerial = serial, refreshId = ++singleSourceRefreshId;
+      pool.get(entry, true).then(image => {
+        if (closed || viewSerial !== serial || refreshId !== singleSourceRefreshId ||
+            entryIdentity(entries[index]) !== identity || entrySourceRevision(entries[index]) !== revision) return;
+        if (!image) { status(t('loadFailed'), true); return; }
+        const previousWidth = width, previousHeight = height, previousScale = scale;
+        const stageRect = stage.getBoundingClientRect();
+        const oldFit = previousWidth > 0 && previousHeight > 0
+          ? Math.min(1, stageRect.width / previousWidth, stageRect.height / previousHeight) : 0;
+        const oldZoom = oldFit > 0 ? previousScale / oldFit : 1;
+        const anchorX = previousWidth > 0 && previousScale > 0 ? .5 - panX / (previousWidth * previousScale) : .5;
+        const anchorY = previousHeight > 0 && previousScale > 0 ? .5 - panY / (previousHeight * previousScale) : .5;
+        photo.src = image.src; photo.alt = entry.title || t('imageN', index + 1);
+        width = image.naturalWidth; height = image.naturalHeight;
+        photo.hidden = false; message.hidden = true;
+        const fit = Math.min(1, stageRect.width / width, stageRect.height / height);
+        scale = settings.zoomLocked && lockedScale !== null ? lockedScale : Math.max(.001, Math.min(5, fit * oldZoom));
+        if (settings.zoomLocked) lockedScale = scale;
+        panX = (.5 - anchorX) * width * scale; panY = (.5 - anchorY) * height * scale;
+        $('.resolution').textContent = `${width} × ${height}`;
+        transform();
+      });
+    }
+    function refreshCompareSource(side, entry, identity, revision) {
+      const viewSerial = serial, refreshId = ++compareSourceRefreshIds[side];
+      pool.get(entry, true).then(image => {
+        const currentIndex = side === 0 ? compareLeft : compareRight;
+        if (closed || viewSerial !== serial || refreshId !== compareSourceRefreshIds[side] ||
+            entryIdentity(entries[currentIndex]) !== identity || entrySourceRevision(entries[currentIndex]) !== revision) return;
+        if (!image) { status(t('loadFailed'), true); return; }
+        comparePhotos[side].src = image.src;
+        comparePhotos[side].alt = entry.title || t('imageN', currentIndex + 1);
+        comparePhotos[side].hidden = false;
+        compareDims[side] = { width: image.naturalWidth, height: image.naturalHeight, fit: 1 };
+        const left = compareDims[0], right = compareDims[1];
+        $('.resolution').textContent = left
+          ? `${left.width} × ${left.height}${right ? `  |  ${right.width} × ${right.height}` : ''}`
+          : '';
+        message.hidden = true;
+        transform();
+        updateCompareControls();
+      });
+    }
     async function showPair(leftIndex, rightIndex = leftIndex + 1) {
       if (closed || leftIndex < 0 || leftIndex >= entries.length) return;
       compareEnabled = true; compareLeft = leftIndex; compareRight = rightIndex >= 0 && rightIndex < entries.length ? rightIndex : -1; index = leftIndex;
+      const leftEntry = entries[compareLeft], rightEntry = compareRight >= 0 ? entries[compareRight] : null;
       compare.classList.add('active'); compare.setAttribute('aria-hidden', 'false'); stage.hidden = true; photo.hidden = true;
       overviewOpen = false; overview.classList.remove('active'); overview.setAttribute('aria-hidden', 'true');
       showStrip(false); updateCompareControls();
       const id = ++serial; preset = null; endHold(); compareDims = [null, null];
+      const leftIdentity = entryIdentity(leftEntry), rightIdentity = rightEntry ? entryIdentity(rightEntry) : null;
+      const leftRevision = entrySourceRevision(leftEntry), rightRevision = rightEntry ? entrySourceRevision(rightEntry) : null;
+      const sourceRefreshIds = [...compareSourceRefreshIds];
       updateCompareControls();
       comparePhotos.forEach(img => { img.hidden = true; img.removeAttribute('src'); });
-      const leftEntry = entries[compareLeft], rightEntry = compareRight >= 0 ? entries[compareRight] : null;
       $('.counter').textContent = `${compareLeft + 1} | ${rightEntry ? compareRight + 1 : '—'} / ${entries.length}`;
       updateNavigationButtons(); $('.resolution').textContent = ''; $('.fit').textContent = '—'; status(t('loading'));
       const leftPromise = pool.get(leftEntry, true);
       const rightPromise = rightEntry ? pool.get(rightEntry, true) : Promise.resolve(null);
       cacheNeighbors();
       if (strip.classList.contains('visible')) renderStrip();
-      const [leftImage, rightImage] = await Promise.all([leftPromise, rightPromise]);
+      const [loadedLeftImage, loadedRightImage] = await Promise.all([leftPromise, rightPromise]);
       if (closed || id !== serial) return;
-      if (!leftImage) { status(t('loadFailed'), true); return; }
-      comparePhotos[0].src = leftImage.src; comparePhotos[0].alt = leftEntry.title || t('imageN', compareLeft + 1);
-      compareDims[0] = { width: leftImage.naturalWidth, height: leftImage.naturalHeight, fit: 1 };
+      const leftCurrent = entries[compareLeft] && entryIdentity(entries[compareLeft]) === leftIdentity && entrySourceRevision(entries[compareLeft]) === leftRevision;
+      const rightCurrent = rightEntry && entries[compareRight] && entryIdentity(entries[compareRight]) === rightIdentity && entrySourceRevision(entries[compareRight]) === rightRevision;
+      const leftImage = leftCurrent ? loadedLeftImage : null, rightImage = rightCurrent ? loadedRightImage : null;
+      const sourceRefreshStarted = compareSourceRefreshIds.some((refreshId, side) => refreshId !== sourceRefreshIds[side]);
+      if (!leftImage && leftCurrent) { status(t('loadFailed'), true); return; }
+      if (leftImage) {
+        comparePhotos[0].src = leftImage.src; comparePhotos[0].alt = leftEntry.title || t('imageN', compareLeft + 1);
+        comparePhotos[0].hidden = false;
+        compareDims[0] = { width: leftImage.naturalWidth, height: leftImage.naturalHeight, fit: 1 };
+      }
       if (rightImage && rightEntry) {
         comparePhotos[1].src = rightImage.src; comparePhotos[1].alt = rightEntry.title || t('imageN', compareRight + 1);
+        comparePhotos[1].hidden = false;
         compareDims[1] = { width: rightImage.naturalWidth, height: rightImage.naturalHeight, fit: 1 };
+      }
+      if (sourceRefreshStarted) {
+        if (leftImage || rightImage) message.hidden = true;
+        transform(); updateCompareControls();
+        $('.sr').textContent = `${t('imageCount', compareLeft + 1, entries.length)}${rightEntry ? `; ${t('imageCount', compareRight + 1, entries.length)}` : ''}`;
+        updateNavigationButtons();
+        return;
       }
       compareScale = settings.zoomLocked && lockedScale !== null ? lockedScale : 1;
       if (settings.zoomLocked) lockedScale = compareScale;
@@ -1987,8 +2113,18 @@
       if (closed || standalone) return;
       const leftKey = compareEnabled ? entries[compareLeft]?.key : entries[index]?.key;
       const rightKey = compareEnabled ? entries[compareRight]?.key : null;
+      const leftIdentity = compareEnabled ? entryIdentity(entries[compareLeft]) : null;
+      const rightIdentity = compareEnabled && compareRight >= 0 ? entryIdentity(entries[compareRight]) : null;
       const current = entries[compareEnabled ? activeIndex() : index];
       if (!current) return;
+      const currentIdentity = entryIdentity(current);
+      const previousEntries = entries.map(entry => ({
+        identity: entryIdentity(entry), sourceRevision: entrySourceRevision(entry), thumb: entry.thumb,
+        key: entry.key, slotStable: Boolean(entry.slotStable), slotKey: entry.slotKey,
+        canonicalIdentity: typeof entry.canonicalIdentity === 'string' ? entry.canonicalIdentity : '',
+        canonicalAmbiguous: entry.canonicalAmbiguous === true
+      }));
+      const previousEntryIndex = createPreviousEntrySnapshotIndex(previousEntries);
       if (collection.scope && !collection.scope.isConnected && scopeParent?.isConnected) {
         const candidates = [...scopeParent.children].filter(node => {
           if (node === host || node.tagName !== collection.scope.tagName) return false;
@@ -2011,22 +2147,47 @@
       const before = entries.length;
       entries = lens.gallery.mergeEntries(entries, newer.entries, direction);
       const changed = entries.length !== before;
+      const sourceUpdates = [], thumbnailUpdates = [];
+      for (const entry of entries) {
+        const previous = previousEntrySnapshot(entry, previousEntryIndex);
+        if (!previous) continue;
+        if (previous.sourceRevision !== entrySourceRevision(entry)) sourceUpdates.push(entry);
+        else if (previous.thumb !== entry.thumb) thumbnailUpdates.push(entry);
+      }
+      const contentChanged = changed || sourceUpdates.length > 0 || thumbnailUpdates.length > 0;
       const refreshed = newer.entries.length > 0;
       rememberSourceAnchors();
-      if (changed) {
+      if (contentChanged) {
         if (compareEnabled) {
-          compareLeft = Math.max(0, entries.findIndex(e => e.key === leftKey));
-          compareRight = rightKey ? entries.findIndex(e => e.key === rightKey) : -1;
+          compareLeft = findEntryIndex(leftIdentity, leftKey, compareLeft);
+          compareRight = rightIdentity || rightKey
+            ? findEntryIndex(rightIdentity, rightKey, compareRight) : -1;
           index = compareLeft;
           $('.counter').textContent = `${compareLeft + 1} | ${compareRight >= 0 ? compareRight + 1 : '—'} / ${entries.length}`;
           $('.sr').textContent = `${t('imageCount', compareLeft + 1, entries.length)}${compareRight >= 0 ? `; ${t('imageCount', compareRight + 1, entries.length)}` : ''}`;
         } else {
-          index = Math.max(0, entries.findIndex(e => e.key === current.key));
+          index = findEntryIndex(currentIdentity, current.key, index);
           $('.counter').textContent = `${index + 1} / ${entries.length}`;
           $('.sr').textContent = t('imageCount', index + 1, entries.length);
         }
         updateNavigationButtons();
         if (!overviewOpen) cacheNeighbors();
+        if (!overviewOpen && sourceUpdates.length) {
+          if (compareEnabled) {
+            for (const side of [0, 1]) {
+              const itemIndex = side === 0 ? compareLeft : compareRight;
+              const entry = itemIndex >= 0 ? entries[itemIndex] : null;
+              if (entry && sourceUpdates.some(updated => entryIdentity(updated) === entryIdentity(entry))) {
+                refreshCompareSource(side, entry, entryIdentity(entry), entrySourceRevision(entry));
+              }
+            }
+          } else {
+            const entry = entries[index];
+            if (entry && sourceUpdates.some(updated => entryIdentity(updated) === entryIdentity(entry))) {
+              refreshSingleSource(entry, entryIdentity(entry), entrySourceRevision(entry));
+            }
+          }
+        }
         if (strip.classList.contains('visible')) renderStrip();
         if (overviewOpen) queueOverviewCommit();
       }

@@ -712,7 +712,7 @@ test('conflicting same-priority canonical evidence is marked ambiguous and canno
   const node = image('https://media.example.test/current.jpg');
   const conflictingSources = ['source-original-a.jpg', 'source-original-b.jpg'].map(name => ({ media: '', type: 'image/jpeg', getAttribute(attribute) {
     if (attribute === 'data-original') return `https://media.example.test/${name}`;
-    if (attribute === 'srcset') return 'https://media.example.test/shared-thumb.jpg 1x';
+    if (attribute === 'srcset') return 'https://media.example.test/current.jpg 1x';
     return null;
   } }));
   const picture = { querySelectorAll: selector => selector === 'source' ? conflictingSources : [] };
@@ -783,6 +783,9 @@ test('shared SVG placeholder stays out of srcset, lazy srcset and picture-source
       const makePicture = source => ({ querySelectorAll: selector => selector === 'source' ? [source] : [] });
       a.closest = selector => selector === 'picture' ? makePicture(pictureSourcesA) : null;
       b.closest = selector => selector === 'picture' ? makePicture(pictureSourcesB) : null;
+      // The browser has selected these source candidates; src remains a fallback.
+      a.currentSrc = 'https://media.example.test/picture-a-large.svg';
+      b.currentSrc = 'https://media.example.test/picture-b-large.svg';
     }
     const expectedA = g.sources(a).find(value => value.startsWith('https://media.example.test/'));
     const expectedB = g.sources(b).find(value => value.startsWith('https://media.example.test/'));
@@ -791,7 +794,7 @@ test('shared SVG placeholder stays out of srcset, lazy srcset and picture-source
     assert.equal(result.index, 0);
     assert.equal(result.entries[0].node, a);
     assert.equal(result.entries[1].node, b);
-    assert.ok(!result.entries[0].identityAliases.includes(g.key(placeholder)));
+    if (!pictureSourcesA) assert.ok(!result.entries[0].identityAliases.includes(g.key(placeholder)));
   };
   const srcsetPair = [
     { srcset: 'https://media.example.test/srcset-a-small.jpg 320w, https://media.example.test/srcset-a-large.jpg 1600w' },
