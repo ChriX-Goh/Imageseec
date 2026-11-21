@@ -85,13 +85,21 @@
     }
     const current = url(node.currentSrc || node.getAttribute('src'));
     const candidates = [];
+    const declaredSources = [];
     const anchor = node.closest('a[href]');
     if (anchor) {
       const linked = url(anchor.href);
       const resolved = linked && url(unwrap(linked));
-      if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) candidates.push(resolved);
+      if (resolved && (resolved !== linked || /\.(avif|jpe?g|png|webp|gif|bmp|tiff?)(?:$|[?#])/i.test(linked))) {
+        candidates.push(resolved);
+        declaredSources.push(resolved);
+      }
     }
-    for (const name of sourceAttributes) candidates.push(url(node.getAttribute(name)));
+    for (const name of sourceAttributes) {
+      const value = url(node.getAttribute(name));
+      candidates.push(value);
+      if (value) declaredSources.push(value);
+    }
     const raw = unwrap(current);
     if (raw !== current) candidates.push(raw);
     for (const name of srcsetAttributes) candidates.push(...srcset(node.getAttribute(name)));
@@ -100,7 +108,11 @@
       for (const source of picture.querySelectorAll('source')) {
         if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png)/.test(source.type))) {
           for (const name of srcsetAttributes) candidates.push(...srcset(source.getAttribute(name)));
-          for (const name of sourceAttributes) candidates.push(url(source.getAttribute(name)));
+          for (const name of sourceAttributes) {
+            const value = url(source.getAttribute(name));
+            candidates.push(value);
+            if (value) declaredSources.push(value);
+          }
         }
       }
     }
@@ -108,6 +120,7 @@
     const result = unique(candidates).filter(value => !(/^data:image\//i.test(value) && node.complete &&
       node.naturalWidth > 0 && node.naturalWidth <= 2 && node.naturalHeight <= 2));
     discoveryCache?.sources.set(node, result);
+    discoveryCache?.declaredSources.set(node, unique(declaredSources));
     return [...result];
   }
   let discoveryCache = null;
@@ -309,6 +322,20 @@
     const variants = sources(node);
     if (!variants.length) return null;
     const first = variants.find(value => !/^data:image\/(?:gif|svg\+xml)/i.test(value)) || variants[0];
+    const primaryKey = key(first);
+    const aliases = unique(variants.map(key));
+    const liveSvgSources = unique([url(node.currentSrc), url(node.getAttribute?.('src'))]
+      .filter(value => /^data:image\/svg\+xml(?:[;,])/i.test(value || '')).map(key));
+    const hasExplicitPrimary = (discoveryCache?.declaredSources.get(node) || [])
+      .some(value => key(value) === primaryKey);
+    // A shared inline SVG used as the live src is a placeholder only when an
+    // explicit page-provided source supplies this entry's distinct identity.
+    // Keep it in `sources`/`aliases` for rendering and source observation, but
+    // do not let it identify or reconnect a different image.
+    const svgPlaceholder = hasExplicitPrimary
+      ? liveSvgSources.find(value => value !== primaryKey) || ''
+      : '';
+    const identityAliases = svgPlaceholder ? aliases.filter(value => value !== svgPlaceholder) : aliases;
     const rect = node.getBoundingClientRect?.() || {};
     const thumb = thumbSource(node, variants);
     const knownSize = node.naturalWidth > 2 && node.naturalHeight > 2 && url(node.currentSrc || node.getAttribute?.('src')) === thumb;
@@ -320,7 +347,7 @@
       : declared && Number(declared[1]) > 0 && Number(declared[2]) > 0 ? Number(declared[1]) / Number(declared[2])
       : rect.width > 0 && rect.height > 0 ? rect.width / rect.height : 1;
     return {
-      key: key(first), aliases: unique(variants.map(key)), sources: variants, thumb,
+      key: primaryKey, aliases, identityAliases, sources: variants, thumb,
       title: node.alt || node.title || node.getAttribute?.('aria-label') || '', aspectRatio,
       aspectRatioSource: knownSize ? 'intrinsic' : width > 0 && height > 0 || declared ? 'declared'
         : rect.width > 0 && rect.height > 0 ? 'measured' : 'fallback',
@@ -393,7 +420,7 @@
     const node = entry.node;
     if (node?.isConnected) {
       const candidates = sources(node).map(key);
-      if ((entry.aliases || [entry.key]).some(alias => candidates.includes(alias))) return node;
+      if (matchAliases(entry).some(alias => candidates.includes(alias))) return node;
     }
     if (entry.slotStable && entry.slotNode?.isConnected) {
       const slot = slotsFor(scope, node?.isConnected ? node : entry.slotNode).find(slot => slot.node === entry.slotNode);
@@ -401,10 +428,15 @@
     }
     return null;
   }
+  function matchAliases(entry) {
+    if (Array.isArray(entry.identityAliases)) return entry.identityAliases;
+    if (entry.aliases) return entry.aliases;
+    return entry.sources?.map(key) || [entry.key].filter(Boolean);
+  }
   function sameEntry(a, b) {
     if (a.key === b.key || (a.slotStable && b.slotStable && a.slotKey === b.slotKey)) return true;
-    const aliases = new Set(a.aliases || a.sources?.map(key) || [a.key]);
-    return (b.aliases || b.sources?.map(key) || [b.key]).some(value => aliases.has(value));
+    const aliases = new Set(matchAliases(a));
+    return matchAliases(b).some(value => aliases.has(value));
   }
   function entryMatcher(entries) {
     const keyIndex = new Map(), slotIndex = new Map(), aliasIndex = new Map(), positions = new Map();
@@ -417,7 +449,7 @@
       if (!positions.has(entry)) positions.set(entry, position);
       addTo(keyIndex, entry.key, entry);
       if (entry.slotStable) addTo(slotIndex, entry.slotKey, entry);
-      for (const value of entry.aliases || entry.sources?.map(key) || [entry.key]) addTo(aliasIndex, value, entry);
+      for (const value of matchAliases(entry)) addTo(aliasIndex, value, entry);
     };
     entries.forEach((entry, position) => add(entry, position));
     const find = entry => {
@@ -425,7 +457,7 @@
       const include = (map, value) => { for (const candidate of map.get(value) || []) candidates.add(candidate); };
       include(keyIndex, entry.key);
       if (entry.slotStable) include(slotIndex, entry.slotKey);
-      for (const value of entry.aliases || entry.sources?.map(key) || [entry.key]) include(aliasIndex, value);
+      for (const value of matchAliases(entry)) include(aliasIndex, value);
       let found = null, earliest = Infinity;
       for (const candidate of candidates) {
         const position = positions.get(candidate);
@@ -444,9 +476,11 @@
       if (found) {
         const id = found.key;
         const aliases = unique([...(found.aliases || []), ...(entry.aliases || []), ...entry.sources.map(key)]);
+        const identityAliases = Array.isArray(found.identityAliases) || Array.isArray(entry.identityAliases)
+          ? unique([...matchAliases(found), ...matchAliases(entry)]) : null;
         const geometry = found.thumb === entry.thumb && found.dimensions && !entry.dimensions
           ? { dimensions: found.dimensions, aspectRatio: found.aspectRatio, aspectRatioSource: found.aspectRatioSource } : {};
-        Object.assign(found, entry, geometry, { key: id, aliases });
+        Object.assign(found, entry, geometry, { key: id, aliases, ...(identityAliases ? { identityAliases } : {}) });
         matcher.add(found);
         matched.set(entry, found);
       }
@@ -549,7 +583,7 @@
   }
   function collect(source, preferred = null, scopeHint = null) {
     const previous = discoveryCache;
-    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap() };
+    discoveryCache = { images: new WeakMap(), media: new WeakMap(), sources: new WeakMap(), declaredSources: new WeakMap() };
     try { return collectSnapshot(source, preferred, scopeHint); }
     finally { discoveryCache = previous; }
   }

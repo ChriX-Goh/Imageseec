@@ -113,6 +113,7 @@ test('compare and overview controls are wired to group-scoped lazy scanning', ()
   assert.doesNotMatch(viewer, /settings\.overviewBuffer/);
   assert.match(viewer, /settings\.compareStep/);
   assert.match(viewer, /settings\.dividerMin/);
+  assert.match(viewer, /entry\.identityAliases \|\| entry\.aliases/);
   assert.doesNotMatch(viewer, /location\.(?:hostname|host)|\.hostname\s*(?:===|\.endsWith)/i);
 });
 test('overview scanner bounds placeholder waits and assigns visible holes to the active scroll direction', () => {
@@ -577,6 +578,70 @@ test('image identity preserves query identifiers, dimensions and signatures', ()
     assert.notEqual(g.key(first), g.key(second));
     assert.equal(g.key(first), first);
   }
+});
+
+test('shared inline SVG loading placeholder does not merge distinct explicit image identities', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="90"%3E%3Crect width="120" height="90" fill="%23394b62"/%3E%3C/svg%3E';
+  const placeholderKey = g.key(placeholder);
+  const fullA = 'https://media.example.test/full-a.jpg';
+  const fullB = 'https://media.example.test/full-b.jpg';
+  const attributesA = { 'data-full': fullA }, attributesB = { 'data-full': fullB };
+  const a = image(placeholder, attributesA), b = image(placeholder, attributesB);
+  const scope = albumFixture(c, [a, b]);
+
+  const result = g.collect(fullA, a);
+  assert.deepEqual(plain(result.entries.map(entry => entry.key)), [fullA, fullB]);
+  assert.equal(result.index, 0);
+  assert.equal(result.entries[0].node, a);
+  assert.equal(result.entries[1].node, b);
+  assert.equal(result.entries[0].sources.includes(placeholderKey), true, 'source discovery retains the live placeholder URL');
+  assert.equal(result.entries[0].aliases.includes(placeholderKey), true, 'resource aliases remain available for observation');
+  assert.equal(result.entries[0].identityAliases.includes(placeholderKey), false, 'the shared placeholder is excluded only from identity matching');
+  assert.equal(g.sameEntry(result.entries[0], result.entries[1]), false);
+  assert.equal(g.mergeEntries([result.entries[0]], [result.entries[1]]).length, 2);
+  assert.equal(g.connectedEntryNode(result.entries[0], scope), a);
+
+  // Reusing A's node for B must not reconnect A through the shared placeholder.
+  attributesA['data-full'] = fullB;
+  assert.equal(g.connectedEntryNode(result.entries[0], scope), null);
+  assert.equal(g.sameEntry(result.entries[0], g.collect(fullB, b).entries[0]), false);
+});
+
+test('external and standalone inline SVG images retain their real identity aliases', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const externalSvg = 'https://media.example.test/illustration.svg';
+  const external = image(externalSvg);
+  const externalEntry = g.collect(externalSvg, external).entries[0];
+  assert.equal(externalEntry.key, externalSvg);
+  assert.ok(externalEntry.identityAliases.includes(externalSvg));
+
+  const inlineSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="240"%3E%3Ccircle cx="120" cy="90" r="70"/%3E%3C/svg%3E';
+  const inline = image(inlineSvg);
+  const inlineEntry = g.collect(inlineSvg, inline).entries[0];
+  assert.equal(inlineEntry.key, g.key(inlineSvg));
+  assert.ok(inlineEntry.identityAliases.includes(g.key(inlineSvg)), 'standalone data SVG remains a valid image identity');
+
+  const loadingSvg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="90"%3E%3Crect width="120" height="90" fill="%23394b62"/%3E%3C/svg%3E';
+  const originalSvg = 'https://media.example.test/original.svg';
+  const resolvedFromPlaceholder = image(loadingSvg, { 'data-full': originalSvg });
+  const resolvedEntry = g.collect(originalSvg, resolvedFromPlaceholder).entries[0];
+  assert.equal(resolvedEntry.key, originalSvg);
+  assert.ok(resolvedEntry.identityAliases.includes(originalSvg), 'an external SVG declared as the full image remains an identity');
+  assert.ok(!resolvedEntry.identityAliases.includes(g.key(loadingSvg)), 'only the distinct lower-priority data SVG src is excluded');
+  assert.ok(resolvedEntry.aliases.includes(g.key(loadingSvg)), 'the placeholder remains available as a resource alias');
+});
+
+test('equal explicit image identity still deduplicates distinct thumbnail variants', () => {
+  const { c, image } = context(), g = c.ImageLens.gallery;
+  const full = 'https://media.example.test/one-original.jpg';
+  const first = image('https://media.example.test/thumb-small.jpg', { 'data-full': full });
+  const second = image('https://media.example.test/thumb-large.jpg', { 'data-full': full });
+  albumFixture(c, [first, second]);
+  const result = g.collect(full, second);
+  assert.equal(result.entries.length, 1);
+  assert.equal(result.index, 0);
+  assert.equal(result.entries[0].key, full);
 });
 
 test('gallery snapshots retain identity and order across prepend, holes, aliases and recycled nodes', () => {

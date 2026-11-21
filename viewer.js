@@ -1994,7 +1994,7 @@
           if (node === host || node.tagName !== collection.scope.tagName) return false;
           return [...node.querySelectorAll('img')].some(image => {
             const aliases = lens.gallery.sources(image).map(lens.gallery.key);
-            return entries.some(entry => entry.aliases?.some(alias => aliases.includes(alias)));
+            return entries.some(entry => (entry.identityAliases || entry.aliases || []).some(alias => aliases.includes(alias)));
           });
         });
         if (replacement) collection.scope = replacement;

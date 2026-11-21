@@ -2,3 +2,4 @@ intermediate/
 tmp/
 meta.json
 fingerprints.json
+diff-overlay.json
