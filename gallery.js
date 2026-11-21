@@ -102,12 +102,20 @@
     }
     const raw = unwrap(current);
     if (raw !== current) candidates.push(raw);
-    for (const name of srcsetAttributes) candidates.push(...srcset(node.getAttribute(name)));
+    for (const name of srcsetAttributes) {
+      const values = srcset(node.getAttribute(name));
+      candidates.push(...values);
+      declaredSources.push(...values);
+    }
     const picture = node.closest('picture');
     if (picture) {
       for (const source of picture.querySelectorAll('source')) {
-        if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png)/.test(source.type))) {
-          for (const name of srcsetAttributes) candidates.push(...srcset(source.getAttribute(name)));
+        if ((!source.media || matchMedia(source.media).matches) && (!source.type || /image\/(avif|webp|jpeg|png|svg\+xml)/.test(source.type))) {
+          for (const name of srcsetAttributes) {
+            const values = srcset(source.getAttribute(name));
+            candidates.push(...values);
+            declaredSources.push(...values);
+          }
           for (const name of sourceAttributes) {
             const value = url(source.getAttribute(name));
             candidates.push(value);

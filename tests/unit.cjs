@@ -608,6 +608,74 @@ test('shared inline SVG loading placeholder does not merge distinct explicit ima
   assert.equal(g.sameEntry(result.entries[0], g.collect(fullB, b).entries[0]), false);
 });
 
+test('shared SVG placeholder stays out of srcset, lazy srcset and picture-source identity matching', () => {
+  const placeholder = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="90"%3E%3Crect width="120" height="90" fill="%23394b62"/%3E%3C/svg%3E';
+  const runPair = ({ attributesA, attributesB, pictureSourcesA, pictureSourcesB }) => {
+    const { c, image } = context(), g = c.ImageLens.gallery;
+    const a = image(placeholder, attributesA), b = image(placeholder, attributesB);
+    albumFixture(c, [a, b]);
+    if (pictureSourcesA) {
+      const makePicture = source => ({ querySelectorAll: selector => selector === 'source' ? [source] : [] });
+      a.closest = selector => selector === 'picture' ? makePicture(pictureSourcesA) : null;
+      b.closest = selector => selector === 'picture' ? makePicture(pictureSourcesB) : null;
+    }
+    const expectedA = g.sources(a).find(value => value.startsWith('https://media.example.test/'));
+    const expectedB = g.sources(b).find(value => value.startsWith('https://media.example.test/'));
+    const result = g.collect(expectedA, a);
+    assert.deepEqual(plain(result.entries.map(entry => entry.key)), [expectedA, expectedB]);
+    assert.equal(result.index, 0);
+    assert.equal(result.entries[0].node, a);
+    assert.equal(result.entries[1].node, b);
+    assert.ok(!result.entries[0].identityAliases.includes(g.key(placeholder)));
+  };
+  const srcsetPair = [
+    { srcset: 'https://media.example.test/srcset-a-small.jpg 320w, https://media.example.test/srcset-a-large.jpg 1600w' },
+    { srcset: 'https://media.example.test/srcset-b-small.jpg 320w, https://media.example.test/srcset-b-large.jpg 1600w' }
+  ];
+  runPair({ attributesA: srcsetPair[0], attributesB: srcsetPair[1] });
+
+  const lazySrcsetPair = [
+    { 'data-srcset': 'https://media.example.test/lazy-a-small.jpg 320w, https://media.example.test/lazy-a-large.jpg 1600w' },
+    { 'data-srcset': 'https://media.example.test/lazy-b-small.jpg 320w, https://media.example.test/lazy-b-large.jpg 1600w' }
+  ];
+  runPair({ attributesA: lazySrcsetPair[0], attributesB: lazySrcsetPair[1] });
+
+  const sourcePair = [
+    { type: 'image/svg+xml', media: '', getAttribute: name => name === 'srcset' ? 'https://media.example.test/picture-a-small.svg 1x, https://media.example.test/picture-a-large.svg 2x' : null },
+    { type: 'image/svg+xml', media: '', getAttribute: name => name === 'srcset' ? 'https://media.example.test/picture-b-small.svg 1x, https://media.example.test/picture-b-large.svg 2x' : null }
+  ];
+  runPair({ pictureSourcesA: sourcePair[0], pictureSourcesB: sourcePair[1] });
+});
+
+test('shared placeholder sources do not make entry matcher scan every prior card', () => {
+  const c = vm.createContext({});
+  vm.runInContext(`
+    ${galleryFunction('matchAliases')}
+    let identityComparisons = 0;
+    function sameEntry(a, b) {
+      identityComparisons++;
+      if (a.key === b.key || (a.slotStable && b.slotStable && a.slotKey === b.slotKey)) return true;
+      const aliases = new Set(matchAliases(a));
+      return matchAliases(b).some(value => aliases.has(value));
+    }
+    ${galleryFunction('entryMatcher')}
+    globalThis.measure = count => {
+      const entries = [], matcher = entryMatcher(entries);
+      for (let i = 0; i < count; i++) {
+        const key = 'https://media.example.test/item-' + i + '.jpg';
+        const entry = { key, aliases: [key, 'data:image/svg+xml,shared-placeholder'],
+          identityAliases: [key], sources: [key, 'data:image/svg+xml,shared-placeholder'] };
+        const found = matcher.find(entry);
+        if (!found) { entries.push(entry); matcher.add(entry, entries.length - 1); }
+      }
+      return { count: entries.length, comparisons: identityComparisons };
+    };
+  `, c);
+  const result = plain(c.measure(2000));
+  assert.equal(result.count, 2000);
+  assert.ok(result.comparisons <= 2000, `expected indexed identity checks to remain linear, observed ${result.comparisons}`);
+});
+
 test('external and standalone inline SVG images retain their real identity aliases', () => {
   const { c, image } = context(), g = c.ImageLens.gallery;
   const externalSvg = 'https://media.example.test/illustration.svg';
@@ -635,13 +703,18 @@ test('external and standalone inline SVG images retain their real identity alias
 test('equal explicit image identity still deduplicates distinct thumbnail variants', () => {
   const { c, image } = context(), g = c.ImageLens.gallery;
   const full = 'https://media.example.test/one-original.jpg';
-  const first = image('https://media.example.test/thumb-small.jpg', { 'data-full': full });
-  const second = image('https://media.example.test/thumb-large.jpg', { 'data-full': full });
+  const first = image('https://media.example.test/thumb-small.jpg', {
+    'data-full': full, srcset: 'https://media.example.test/variant-a-1x.jpg 400w, https://media.example.test/variant-a-2x.jpg 1200w'
+  });
+  const second = image('https://media.example.test/thumb-large.jpg', {
+    'data-full': full, 'data-srcset': 'https://media.example.test/variant-b-1x.jpg 400w, https://media.example.test/variant-b-2x.jpg 1200w'
+  });
   albumFixture(c, [first, second]);
   const result = g.collect(full, second);
   assert.equal(result.entries.length, 1);
   assert.equal(result.index, 0);
   assert.equal(result.entries[0].key, full);
+  assert.ok(result.entries[0].identityAliases.includes('https://media.example.test/variant-a-2x.jpg'));
 });
 
 test('gallery snapshots retain identity and order across prepend, holes, aliases and recycled nodes', () => {

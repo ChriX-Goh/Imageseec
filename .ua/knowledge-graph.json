@@ -16,13 +16,13 @@
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
     "analyzedAt": "2026-11-21 11:58:44",
     "gitCommitHash": "bb64c490ba35b19fe510c0e28935043bbdbd748b",
-    "versionName": "2.0 b18"
+    "versionName": "2.0 b19"
   },
   "sourceState": {
     "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b18",
+    "versionName": "2.0 b19",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "b44e4d63f792c4b9f9228337d46546c5be63fc4e20a03bd5b345bbfa0d247034",
+      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "b44e4d63f792c4b9f9228337d46546c5be63fc4e20a03bd5b345bbfa0d247034",
+      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -156,8 +156,8 @@
       "name": "albumFixture",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1066,
-        1066
+        1139,
+        1139
       ],
       "summary": "构造带语义容器、重复卡片和图片节点的图库夹具，用于测试分组、顺序与边界条件。",
       "tags": [
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "b44e4d63f792c4b9f9228337d46546c5be63fc4e20a03bd5b345bbfa0d247034",
+      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -175,8 +175,8 @@
       "name": "background",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1534,
-        1534
+        1607,
+        1607
       ],
       "summary": "模拟 Chrome storage、runtime、contextMenus、scripting 和 tabs API，以验证后台消息路由。",
       "tags": [
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "b44e4d63f792c4b9f9228337d46546c5be63fc4e20a03bd5b345bbfa0d247034",
+      "sourceHash": "70119d948bf58e5bd0a87c304aa127ef0949023735b420a1165b961c50121813",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "5639eefe71d64f3c7d42056d10d9b40861cf0365deb5996849ea7df8d923f47a",
+      "sourceHash": "a68db559bc3c686d940d2b8cf7d9d3287b23ac7ec06a6d3b8d28498e6b3ab071",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1315,7 +1315,7 @@
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1622,7 +1622,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1641,7 +1641,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1653,13 +1653,13 @@
         77,
         77
       ],
-      "summary": "收集图片来源并缓存显式来源，保留可加载的原图、缩略图及数据 URI。",
+      "summary": "收集并缓存显式来源，包含 srcset、picture 响应式候选、可加载原图、缩略图及数据 URI。",
       "tags": [
         "image-source",
         "per-collection-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1668,8 +1668,8 @@
       "name": "scopeFor",
       "filePath": "gallery.js",
       "lineRange": [
-        265,
-        265
+        273,
+        273
       ],
       "summary": "从语义结构和重复卡片中选择范围受限的同组图库。",
       "tags": [
@@ -1678,7 +1678,7 @@
         "scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1687,8 +1687,8 @@
       "name": "slotsFor",
       "filePath": "gallery.js",
       "lineRange": [
-        359,
-        359
+        367,
+        367
       ],
       "summary": "从重复卡片和行结构发现同组槽位；图片候选与空槽共用唯一 ARIA 顺序。",
       "tags": [
@@ -1697,7 +1697,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1706,8 +1706,8 @@
       "name": "connectedEntryNode",
       "filePath": "gallery.js",
       "lineRange": [
-        418,
-        418
+        426,
+        426
       ],
       "summary": "依据身份别名和稳定槽位验证虚拟列表连接节点，避免共享占位图导致错误回连。",
       "tags": [
@@ -1716,7 +1716,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1725,8 +1725,8 @@
       "name": "sameEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        436,
-        436
+        444,
+        444
       ],
       "summary": "依据身份键、稳定槽位或身份别名判断两条目是否相同，保留真实 SVG。",
       "tags": [
@@ -1735,7 +1735,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1744,8 +1744,8 @@
       "name": "mergeEntries",
       "filePath": "gallery.js",
       "lineRange": [
-        471,
-        471
+        479,
+        479
       ],
       "summary": "按身份别名及槽位合并图片，保留资源别名、排列顺序和原有几何。",
       "tags": [
@@ -1754,7 +1754,7 @@
         "identity-merge"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1763,8 +1763,8 @@
       "name": "collect",
       "filePath": "gallery.js",
       "lineRange": [
-        584,
-        584
+        592,
+        592
       ],
       "summary": "在当前图片可用时局部发现并复用单次调用内的媒体节点结果；每次重新建立快照。",
       "tags": [
@@ -1773,7 +1773,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4125,8 +4125,8 @@
       "name": "makeEntry",
       "filePath": "gallery.js",
       "lineRange": [
-        321,
-        321
+        329,
+        329
       ],
       "summary": "创建图片条目，分离资源别名和身份别名，避免显式原图与共享 SVG 占位图误合并。",
       "tags": [
@@ -4135,7 +4135,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4476,8 +4476,8 @@
       "name": "ordered",
       "filePath": "gallery.js",
       "lineRange": [
-        501,
-        501
+        509,
+        509
       ],
       "summary": "当所有候选均有唯一有效 ARIA 序号时，按该序号排列图片节点和图库槽位。",
       "tags": [
@@ -4486,7 +4486,7 @@
         "stable-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4695,8 +4695,8 @@
       "name": "nestedGalleryRows",
       "filePath": "gallery.js",
       "lineRange": [
-        227,
-        227
+        235,
+        235
       ],
       "summary": "使用最多 24 行、每行最多 10 张图的样本判断重复行，图库总图数不作为拒绝条件。",
       "tags": [
@@ -4705,7 +4705,7 @@
         "bounded-sampling"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4850,8 +4850,8 @@
       "name": "entryMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        441,
-        441
+        449,
+        449
       ],
       "summary": "以身份键、槽位与身份别名建立索引，避免共享占位符引起误匹配。",
       "tags": [
@@ -4860,7 +4860,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4959,8 +4959,8 @@
       "name": "collectSnapshot",
       "filePath": "gallery.js",
       "lineRange": [
-        528,
-        528
+        536,
+        536
       ],
       "summary": "在有界同组范围内收集图片和槽位，将每个媒体候选关联到最早匹配的祖先槽位。",
       "tags": [
@@ -4969,7 +4969,7 @@
         "slot-matching"
       ],
       "complexity": "complex",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4978,8 +4978,8 @@
       "name": "slotMatcher",
       "filePath": "gallery.js",
       "lineRange": [
-        509,
-        509
+        517,
+        517
       ],
       "summary": "按 DOM 祖先建立槽位索引，保留原槽位数组中最早匹配项，避免逐候选扫描整组槽位。",
       "tags": [
@@ -4988,7 +4988,7 @@
         "performance"
       ],
       "complexity": "moderate",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5169,7 +5169,7 @@
         "image-identity",
         "proxy-source"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
         21,
@@ -5187,11 +5187,11 @@
         "dom-order",
         "shadow-dom"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        127,
-        127
+        135,
+        135
       ]
     },
     {
@@ -5205,11 +5205,11 @@
         "mixed-media",
         "dom-order"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        135,
-        135
+        143,
+        143
       ]
     },
     {
@@ -5222,7 +5222,7 @@
         "image-source",
         "css-background"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
         66,
@@ -5239,11 +5239,11 @@
         "gallery-structure",
         "media"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        181,
-        181
+        189,
+        189
       ]
     },
     {
@@ -5256,11 +5256,11 @@
         "gallery-structure",
         "repeated-cards"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        188,
-        188
+        196,
+        196
       ]
     },
     {
@@ -5274,11 +5274,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        201,
-        201
+        209,
+        209
       ]
     },
     {
@@ -5291,11 +5291,11 @@
         "image-source",
         "detail-link"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        254,
-        254
+        262,
+        262
       ]
     },
     {
@@ -5309,11 +5309,11 @@
         "deduplication",
         "scope"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        212,
-        212
+        220,
+        220
       ]
     },
     {
@@ -5326,11 +5326,11 @@
         "visibility",
         "gallery-discovery"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        176,
-        176
+        184,
+        184
       ]
     },
     {
@@ -5344,11 +5344,11 @@
         "eligibility",
         "placeholders"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        294,
-        294
+        302,
+        302
       ]
     },
     {
@@ -5362,11 +5362,11 @@
         "thumbnail",
         "lazy-loading"
       ],
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf",
       "lineRange": [
-        304,
-        304
+        312,
+        312
       ]
     },
     {
@@ -5375,8 +5375,8 @@
       "name": "matchAliases",
       "filePath": "gallery.js",
       "lineRange": [
-        431,
-        431
+        439,
+        439
       ],
       "summary": "优先返回图片身份别名，并为未带新字段的已有条目保留兼容回退。",
       "tags": [
@@ -5385,7 +5385,7 @@
         "deduplication"
       ],
       "complexity": "simple",
-      "sourceHash": "45bdb6f279bd2feec9075cdc06315fbb00efcad47f2c2b01c968235926e14005",
+      "sourceHash": "a20b2365418ad7f7ea5a71fa1786bdd731738a6de18f269cdd77119532c0532c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
