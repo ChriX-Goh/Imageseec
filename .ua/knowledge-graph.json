@@ -5387,6 +5387,60 @@
       "complexity": "simple",
       "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
       "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:canonicalIdentityFrom",
+      "type": "function",
+      "name": "canonicalIdentityFrom",
+      "filePath": "gallery.js",
+      "lineRange": [
+        46,
+        46
+      ],
+      "summary": "根据明确原图来源的优先级选取唯一身份；同级来源冲突时标记为不确定。",
+      "tags": [
+        "image-identity",
+        "gallery-discovery"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:canonicalEvidenceFor",
+      "type": "function",
+      "name": "canonicalEvidenceFor",
+      "filePath": "gallery.js",
+      "lineRange": [
+        150,
+        150
+      ],
+      "summary": "为图片提取可用于身份判断的显式原图来源，不将普通缩略图当作权威身份。",
+      "tags": [
+        "image-identity",
+        "gallery-discovery"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:matchingNodes",
+      "type": "function",
+      "name": "matchingNodes",
+      "filePath": "gallery.js",
+      "lineRange": [
+        476,
+        476
+      ],
+      "summary": "为候选媒体建立临时来源缓存并复用条目匹配索引，检查虚拟图库的回连候选。",
+      "tags": [
+        "image-identity",
+        "gallery-discovery"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "77a776c06e1a376676e7fb1b9691a0ee8468ddbacd0e4dca7e7a7ee57f5c5770",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
   "edges": [
@@ -11286,6 +11340,78 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "覆盖共享 SVG 占位、真实 SVG、节点复用与同一原图的缩略图变体。"
+    },
+    {
+      "source": "function:gallery.js:canonicalEvidenceFor",
+      "target": "function:gallery.js:canonicalIdentityFrom",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:makeEntry",
+      "target": "function:gallery.js:canonicalEvidenceFor",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:matchingNodes",
+      "target": "function:gallery.js:entryMatcher",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:matchingNodes",
+      "target": "function:gallery.js:canonicalEvidenceFor",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:connectedEntryNode",
+      "target": "function:gallery.js:matchingNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:viewer.js:refresh",
+      "target": "function:gallery.js:matchingNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:canonicalIdentityFrom",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:canonicalEvidenceFor",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
+    },
+    {
+      "source": "function:gallery.js:matchingNodes",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份判断、范围重绑定与相应回归检查。"
     }
   ],
   "layers": [
