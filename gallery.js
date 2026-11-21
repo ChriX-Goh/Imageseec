@@ -34,6 +34,7 @@
     return value;
   }
   function key(value) {
+    if (value === undefined || value === null || value === '') return '';
     try {
       // Query parameters may identify the picture, even when named q or width.
       return new URL(unwrap(value), document.baseURI).href;
@@ -122,22 +123,36 @@
     const cacheKey = `${includeBackgrounds}:${viewportOnly}`;
     const cached = discoveryCache?.media.get(root)?.get(cacheKey);
     if (cached) return [...cached];
-    const found = [...images(root)];
-    if (!includeBackgrounds) return unique(found);
-    const all = [...root.querySelectorAll('*')];
-    for (const node of all) {
-      if (node.tagName === 'IMG' || node.id === 'image-lens-viewer' || node.closest?.('#image-lens-viewer')) continue;
-      const rect = node.getBoundingClientRect();
-      if (viewportOnly && (rect.bottom < 0 || rect.top > innerHeight || rect.right < 0 || rect.left > innerWidth)) continue;
-      const hasData = [...sourceAttributes, ...srcsetAttributes, ...backgroundAttributes].some(name => node.hasAttribute?.(name));
-      const isImageRole = node.getAttribute?.('role') === 'img';
-      const styleHasBackground = /url\s*\(/i.test(node.style?.backgroundImage || '');
-      // Class-applied backgrounds have no image attribute. Check computed style only
-      // for reasonably sized candidates, and restrict page-wide discovery to the viewport.
-      if (!isImageRole && !styleHasBackground && !hasData &&
-        (rect.width < 72 || rect.height < 72 || !/url\s*\(/i.test(getComputedStyle(node).backgroundImage || ''))) continue;
-      if (sources(node).length) found.push(node);
-    }
+    const imageList = images(root);
+    if (!includeBackgrounds) return unique(imageList);
+    const found = [], orderedImages = new Set();
+    const visit = tree => {
+      for (const node of tree.querySelectorAll('*')) {
+        if (node.tagName === 'IMG') {
+          found.push(node); orderedImages.add(node);
+          continue;
+        }
+        if (node.id === 'image-lens-viewer' || node.closest?.('#image-lens-viewer')) continue;
+        const rect = node.getBoundingClientRect();
+        if (!viewportOnly || (rect.bottom >= 0 && rect.top <= innerHeight && rect.right >= 0 && rect.left <= innerWidth)) {
+          const hasData = [...sourceAttributes, ...srcsetAttributes, ...backgroundAttributes].some(name => node.hasAttribute?.(name));
+          const isImageRole = node.getAttribute?.('role') === 'img';
+          const styleHasBackground = /url\s*\(/i.test(node.style?.backgroundImage || '');
+          // Class-applied backgrounds have no image attribute. Check computed style only
+          // for reasonably sized candidates, and restrict page-wide discovery to the viewport.
+          if (isImageRole || styleHasBackground || hasData ||
+            (rect.width >= 72 && rect.height >= 72 && /url\s*\(/i.test(getComputedStyle(node).backgroundImage || ''))) {
+            if (sources(node).length) found.push(node);
+          }
+        }
+        // Visit an open shadow root directly after its host during this scan.
+        if (node.shadowRoot) visit(node.shadowRoot);
+      }
+    };
+    visit(root);
+    // Keep image nodes discovered by image-only test doubles or detached roots
+    // that do not implement the complete descendant selector.
+    for (const image of imageList) if (!orderedImages.has(image)) found.push(image);
     const result = unique(found);
     if (discoveryCache) {
       if (!discoveryCache.media.has(root)) discoveryCache.media.set(root, new Map());
@@ -173,9 +188,13 @@
   function repeatedMediaCards(parent) {
     const cards = [...(parent.children || [])].filter(cardHasMedia);
     if (cards.length < 2) return false;
-    const representatives = cards.map(card => card.tagName === 'IMG' || card.getAttribute?.('role') === 'img'
-      ? isVisibleCandidate(card) ? card : null : mediaNodes(card).find(isVisibleCandidate)).filter(Boolean);
-    return representatives.length >= 2 && new Set(representatives.map(node => key(sources(node)[0]))).size >= 2;
+    const representatives = cards.map(card => {
+      if (card.tagName === 'IMG' || card.getAttribute?.('role') === 'img') return isVisibleCandidate(card) && sources(card).length ? card : null;
+      return mediaNodes(card).find(node => isVisibleCandidate(node) && sources(node).length) ||
+        (isVisibleCandidate(card) && sources(card).length ? card : null);
+    }).filter(Boolean);
+    const identities = representatives.map(node => key(sources(node)[0])).filter(Boolean);
+    return identities.length >= 2 && new Set(identities).size >= 2;
   }
   function linkedImageCards(parent) {
     const cards = [...(parent.children || [])].filter(card => {
@@ -189,8 +208,8 @@
       const node = card.tagName === 'IMG' || card.getAttribute?.('role') === 'img' ? card : mediaNodes(card).find(isVisibleCandidate);
       const link = card.querySelector?.('a[href]') || node?.closest?.('a[href]');
       return key(linkedSource(link.href) || sources(node)[0]);
-    });
-    return new Set(identities).size >= 2;
+    }).filter(Boolean);
+    return identities.length >= 2 && new Set(identities).size >= 2;
   }
   function nestedGalleryRows(parent) {
     const children = [...(parent.children || [])];
@@ -363,9 +382,10 @@
     });
     return ordered(cards).map((node, order) => {
       if (!slotIds.has(node)) slotIds.set(node, `slot-${++nextSlotId}`);
+      const descendants = mediaNodes(node), media = descendants.length ? descendants : [node];
       return { node, order, key: identity ? `${identity}:${node.getAttribute(identity)}` : slotIds.get(node), stable: Boolean(identity),
-        pending: !mediaNodes(node).some(media => sources(media).some(source => !/^data:image\/(gif|svg\+xml)/i.test(source) ||
-          media.complete && media.naturalWidth > 2 && media.naturalHeight > 2)) };
+        pending: !media.some(item => sources(item).some(source => !/^data:image\/(gif|svg\+xml)/i.test(source) ||
+          item.complete && item.naturalWidth > 2 && item.naturalHeight > 2)) };
     });
   }
   function connectedEntryNode(entry, scope) {

@@ -14,15 +14,15 @@
     ],
     "frameworks": [],
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-15T12:23:51.258Z",
-    "gitCommitHash": "2250a3d273dcf5d22eb497503f07a12d4e2915ad",
-    "versionName": "2.0 b16"
+    "analyzedAt": "2026-11-21 11:58:44",
+    "gitCommitHash": "bb64c490ba35b19fe510c0e28935043bbdbd748b",
+    "versionName": "2.0 b17"
   },
   "sourceState": {
     "trackedAndUntrackedFiles": 112,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b16",
+    "versionName": "2.0 b17",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -63,7 +63,7 @@
       "type": "file",
       "name": "unit.cjs",
       "filePath": "tests/unit.cjs",
-      "summary": "检查本地化、图库发现与槽位索引差分、动态新增、布局与扩展入口。",
+      "summary": "检查设置与本地化，并覆盖图片身份、查询参数、卡片槽位、别名去重、ARIA 顺序、占位图过滤、混合 IMG/背景媒体和扩展入口。",
       "tags": [
         "test",
         "unit",
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
+      "sourceHash": "50ad296fc2188d68e6aec2e9a565a4cdf049799377e8bb9882597fcbbea0327c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
+      "sourceHash": "50ad296fc2188d68e6aec2e9a565a4cdf049799377e8bb9882597fcbbea0327c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
+      "sourceHash": "50ad296fc2188d68e6aec2e9a565a4cdf049799377e8bb9882597fcbbea0327c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "5690225d7bd9a5a6c39e102036e6697fe4f3c46e16a58beed715a1c376a56caf",
+      "sourceHash": "50ad296fc2188d68e6aec2e9a565a4cdf049799377e8bb9882597fcbbea0327c",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -259,7 +259,7 @@
       "type": "config",
       "name": "manifest.json",
       "filePath": "manifest.json",
-      "summary": "声明 MV3 扩展入口、权限和图标；源码候选为 2.0 b15。",
+      "summary": "声明 MV3 扩展入口、权限和图标；源码候选为 2.0 b17。",
       "tags": [
         "configuration",
         "manifest-v3",
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "23556ece5f9c0acb64fc002a76e4fcaa42856ac577a928628c3b1202defa9f56",
+      "sourceHash": "f8ba61e79416a8461da173b885656c6962872dbeadb61cda5538391a64b191ec",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -431,7 +431,7 @@
       "type": "document",
       "name": "STATUS.zh-CN.md",
       "filePath": "docs/STATUS.zh-CN.md",
-      "summary": "记录 2.0 b15 候选的实现范围、通用夹具结果及尚未完成的实站、安装版和对照验收。",
+      "summary": "记录 2.0 b17 源码候选的通用图库修复、夹具行为和未完成的安装版及多站验收。",
       "tags": [
         "status",
         "beta",
@@ -439,7 +439,7 @@
         "b15"
       ],
       "complexity": "simple",
-      "sourceHash": "e6a2b1e6686f5b362660de9c94b7436a39cea824d724c9e3dd8e4d7df2fdd550",
+      "sourceHash": "cd33c2a0fb67958af37d989bb3f65f937309a62296f202a19468816bf24fc52e",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -970,7 +970,7 @@
       "type": "document",
       "name": "QA.md",
       "filePath": "tests/QA.md",
-      "summary": "记录 2.0 b16 的布局与槽位查找优化、消息运行时错误保护及验证边界；区分源码检查与真实站点验收。",
+      "summary": "记录 2.0 b17 图片来源/槽位修正与通用夹具结果；区分源码夹具、安装版和真实站点验收。",
       "tags": [
         "documentation",
         "testing",
@@ -979,7 +979,7 @@
         "b16"
       ],
       "complexity": "moderate",
-      "sourceHash": "c816a1a6cb3d4d282de7c616c119ed86a1262353a357f4d83177bbec1479d220",
+      "sourceHash": "b2bb1a7d26ffaf3487314a92b97fbccb14d3e1745880e387e2bd713d9a0f011b",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1308,14 +1308,14 @@
       "type": "file",
       "name": "gallery.js",
       "filePath": "gallery.js",
-      "summary": "通用图库发现按单次收集复用来源快照，并通过图片键、稳定槽位和别名索引合并条目，保留首个匹配顺序。",
+      "summary": "通用图库发现保留查询参数图片身份，按非空来源和稳定卡片槽位去重，并按 DOM/ARIA 顺序合并 IMG、背景图与懒加载候选。",
       "tags": [
         "gallery-discovery",
         "image-sources",
         "lazy-loading"
       ],
       "complexity": "complex",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1622,7 +1622,7 @@
         "validation"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1641,7 +1641,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1659,7 +1659,7 @@
         "per-collection-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1678,7 +1678,7 @@
         "scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1697,7 +1697,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1716,7 +1716,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1735,7 +1735,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1754,7 +1754,7 @@
         "identity-merge"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -1773,7 +1773,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4135,7 +4135,7 @@
         "image-geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4486,7 +4486,7 @@
         "stable-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4705,7 +4705,7 @@
         "bounded-sampling"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4860,7 +4860,7 @@
         "deduplication"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4969,7 +4969,7 @@
         "slot-matching"
       ],
       "complexity": "complex",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4988,7 +4988,7 @@
         "performance"
       ],
       "complexity": "moderate",
-      "sourceHash": "02fc9db099329a712b98e3fb5bf708dcf27b8f0468a15149cf41a7564cd7fb13",
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5158,6 +5158,156 @@
       "complexity": "moderate",
       "sourceHash": "4e8437f888d0899d2266aaed37d831eeb8d1768f86b7d6bf2d4fe8361a8f9ff5",
       "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "function:gallery.js:unwrap",
+      "type": "function",
+      "name": "unwrap",
+      "filePath": "gallery.js",
+      "summary": "拆解页面提供的图片代理地址参数；不改写其余查询标识。",
+      "tags": [
+        "image-identity",
+        "proxy-source"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:images",
+      "type": "function",
+      "name": "images",
+      "filePath": "gallery.js",
+      "summary": "按文档顺序递归收集常规 IMG 与可访问的开放 ShadowRoot 图片节点。",
+      "tags": [
+        "gallery-discovery",
+        "dom-order",
+        "shadow-dom"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:mediaNodes",
+      "type": "function",
+      "name": "mediaNodes",
+      "filePath": "gallery.js",
+      "summary": "按 DOM 遍历顺序收集 IMG 和图片背景候选，并在单次收集中缓存结果。",
+      "tags": [
+        "gallery-discovery",
+        "mixed-media",
+        "dom-order"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:backgroundSources",
+      "type": "function",
+      "name": "backgroundSources",
+      "filePath": "gallery.js",
+      "summary": "解析页面给出的 data 背景属性和 CSS 背景图地址。",
+      "tags": [
+        "image-source",
+        "css-background"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:cardHasMedia",
+      "type": "function",
+      "name": "cardHasMedia",
+      "filePath": "gallery.js",
+      "summary": "判断卡片本身或后代是否包含图片、图片角色或背景媒体。",
+      "tags": [
+        "gallery-structure",
+        "media"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:repeatedCards",
+      "type": "function",
+      "name": "repeatedCards",
+      "filePath": "gallery.js",
+      "summary": "依据重复子项结构识别卡片列表，不要求网站专属类名。",
+      "tags": [
+        "gallery-structure",
+        "repeated-cards"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:repeatedMediaCards",
+      "type": "function",
+      "name": "repeatedMediaCards",
+      "filePath": "gallery.js",
+      "summary": "要求候选卡片有可见媒体且至少两个非空、不同身份，避免重复装饰图误判为图库。",
+      "tags": [
+        "gallery-structure",
+        "deduplication",
+        "scope"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:linkedSource",
+      "type": "function",
+      "name": "linkedSource",
+      "filePath": "gallery.js",
+      "summary": "从链接中仅提取已提供的图片 URL 查询参数。",
+      "tags": [
+        "image-source",
+        "detail-link"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:linkedImageCards",
+      "type": "function",
+      "name": "linkedImageCards",
+      "filePath": "gallery.js",
+      "summary": "验证重复卡片均含图片链接，并按非空图片身份去重后选择图库范围。",
+      "tags": [
+        "gallery-structure",
+        "deduplication",
+        "scope"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:isVisibleCandidate",
+      "type": "function",
+      "name": "isVisibleCandidate",
+      "filePath": "gallery.js",
+      "summary": "按显示/可见状态和几何尺寸判断有效媒体候选。",
+      "tags": [
+        "visibility",
+        "gallery-discovery"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:eligible",
+      "type": "function",
+      "name": "eligible",
+      "filePath": "gallery.js",
+      "summary": "过滤导航、隐藏或不可见装饰图与无来源节点，同时保留当前选中节点。",
+      "tags": [
+        "gallery-discovery",
+        "eligibility",
+        "placeholders"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
+    },
+    {
+      "id": "function:gallery.js:thumbSource",
+      "type": "function",
+      "name": "thumbSource",
+      "filePath": "gallery.js",
+      "summary": "从页面提供的当前、延迟和响应式来源中挑选可用预览图，跳过数据占位符。",
+      "tags": [
+        "image-source",
+        "thumbnail",
+        "lazy-loading"
+      ],
+      "sourceHash": "daec7b21a45c9c6bfad6f48256c8626034932106621c4cb92e72ab319d22c9a7"
     }
   ],
   "edges": [
@@ -8967,8 +9117,8 @@
       "target": "file:tests/unit.cjs",
       "type": "tested_by",
       "direction": "forward",
-      "weight": 0.7,
-      "description": "包含图片身份合并和 DOM 槽位查找的随机差分回归。"
+      "weight": 0.8,
+      "description": "单元测试覆盖空身份键和查询参数、别名索引、槽位差分、重复卡片身份、ARIA/DOM 顺序、透明像素占位符、隐藏重复媒体层，以及 IMG 与 CSS 背景混合排序。"
     },
     {
       "source": "file:i18n.js",
@@ -9256,7 +9406,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "测试图像声明比例和未知比例默认。"
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。"
     },
     {
       "source": "function:gallery.js:mergeEntries",
@@ -9264,7 +9414,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "测试同一缩略图重新采样时保留已确认几何。"
+      "description": "图片身份测试覆盖保留查询参数、空身份不回退为当前页面、别名去重及有序合并。"
     },
     {
       "source": "function:preferences.js:render",
@@ -9736,7 +9886,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "单元夹具检查 DOM 卡片逆序时，ARIA 槽位仍按图片序号排列。"
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。"
     },
     {
       "source": "function:viewer.js:collectOverviewItems",
@@ -9752,7 +9902,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "单元检查图片条目与空白槽位共享唯一 ARIA 顺序。"
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。"
     },
     {
       "source": "function:controls.js:overviewCacheRange",
@@ -10200,7 +10350,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "检查最早相同项、陈旧槽位索引校验以及 1,200 组固定种子差分样例。"
+      "description": "图片身份测试覆盖保留查询参数、空身份不回退为当前页面、别名去重及有序合并。"
     },
     {
       "source": "function:gallery.js:sources",
@@ -10208,7 +10358,7 @@
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.8,
-      "description": "验证来源解析缓存只限于单次同步收集。"
+      "description": "混合媒体测试检查 IMG、CSS 背景及可访问 ShadowRoot 候选按 DOM 次序发现；真实站点名和私有夹具不进入图谱。"
     },
     {
       "source": "file:viewer.js",
@@ -10454,9 +10604,9 @@
       "source": "function:gallery.js:slotMatcher",
       "target": "file:tests/unit.cjs",
       "type": "tested_by",
-      "description": "2,000 组随机 DOM 树对照旧 slots.find，覆盖重复、嵌套、重叠顺序和 ShadowRoot 边界。",
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。",
       "direction": "forward",
-      "weight": 0.5
+      "weight": 0.8
     },
     {
       "source": "file:viewer.js",
@@ -10644,7 +10794,7 @@
     },
     {
       "source": "function:viewer.js:layoutOverview",
-      "target": "function:viewer.js:overviewSpatialIndex",
+      "target": "function:controls.js:overviewSpatialIndex",
       "type": "calls",
       "description": "按新布局建立可见范围空间索引。",
       "direction": "forward",
@@ -10689,6 +10839,334 @@
       "description": "运行时错误回归覆盖消息上下文失效和正常路径。",
       "direction": "forward",
       "weight": 0.6
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:unwrap",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:images",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:mediaNodes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:backgroundSources",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:cardHasMedia",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:repeatedCards",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:repeatedMediaCards",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:linkedSource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:linkedImageCards",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:isVisibleCandidate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:eligible",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "file:gallery.js",
+      "target": "function:gallery.js:thumbSource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1,
+      "description": "图像发现、来源与卡片结构处理的函数节点。"
+    },
+    {
+      "source": "function:gallery.js:key",
+      "target": "function:gallery.js:unwrap",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "规范图片代理来源后以包含查询参数的完整 URL 生成身份键。"
+    },
+    {
+      "source": "function:gallery.js:sources",
+      "target": "function:gallery.js:backgroundSources",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "解析普通 IMG 来源或同一节点的 CSS 背景来源。"
+    },
+    {
+      "source": "function:gallery.js:mediaNodes",
+      "target": "function:gallery.js:images",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "在媒体遍历中取得 IMG 节点并保留其文档顺序。"
+    },
+    {
+      "source": "function:gallery.js:mediaNodes",
+      "target": "function:gallery.js:sources",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "只收集具有页面提供有效来源的媒体节点。"
+    },
+    {
+      "source": "function:gallery.js:repeatedMediaCards",
+      "target": "function:gallery.js:cardHasMedia",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "先筛出含媒体的同级卡片。"
+    },
+    {
+      "source": "function:gallery.js:repeatedMediaCards",
+      "target": "function:gallery.js:mediaNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查卡片内可见 IMG 或背景媒体。"
+    },
+    {
+      "source": "function:gallery.js:linkedImageCards",
+      "target": "function:gallery.js:linkedSource",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "从卡片链接提取页面显式提供的图片来源。"
+    },
+    {
+      "source": "function:gallery.js:linkedImageCards",
+      "target": "function:gallery.js:mediaNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "定位卡片代表媒体并验证链接来源。"
+    },
+    {
+      "source": "function:gallery.js:scopeFor",
+      "target": "function:gallery.js:repeatedMediaCards",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "使用可见媒体与不同非空身份识别无专属类名的重复卡片。"
+    },
+    {
+      "source": "function:gallery.js:scopeFor",
+      "target": "function:gallery.js:linkedImageCards",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "使用重复图片链接卡片补充图库范围识别。"
+    },
+    {
+      "source": "function:gallery.js:scopeFor",
+      "target": "function:gallery.js:repeatedCards",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "在媒体身份线索不足时使用一般重复卡片结构回退。"
+    },
+    {
+      "source": "function:gallery.js:slotsFor",
+      "target": "function:gallery.js:mediaNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "为每个重复卡片解析其媒体并保留卡片槽位顺序。"
+    },
+    {
+      "source": "function:gallery.js:slotsFor",
+      "target": "function:gallery.js:eligible",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "待补媒体槽位与图片候选按可见性和来源资格区分。"
+    },
+    {
+      "source": "function:gallery.js:collectSnapshot",
+      "target": "function:gallery.js:mediaNodes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "合并有序 IMG 与 CSS 背景媒体候选。"
+    },
+    {
+      "source": "function:gallery.js:collectSnapshot",
+      "target": "function:gallery.js:eligible",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "过滤不可选的隐藏重复层、装饰和无关媒体。"
+    },
+    {
+      "source": "function:gallery.js:makeEntry",
+      "target": "function:gallery.js:thumbSource",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "选取页面实际提供的缩略图来源。"
+    },
+    {
+      "source": "function:gallery.js:mergeEntries",
+      "target": "function:gallery.js:entryMatcher",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "以键、稳定槽位和别名查找最早有效的同图候选。"
+    },
+    {
+      "source": "function:gallery.js:entryMatcher",
+      "target": "function:gallery.js:sameEntry",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "核验候选别名或稳定槽位身份，避免误合并。"
+    },
+    {
+      "source": "function:gallery.js:key",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份测试覆盖保留查询参数、空身份不回退为当前页面、别名去重及有序合并。"
+    },
+    {
+      "source": "function:gallery.js:unwrap",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份测试覆盖保留查询参数、空身份不回退为当前页面、别名去重及有序合并。"
+    },
+    {
+      "source": "function:gallery.js:sameEntry",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图片身份测试覆盖保留查询参数、空身份不回退为当前页面、别名去重及有序合并。"
+    },
+    {
+      "source": "function:gallery.js:mediaNodes",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "混合媒体测试检查 IMG、CSS 背景及可访问 ShadowRoot 候选按 DOM 次序发现；真实站点名和私有夹具不进入图谱。"
+    },
+    {
+      "source": "function:gallery.js:repeatedMediaCards",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图库分组回归覆盖不同子标签、不同图片身份、混合 IMG/背景媒体及 DOM 顺序。"
+    },
+    {
+      "source": "function:gallery.js:linkedImageCards",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图库分组回归覆盖不同子标签、不同图片身份、混合 IMG/背景媒体及 DOM 顺序。"
+    },
+    {
+      "source": "function:gallery.js:scopeFor",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图库分组回归覆盖不同子标签、不同图片身份、混合 IMG/背景媒体及 DOM 顺序。"
+    },
+    {
+      "source": "function:gallery.js:collectSnapshot",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。"
+    },
+    {
+      "source": "function:gallery.js:eligible",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "图库快照回归覆盖十张卡片中的透明 1px 占位图、隐藏高清副本、唯一主图、槽位数量和原始顺序。"
+    },
+    {
+      "source": "function:gallery.js:images",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "混合媒体测试检查 IMG、CSS 背景及可访问 ShadowRoot 候选按 DOM 次序发现；真实站点名和私有夹具不进入图谱。"
+    },
+    {
+      "source": "function:gallery.js:backgroundSources",
+      "target": "file:tests/unit.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "混合媒体测试检查 IMG、CSS 背景及可访问 ShadowRoot 候选按 DOM 次序发现；真实站点名和私有夹具不进入图谱。"
     }
   ],
   "layers": [

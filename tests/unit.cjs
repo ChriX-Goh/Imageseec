@@ -918,6 +918,86 @@ test('transparent one-pixel lazy placeholders do not become gallery entries', ()
   assert.equal(entry.thumb, 'https://media.example.net/deferred.jpg');
   assert.equal(entry.dimensions, null);
 });
+
+test('ten real cards keep order when each contains an invisible scaled 1px placeholder', () => {
+  const { c, image } = context();
+  c.getComputedStyle = node => ({ display: node.style?.display || 'block', visibility: node.style?.visibility || 'visible',
+    backgroundImage: node.style?.backgroundImage || 'none', aspectRatio: '' });
+  const body = { tagName: 'BODY', children: [], parentElement: null };
+  const descendants = root => (root.children || []).flatMap(child => [child, ...descendants(child)]);
+  const gallery = { tagName: 'DIV', className: 'content-group', children: [], parentElement: body,
+    querySelectorAll(selector) { const all = descendants(this); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; },
+    contains(node) { for (let current = node; current; current = current.parentElement) if (current === this) return true; return false; } };
+  body.children.push(gallery); c.document.body = body;
+  const photos = [];
+  for (let index = 1; index <= 10; index++) {
+    const card = { tagName: 'DIV', className: 'content-card', children: [], parentElement: gallery,
+      querySelectorAll(selector) { const all = descendants(this); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; },
+      querySelector(selector) { return this.querySelectorAll(selector === 'img' ? 'img' : '*')[0] || null; },
+      contains(node) { for (let current = node; current; current = current.parentElement) if (current === this) return true; return false; },
+      getAttribute: () => null, getBoundingClientRect: () => ({ left: 0, top: index * 240, right: 320, bottom: index * 240 + 220, width: 320, height: 220 }) };
+    const frame = { tagName: 'SPAN', className: 'scaled-preview', children: [], parentElement: card, style: {},
+      querySelectorAll(selector) { const all = descendants(this); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; },
+      getAttribute: () => null, getBoundingClientRect: card.getBoundingClientRect, closest: () => null };
+    const placeholder = image('data:image/gif;base64,R0lGODlhAQABAIAAAAUEBA==');
+    Object.assign(placeholder, { complete: true, naturalWidth: 1, naturalHeight: 1, parentElement: frame,
+      closest: () => null, querySelectorAll: () => [], style: { opacity: '0', transform: 'scale(240)' }, getBoundingClientRect: card.getBoundingClientRect });
+    const photo = image(`https://media.example.test/page-${index}.jpg`);
+    photo.parentElement = frame; photo.getBoundingClientRect = card.getBoundingClientRect; photo.closest = () => null; photo.querySelectorAll = () => [];
+    const hidden = image(`https://media.example.test/page-${index}-hires.jpg`);
+    hidden.parentElement = frame; hidden.getBoundingClientRect = card.getBoundingClientRect; hidden.closest = () => null;
+    hidden.querySelectorAll = () => []; hidden.style = { display: 'none' };
+    frame.children.push(placeholder, photo, hidden);
+    card.children.push(frame); gallery.children.push(card); photos.push(photo);
+  }
+  const selected = photos[4], result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.entries.length, 10);
+  assert.equal(result.index, 4);
+  assert.deepEqual(plain(result.entries.map(entry => entry.key)), photos.map(photo => photo.src));
+  assert.equal(result.entries[3].key, 'https://media.example.test/page-4.jpg');
+  assert.equal(result.entries[5].key, 'https://media.example.test/page-6.jpg');
+});
+
+test('card decoration background does not resolve a nested transparent image placeholder', () => {
+  const { c, image } = context();
+  const gallery = { tagName: 'DIV', className: 'feed', children: [], parentElement: null,
+    querySelectorAll(selector) { return selector === 'img' ? this.children.flatMap(card => card.querySelectorAll('img')) : []; } };
+  const complete = [1, 2].map(index => {
+    const node = image(`https://media.example.test/complete-${index}.jpg`);
+    node.querySelectorAll = () => [];
+    const card = { tagName: 'DIV', className: 'photo-card', parentElement: gallery, children: [node],
+      getAttribute: () => null, getBoundingClientRect: () => ({ width: 320, height: 220 }),
+      querySelectorAll: selector => selector === 'img' ? [node] : [node], querySelector: () => node };
+    node.parentElement = card; node.getBoundingClientRect = card.getBoundingClientRect; node.closest = () => null;
+    gallery.children.push(card); return node;
+  });
+  const card = { tagName: 'DIV', className: 'photo-card', parentElement: gallery, children: [],
+    style: { backgroundImage: 'url(https://media.example.test/decorative-texture.jpg)' },
+    getAttribute: () => null, getBoundingClientRect: () => ({ width: 320, height: 220 }),
+    querySelectorAll: selector => selector === 'img' ? [placeholder] : [placeholder], querySelector: () => placeholder };
+  const wrapper = { tagName: 'SPAN', className: 'scaled-preview', parentElement: card, children: [],
+    getAttribute: () => null, getBoundingClientRect: card.getBoundingClientRect, querySelectorAll: () => [placeholder], querySelector: () => placeholder };
+  const placeholder = image('data:image/gif;base64,R0lGODlhAQABAIAAAAUEBA==');
+  Object.assign(placeholder, { complete: true, naturalWidth: 1, naturalHeight: 1, parentElement: wrapper,
+    querySelectorAll: () => [], getBoundingClientRect: card.getBoundingClientRect, closest: () => null });
+  card.children.push(wrapper); wrapper.children.push(placeholder); gallery.children.push(card);
+  const slots = c.ImageLens.gallery.slotsFor(gallery, complete[0]);
+  assert.equal(slots.length, 3, JSON.stringify(gallery.children.map(node => ({ tag: node.tagName, cls: node.className,
+    self: c.ImageLens.gallery.sources(node), desc: node.querySelectorAll('img').map(img => c.ImageLens.gallery.sources(img)) }))));
+  assert.equal(slots[0].pending, false);
+  assert.equal(slots[1].pending, false);
+  assert.equal(slots[2].pending, true, 'a decorative card background cannot stand in for the pending child image');
+});
+
+test('empty media identity never aliases the current page path', () => {
+  const c = vm.createContext({ URL, document: { baseURI: 'https://reader.example.test/chapter/1' },
+    imageUrlParameters: new Set() });
+  vm.runInContext(`${galleryFunction('url')}\n${galleryFunction('unwrap')}\n${galleryFunction('key')}\nglobalThis.imageKey = key;`, c);
+  assert.equal(c.imageKey(undefined), '');
+  assert.equal(c.imageKey(null), '');
+  assert.equal(c.imageKey(''), '');
+  assert.equal(c.imageKey('page-1.jpg'), 'https://reader.example.test/chapter/page-1.jpg');
+});
 function albumFixture(c, pictures, { semantic = true, hidden = false, positions = false } = {}) {
   const grid = { children: [], parentElement: null, querySelectorAll: selector => selector === 'img' ? pictures : [] };
   pictures.forEach((img, index) => {
@@ -927,6 +1007,63 @@ function albumFixture(c, pictures, { semantic = true, hidden = false, positions 
     img.closest = selector => selector.includes('[data-gallery]') ? (semantic ? grid : null) : selector.includes('[aria-posinset]') ? (positions ? card : null) : selector === '[aria-hidden="true"]' && hidden ? grid : null;
   });
   return grid;
+}
+
+function structuralMediaPage(c, image, role) {
+  const body = { tagName: 'BODY', className: '', children: [], parentElement: null };
+  const descendants = root => (root.children || []).flatMap(child => [child, ...descendants(child)]);
+  const makeElement = (tagName, className, parent, attrs = {}) => {
+    const node = { tagName, className, children: [], parentElement: parent, attrs, attributes: Object.keys(attrs).map(name => ({ name })),
+      style: {}, isConnected: true,
+      getAttribute(name) { return attrs[name] ?? null; },
+      hasAttribute(name) { return Object.hasOwn(attrs, name); },
+      getBoundingClientRect() { return { left: 0, top: 0, right: 320, bottom: 240, width: 320, height: 240 }; },
+      contains(other) { for (let current = other; current; current = current.parentElement) if (current === this) return true; return false; },
+      querySelectorAll(selector) {
+        const all = descendants(this);
+        if (selector === 'img') return all.filter(child => child.tagName === 'IMG');
+        if (selector === 'a[href]') return all.filter(child => child.tagName === 'A' && child.getAttribute('href'));
+        if (selector.includes('h1, h2, h3, h4, h5, h6')) return all.filter(child => /^H[1-6]$/.test(child.tagName) || child.getAttribute('role') === 'heading');
+        if (selector.includes('img, [role="img"]')) return all.filter(child => child.tagName === 'IMG' || child.getAttribute('role') === 'img');
+        return all;
+      },
+      querySelector(selector) { return this.querySelectorAll(selector)[0] || null; },
+      closest(selector) {
+        for (let current = this; current; current = current.parentElement) {
+          if (selector.includes('[data-gallery]') && current.hasAttribute?.('data-gallery')) return current;
+          if (selector.includes('[role="feed"]') && current.getAttribute?.('role') === 'feed') return current;
+          if (selector.includes('[role="grid"]') && current.getAttribute?.('role') === 'grid') return current;
+          if (selector === 'a[href]' && current.tagName === 'A' && current.getAttribute('href')) return current;
+        }
+        return null;
+      } };
+    if (parent) parent.children.push(node);
+    return node;
+  };
+  const page = makeElement('DIV', 'content-root', body, { role });
+  body.querySelectorAll = selector => {
+    const all = descendants(body);
+    return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all;
+  };
+  c.document.body = body;
+  const addImage = (parent, source, { background = false, link = '' } = {}) => {
+    const host = link ? makeElement('A', '', parent, { href: link }) : parent;
+    const media = background ? makeElement('DIV', '', host) : image(source);
+    media.parentElement = host;
+    if (!media.querySelectorAll) media.querySelectorAll = () => [];
+    media.closest = selector => {
+      for (let current = media; current; current = current.parentElement) {
+        if (selector.includes('[role="feed"]') && current.getAttribute?.('role') === 'feed') return current;
+        if (selector.includes('[role="grid"]') && current.getAttribute?.('role') === 'grid') return current;
+        if (selector === 'a[href]' && current.tagName === 'A' && current.getAttribute('href')) return current;
+      }
+      return null;
+    };
+    if (background) media.style.backgroundImage = `url(${source})`;
+    else host.children?.push(media);
+    return media;
+  };
+  return { body, page, makeElement, addImage };
 }
 
 test('semantic gallery scope excludes unrelated images and keeps supplied DOM order', () => {
@@ -1173,6 +1310,27 @@ test('lazy nested rows retain empty peer cards and widen an initially narrow sco
   assert.equal(result.slots[17].node, grid.children[5].children[2]);
 });
 
+test('direct IMG and CSS background children remain a mixed semantic gallery', () => {
+  const { c, image } = context(), fixture = structuralMediaPage(c, image, 'grid');
+  const expected = [];
+  let selected;
+  for (let index = 1; index <= 3; index++) {
+    const media = fixture.addImage(fixture.page, `https://media.example.test/direct-${index}.jpg`);
+    if (index === 1) selected = media;
+    expected.push(`https://media.example.test/direct-${index}.jpg`);
+  }
+  for (let index = 4; index <= 5; index++) {
+    fixture.addImage(fixture.page, `https://media.example.test/direct-${index}.jpg`, { background: true });
+    expected.push(`https://media.example.test/direct-${index}.jpg`);
+  }
+  const result = c.ImageLens.gallery.collect(selected.src, selected);
+  assert.equal(result.entries.length, 5, JSON.stringify({ scope: result.scope === fixture.page,
+    dom: fixture.page.querySelectorAll('*').map(node => [node.tagName, node.style?.backgroundImage]),
+    backgroundSources: c.ImageLens.gallery.sources(fixture.page.children[3]),
+    slots: result.slots.map(slot => slot.node.tagName), entries: result.entries.map(entry => entry.key) }));
+  assert.deepEqual(plain(result.entries.map(entry => entry.key)), expected);
+});
+
 test('large repeated-row galleries keep their parent scope past the former image-count cutoff', () => {
   const { c, image, images } = context();
   const contains = function(node) { for (let n = node; n; n = n.parentElement) if (n === this) return true; return false; };
@@ -1225,15 +1383,46 @@ test('large repeated-row galleries keep their parent scope past the former image
 
 test('same-level image cards can mix IMG elements and CSS background photos', () => {
   const { c, image } = context();
-  const first = image('https://media.example.net/first.jpg');
-  const background = { tagName: 'DIV', style: { backgroundImage: 'url(https://media.example.net/second.jpg)' },
-    getAttribute: () => null, hasAttribute: () => false, querySelector: () => null, querySelectorAll: () => [],
-    closest: () => null, getBoundingClientRect: () => ({ width: 200, height: 140 }) };
-  const third = image('https://media.example.net/third.jpg');
-  albumFixture(c, [first, background, third]);
-  const result = c.ImageLens.gallery.collect(first.src);
-  assert.equal(result.entries.length, 3);
-  assert.equal(result.entries[1].key, 'https://media.example.net/second.jpg');
+  const body = { tagName: 'BODY', children: [], parentElement: null };
+  const descendants = root => (root.children || []).flatMap(child => [child, ...descendants(child)]);
+  const list = { tagName: 'DIV', className: 'photo-grid', children: [], parentElement: body,
+    attributes: [{ name: 'data-gallery' }], getAttribute: name => name === 'data-gallery' ? 'true' : null,
+    querySelectorAll(selector) { const all = descendants(this); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; },
+    contains(node) { for (let current = node; current; current = current.parentElement) if (current === this) return true; return false; } };
+  body.children.push(list);
+  body.querySelectorAll = selector => { const all = descendants(body); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; };
+  const expected = [];
+  for (const [index, kind] of ['img', 'background', 'img', 'background'].entries()) {
+    const card = { tagName: 'ARTICLE', className: 'photo-card', children: [], parentElement: list,
+      getAttribute: () => null, getBoundingClientRect: () => ({ left: 0, top: index * 250, width: 320, height: 240 }),
+      querySelectorAll(selector) { const all = descendants(this); return selector === 'img' ? all.filter(node => node.tagName === 'IMG') : all; },
+      querySelector(selector) { return selector.includes('img') ? this.querySelectorAll('img')[0] || null : null; },
+      contains(node) { for (let current = node; current; current = current.parentElement) if (current === this) return true; return false; } };
+    const media = kind === 'img' ? image(`https://media.example.net/${index + 1}.jpg`) : {
+      tagName: 'DIV', className: '', children: [], parentElement: card,
+      style: { backgroundImage: `url(https://media.example.net/${index + 1}.jpg)` },
+      getAttribute: () => null, hasAttribute: () => false,
+      getBoundingClientRect: card.getBoundingClientRect, querySelectorAll: () => [], querySelector: () => null
+    };
+    media.parentElement = card;
+    media.closest = selector => {
+      for (let node = media; node; node = node.parentElement) {
+        if (selector.includes('[data-gallery]') && node === list) return list;
+        if (selector === 'header, nav, footer, [role="navigation"]' || selector === '[aria-hidden="true"]') return null;
+      }
+      return null;
+    };
+    card.closest = selector => selector.includes('[data-gallery]') ? list : null;
+    card.children.push(media); list.children.push(card);
+    expected.push(`https://media.example.net/${index + 1}.jpg`);
+  }
+  c.document.body = body;
+  const first = list.children[0].children[0];
+  const result = c.ImageLens.gallery.collect(first.src, first);
+  assert.equal(result.entries.length, 4);
+  assert.deepEqual(plain(result.entries.map(entry => entry.key)), expected,
+    'IMG and CSS-background media must retain their shared DOM order');
+  assert.equal(result.index, 0);
 });
 
 test('a modal original reconnects to its explicitly linked background gallery', () => {

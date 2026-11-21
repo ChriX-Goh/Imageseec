@@ -1,5 +1,9 @@
 # Verification record
 
+## Source candidate: 2.0 b17
+
+Gallery discovery now discards empty image identities in repeated-card detection and chooses representatives with usable sources, avoiding a false image group around an enlarged transparent placeholder. A slot with descendant media checks that media before considering its own background. Mixed IMG and CSS-background candidates follow light-DOM order. Automated tests cover these structures and preserve unresolved slots. An in-app browser source fixture with ten generic cards, enlarged transparent placeholders and hidden image variants opened item 5 of 10 and navigated to items 6 and 4. This is not an installed-extension or live-site acceptance result. Separate image groups can still be mixed on some pages; fast-scroll and multi-site final acceptance remain open. No package or store submission.
+
 ## Source candidate: 2.0 b16
 
 Gallery slot lookup preserves earliest containing-slot semantics with an ancestor index; a randomized reference comparison exercises nested and duplicate slots. Overview layout avoids repeated lane scans and quadratic emitted-band lookup. Scan-time source mutations are coalesced before full collection; message dispatch handles synchronous runtime failures as well as rejected promises. These are bounded source-level improvements, not evidence that a live fast-scroll freeze is resolved. The supplied stack lacks the original exception title. Installed-extension and real-site performance verification remain pending. No package or store submission.
