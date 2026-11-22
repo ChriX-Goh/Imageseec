@@ -430,7 +430,7 @@
     let overviewThumbWindow = new Map();
     const overviewThumbRetained = new Map();
     const overviewEdgeIntentState = { side: 0, distance: 0, lastAt: 0, lastRetryAt: -Infinity, retried: false, timer: 0 };
-    let overviewThumbActive = 0;
+    let overviewThumbActive = 0, overviewThumbPumpTimer = 0;
     const on = (node, type, handler, options = {}) => node.addEventListener(type, handler, { ...options, signal });
 
     function close(event) {
@@ -444,7 +444,8 @@
       closed = true; overviewOpen = false; serial++; controller.abort(); preferencesBinding.abort(); observer.disconnect(); pool.clear();
       scanController?.abort(); scanRestore = null;
       clearOverviewPress(); endHold(); cancelGalleryRefresh();
-      clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer);
+      clearTimeout(overviewCacheCheckTimer); clearTimeout(overviewCommitTimer); clearTimeout(overviewThumbPumpTimer);
+      overviewThumbPumpTimer = 0;
       cancelAnimationFrame(overviewScrollFrame);
       clearTimeout(overviewEdgeIntentState.timer);
       for (const job of overviewThumbJobs.values()) {
@@ -1423,6 +1424,7 @@
       if (card) card.dataset.thumbState = 'ready';
       updateOverviewStatus();
       scheduleOverviewCacheCheck(180);
+      scheduleOverviewThumbnailPump();
     }
     function failOverviewThumbnail(job) {
       if (job.cancelled || job.status === 'error' || overviewThumbJobs.get(job.key) !== job) return;
@@ -1436,6 +1438,7 @@
       if (card) { card.dataset.thumbState = 'error'; card.dataset.thumbAttemptCount = String(job.attempts); }
       updateOverviewStatus();
       scheduleOverviewCacheCheck(1500);
+      scheduleOverviewThumbnailPump();
     }
     function startOverviewThumbnail(job) {
       if (closed || job.cancelled || overviewThumbJobs.get(job.key) !== job) return;
@@ -1464,6 +1467,13 @@
         if (job.cancelled || overviewThumbJobs.get(job.key) !== job || job.status !== 'queued') continue;
         startOverviewThumbnail(job);
       }
+    }
+    function scheduleOverviewThumbnailPump() {
+      if (overviewThumbPumpTimer || closed || !overviewOpen || overviewDirty) return;
+      overviewThumbPumpTimer = setTimeout(() => {
+        overviewThumbPumpTimer = 0;
+        if (!closed && overviewOpen && !overviewDirty) pumpOverviewThumbnails();
+      }, 0);
     }
     function queueOverviewThumbnail(item, card, force) {
       const image = card.querySelector('img'), source = item.thumb || '';

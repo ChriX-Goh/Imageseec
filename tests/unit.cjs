@@ -356,6 +356,202 @@ test('recent decoded thumbnails survive reverse scrolling and retention stays bo
   assert.equal(c.has(0), false);
   assert.equal(c.has(89), true);
 });
+test('overview thumbnail scheduler yields between bounded batches and respects current view state', async () => {
+  function harness({ start = 0, end = 11, first = 0, last = 5, total = 30, syncComplete = false } = {}) {
+    const requests = [], cancellations = [], images = new Map(), schedulerTimers = { zeroDelay: 0 };
+    let c, peakActive = 0;
+    class FakeImage {
+      constructor(key) { this.key = key; this.dataset = {}; this.loading = 'lazy'; this.complete = false;
+        this.naturalWidth = this.naturalHeight = 0; this.onload = this.onerror = null; this._src = ''; }
+      get src() { return this._src; }
+      set src(value) {
+        this._src = String(value || '');
+        if (!this._src) return;
+        requests.push(this.key);
+        peakActive = Math.max(peakActive, c.active());
+        if (syncComplete) { this.complete = true; this.naturalWidth = 120; this.naturalHeight = 80; }
+      }
+      getAttribute(name) { return name === 'src' ? this._src || null : null; }
+      hasAttribute(name) { return name === 'src' && Boolean(this._src); }
+      removeAttribute(name) { if (name === 'src' && this._src) { cancellations.push(this.key); this._src = ''; this.complete = false; this.naturalWidth = this.naturalHeight = 0; } }
+      decode() { return Promise.resolve(); }
+    }
+    const items = Array.from({ length: total }, (_, index) => ({ key: String(index), thumb: `image-${index}` }));
+    const cards = new Map(items.map(item => { const image = new FakeImage(item.key); images.set(item.key, image);
+      return [item.key, { dataset: {}, isConnected: true, querySelector: () => image }]; }));
+    const setTimeoutTracked = (callback, ms, ...args) => {
+      if (Number(ms) === 0) schedulerTimers.zeroDelay++;
+      const timer = setTimeout(callback, ms, ...args); timer.unref?.(); return timer;
+    };
+    c = vm.createContext({ setTimeout: setTimeoutTracked, clearTimeout, queueMicrotask, Promise, Map, Math, Number, String,
+      __now: 0, performance: { now: () => c.__now }, items, cards, requests, cancellations });
+    const blocks = ['dropOverviewThumbnail', 'markOverviewThumbnailReady', 'failOverviewThumbnail',
+      'startOverviewThumbnail', 'pumpOverviewThumbnails', 'scheduleOverviewThumbnailPump',
+      'queueOverviewThumbnail', 'updateOverviewThumbnails'].map(viewerFunction).join('\n');
+    const viewerSource = source('viewer.js');
+    const releaseStart = viewerSource.indexOf('    function releaseOverviewPress(');
+    const releaseEnd = viewerSource.indexOf("    on(overview, 'pointerdown'", releaseStart);
+    assert.ok(releaseStart >= 0 && releaseEnd > releaseStart, 'releaseOverviewPress extraction boundaries');
+    const releaseBlock = viewerSource.slice(releaseStart, releaseEnd);
+    vm.runInContext(`
+      let overviewOpen = true, overviewPress = null, overviewDirty = false, closed = false, overviewThumbActive = 0;
+      let overviewThumbPumpTimer = 0, overviewCommitTimer = 0, overviewCommitStarted = 0;
+      let overviewClickGuard = null, edgeSide = 0, scanController = null, scanningDirection = 1;
+      const scanStates = { [-1]: { ended: false }, [1]: { ended: false } };
+      let currentWindow = { start: ${start}, end: ${end}, first: ${first}, last: ${last} };
+      const overviewItems = globalThis.items, overviewCards = globalThis.cards;
+      const overviewThumbJobs = new Map(), overviewThumbQueue = [], overviewThumbRetained = new Map();
+      let overviewThumbWindow = new Map();
+      const overview = { classList: { remove() {} } };
+      function overviewCacheWindow() { return currentWindow; }
+      function renderOverview() { overviewCommitTimer = overviewCommitStarted = 0; overviewDirty = false; updateOverviewThumbnails(); }
+      function updateOverviewStatus() {}
+      function scheduleOverviewCacheCheck() {}
+      function checkOverviewCache() { updateOverviewThumbnails(); }
+      ${blocks}
+      ${viewerFunction('queueOverviewCommit')}
+      ${viewerFunction('clearOverviewPress')}
+      ${releaseBlock}
+      globalThis.update = window => { if (window) currentWindow = window; updateOverviewThumbnails(); };
+      globalThis.snapshot = () => ({ active: overviewThumbActive, queued: overviewThumbQueue.map(job => job.key),
+        pumpPending: Boolean(overviewThumbPumpTimer),
+        statuses: Object.fromEntries([...overviewThumbJobs].map(([key, job]) => [key, job.status])),
+        ready: [...overviewThumbJobs.values()].filter(job => job.status === 'ready').map(job => job.key) });
+      globalThis.active = () => overviewThumbActive;
+      globalThis.load = key => { const image = overviewCards.get(String(key)).querySelector('img');
+        image.complete = true; image.naturalWidth = 120; image.naturalHeight = 80; image.onload?.(); };
+      globalThis.error = key => overviewCards.get(String(key)).querySelector('img').onerror?.();
+      globalThis.staleError = key => { const image = overviewCards.get(String(key)).querySelector('img'), callback = image.onerror; return () => { callback?.(); }; };
+      globalThis.staleLoad = key => { const image = overviewCards.get(String(key)).querySelector('img'), callback = image.onload; return () => { callback?.(); }; };
+      globalThis.setNow = value => { globalThis.__now = value; };
+      globalThis.setOverviewOpen = value => { overviewOpen = value; };
+      globalThis.beginOverviewPress = () => { overviewPress = { pointer: 1, key: '0', animations: [], dragging: false, capture: null }; };
+      globalThis.markOverviewDirty = () => queueOverviewCommit();
+      globalThis.pointerUp = () => releaseOverviewPress({ type: 'pointerup', pointerId: 1 });
+      globalThis.close = () => { closed = true; overviewOpen = false; clearTimeout(overviewThumbPumpTimer); overviewThumbPumpTimer = 0;
+        for (const job of overviewThumbJobs.values()) { clearTimeout(job.timeout); job.image.onload = job.image.onerror = null; }
+        overviewThumbQueue.length = 0; overviewThumbJobs.clear(); };
+      globalThis.shutdown = () => { clearTimeout(overviewThumbPumpTimer); overviewThumbPumpTimer = 0;
+        clearTimeout(overviewCommitTimer); overviewCommitTimer = 0;
+        for (const job of overviewThumbJobs.values()) clearTimeout(job.timeout);
+        overviewThumbQueue.length = 0; overviewThumbJobs.clear(); };
+    `, c);
+    return { c, requests, cancellations, images, schedulerTimers, peak: () => peakActive };
+  }
+  const flush = async () => {
+    for (let index = 0; index < 8; index++) await Promise.resolve();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    for (let index = 0; index < 8; index++) await Promise.resolve();
+  };
+
+  const priority = harness({ start: 0, end: 11, first: 6, last: 9 });
+  priority.c.update();
+  assert.deepEqual(Array.from(priority.requests.slice(0, 4)), ['6', '7', '8', '9'], 'queued visible images start before cache-only work');
+  assert.equal(priority.c.snapshot().active, 6, 'the production queue remains capped at six active requests');
+  priority.c.shutdown();
+
+  const released = harness();
+  released.c.update(); released.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  const timerCount = released.schedulerTimers.zeroDelay;
+  released.c.load('0'); released.c.load('0'); released.c.load('1'); await flush();
+  assert.ok(released.requests.includes('6'), 'completion pumps queued visible work without a cache-check delay');
+  assert.equal(released.c.snapshot().statuses['0'], 'ready');
+  assert.equal(released.schedulerTimers.zeroDelay - timerCount, 1, 'same-turn completions share one scheduled pump');
+  assert.equal(released.c.snapshot().active, 6, 'duplicate load events do not double-release a slot');
+  released.c.shutdown();
+
+  const failed = harness();
+  failed.c.update(); failed.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  const staleError = failed.c.staleError('0');
+  failed.c.error('0'); await flush(); staleError(); await flush();
+  assert.ok(failed.requests.includes('6'), 'failure pumps the next queued image');
+  assert.equal(failed.c.snapshot().statuses['0'], 'error');
+  assert.equal(failed.c.snapshot().active, 6, 'duplicate stale error cannot release a second slot');
+  failed.c.setNow(1100); failed.c.update({ start: 0, end: 17, first: 0, last: 5 });
+  failed.c.load('1'); await flush();
+  assert.equal(failed.requests.filter(key => key === '0').length, 1, 'an error is not retried before retryAt');
+  failed.c.setNow(1201); failed.c.update({ start: 0, end: 17, first: 0, last: 5 });
+  failed.c.load('2'); await flush();
+  assert.equal(failed.requests.filter(key => key === '0').length, 2, 'an eligible error retries when a slot becomes free');
+  failed.c.shutdown();
+
+  const jumped = harness({ total: 50 });
+  jumped.c.update(); const stale = jumped.c.staleLoad('0');
+  jumped.c.update({ start: 30, end: 41, first: 30, last: 35 });
+  assert.deepEqual(Array.from(jumped.cancellations), ['0', '1', '2', '3', '4', '5'], 'leaving the active cache window removes prior sources');
+  assert.deepEqual(Array.from(jumped.requests.slice(-6)), ['30', '31', '32', '33', '34', '35'], 'the new visible window starts first');
+  stale(); await flush();
+  assert.equal(jumped.c.snapshot().active, 6, 'a late callback from a cancelled request cannot alter active work');
+  jumped.c.close(); const countAtClose = jumped.requests.length; stale(); await flush();
+  assert.equal(jumped.requests.length, countAtClose, 'closed viewer does not resurrect queued requests');
+  jumped.c.shutdown();
+
+  const switched = harness();
+  switched.c.update(); switched.c.load('0'); await Promise.resolve();
+  switched.c.setOverviewOpen(false); await flush();
+  assert.equal(switched.requests.length, 6, 'a pending pump does not launch thumbnails after switching to image view');
+  switched.c.setOverviewOpen(true); switched.c.update({ start: 0, end: 23, first: 12, last: 17 });
+  assert.equal(switched.requests.at(-1), '12', 're-entry prioritizes its current visible range over older queued work');
+  switched.c.shutdown();
+
+  const completedAway = harness();
+  completedAway.c.update(); completedAway.c.setOverviewOpen(false); completedAway.c.load('0'); await flush();
+  assert.equal(completedAway.requests.length, 6, 'settlement while overview is closed does not start background requests');
+  completedAway.c.setOverviewOpen(true); completedAway.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  assert.equal(completedAway.requests.at(-1), '6', 're-entering overview starts its visible queue first');
+  completedAway.c.shutdown();
+
+  const dirtyDrag = harness();
+  dirtyDrag.c.update(); dirtyDrag.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  dirtyDrag.c.beginOverviewPress(); dirtyDrag.c.markOverviewDirty();
+  dirtyDrag.c.update({ start: 0, end: 23, first: 12, last: 17 });
+  const priorTimerCount = dirtyDrag.schedulerTimers.zeroDelay;
+  dirtyDrag.c.load('0'); await flush();
+  assert.equal(dirtyDrag.schedulerTimers.zeroDelay, priorTimerCount, 'dirty pointer drag does not schedule a direct queue pump');
+  assert.equal(dirtyDrag.requests.length, 6, 'thumbnail completion cannot start work using the stale pre-drag priority');
+  dirtyDrag.c.pointerUp(); await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(dirtyDrag.requests.at(-1), '12', 'the post-commit visible range takes priority over the old queue');
+  dirtyDrag.c.shutdown();
+
+  const dirtyTimer = harness();
+  dirtyTimer.c.update(); dirtyTimer.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  dirtyTimer.c.load('0'); await Promise.resolve();
+  assert.equal(dirtyTimer.c.snapshot().pumpPending, true, 'completion schedules one pump while the view is still clean');
+  dirtyTimer.c.beginOverviewPress(); dirtyTimer.c.markOverviewDirty();
+  dirtyTimer.c.update({ start: 0, end: 23, first: 12, last: 17 });
+  await flush();
+  assert.equal(dirtyTimer.requests.length, 6, 'a pump already queued before a dirty drag rechecks state and does not use stale priority');
+  dirtyTimer.c.pointerUp(); await new Promise(resolve => setTimeout(resolve, 20));
+  assert.equal(dirtyTimer.requests.at(-1), '12', 'the pointerup commit reorders and pumps the current visible queue');
+  dirtyTimer.c.shutdown();
+
+  const closing = harness();
+  closing.c.update(); closing.c.update({ start: 0, end: 17, first: 6, last: 11 });
+  closing.c.load('0'); await Promise.resolve(); closing.c.close(); await flush();
+  assert.equal(closing.requests.length, 6, 'closed state cancels the pending zero-delay pump');
+  closing.c.shutdown();
+
+  const synchronous = harness({ start: 0, end: 11, first: 0, last: 11, total: 12, syncComplete: true });
+  synchronous.c.update(); await flush();
+  assert.equal(synchronous.c.snapshot().ready.length, 12, 'synchronous-complete images and resolved decode promises drain the queue');
+  assert.equal(synchronous.c.snapshot().active, 0);
+  assert.equal(synchronous.requests.length, 12, 'each synchronous completion starts one request without recursive pumping');
+  synchronous.c.shutdown();
+
+  const batch = harness({ start: 0, end: 539, first: 0, last: 539, total: 540, syncComplete: true });
+  let externalTimerRan = false, readyWhenExternalTimerRan = -1;
+  setTimeout(() => { externalTimerRan = true; readyWhenExternalTimerRan = batch.c.snapshot().ready.length; }, 0);
+  batch.c.update();
+  for (let attempt = 0; attempt < 200 && batch.c.snapshot().ready.length < 540; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, 0));
+    for (let index = 0; index < 8; index++) await Promise.resolve();
+  }
+  assert.equal(batch.c.snapshot().ready.length, 540, 'zero-delay batches eventually drain 540 completed images');
+  assert.equal(externalTimerRan, true, 'an unrelated timer runs before the large queue drains');
+  assert.ok(readyWhenExternalTimerRan < 540, `timer ran before all items were ready (${readyWhenExternalTimerRan}/540)`);
+  assert.ok(batch.peak() <= 6, 'yielding between batches preserves the six-request cap');
+  batch.c.shutdown();
+});
 function overviewProjectionHarness(initial) {
   const c = vm.createContext({ state: initial, getComputedStyle: () => ({ aspectRatio: 'auto' }) });
   vm.runInContext(`
