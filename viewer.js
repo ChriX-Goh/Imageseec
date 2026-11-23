@@ -1612,6 +1612,7 @@
       if (!collection.scope?.isConnected || signal.aborted) return { edge: false };
       refreshScanScroller();
       const state = scanStates[direction];
+      const cursorBeforeSegment = state.cursor;
       const viewport = scanScroller ? scanHorizontal ? scanScroller.clientWidth : scanScroller.clientHeight : innerHeight;
       const maximum = scanScroller ? scanHorizontal ? scanScroller.scrollWidth - scanScroller.clientWidth : scanScroller.scrollHeight - scanScroller.clientHeight : document.scrollingElement.scrollHeight - innerHeight;
       const origin = scanScroller?.getBoundingClientRect();
@@ -1706,7 +1707,7 @@
           observedScope.removeEventListener('error', onSourceImageState, true);
         }
         if (!signal.aborted && !closed) { refresh(direction); rememberSourceAnchors(); }
-        for (const { item, signature, position } of targetedSlots) {
+        if (!signal.aborted && !closed) for (const { item, signature, position } of targetedSlots) {
           if (position < state.cursor - viewport * .2 || position > state.cursor + viewport * 1.2) continue;
           const slot = (collection.slots || []).find(candidate => candidate.key === item.slotKey);
           if (!slot || !slot.pending) { state.slotAttempts.delete(item.slotKey); continue; }
@@ -1725,6 +1726,11 @@
           stalled: !semanticProgress,
           moved: Math.abs(sourcePosition() - beforePosition) > 2 };
       } finally {
+        if (signal.aborted || closed) {
+          state.cursor = cursorBeforeSegment;
+          state.sourceLoading = false; state.loadingNode = null;
+          if (!state.ended) state.phase = 'idle';
+        }
         // The page's location is restored after each isolated scan segment.
         if (scanRestore) { scanRestore(); scanRestore = null; }
       }

@@ -14,15 +14,15 @@
     ],
     "frameworks": [],
     "description": "Imageseec 是一款 Chrome Manifest V3 图片查看扩展，提供单图浏览、双图对照、自适应全览、通用懒加载触发、独立缩略图预缓存、鼠标拖拽和关闭后返回原网页当前图片位置。",
-    "analyzedAt": "2026-11-22 08:50:44",
-    "gitCommitHash": "a669d462211e5c8dca44b50dcecc2588e7797401",
-    "versionName": "2.0 b24"
+    "analyzedAt": "2026-11-23 09:42:47",
+    "gitCommitHash": "20812633a550b1a6330d7d4a7582ae40ef04efa2",
+    "versionName": "2.0 b25"
   },
   "sourceState": {
-    "trackedAndUntrackedFiles": 112,
+    "trackedAndUntrackedFiles": 113,
     "hashAlgorithm": "sha256-utf8-lf",
     "graphFreshnessCommand": "node scripts/graph-freshness.cjs",
-    "versionName": "2.0 b24",
+    "versionName": "2.0 b25",
     "hashRefreshPending": false
   },
   "nodes": [
@@ -63,7 +63,7 @@
       "type": "file",
       "name": "unit.cjs",
       "filePath": "tests/unit.cjs",
-      "summary": "覆盖图库身份、CSS 背景来源刷新、查看器回归，以及缩略图队列优先级、重试、取消、重入和拖拽期间 dirty 门控。",
+      "summary": "运行图库身份、查看器与设置回归，并引入生产扫描中止恢复测试。",
       "tags": [
         "test",
         "unit",
@@ -71,7 +71,7 @@
         "extension"
       ],
       "complexity": "complex",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -137,8 +137,8 @@
       "name": "context",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        172,
-        172
+        173,
+        173
       ],
       "summary": "创建隔离 VM、模拟浏览器语言与图片 DOM，装载图库和设置模块供单元回归使用。",
       "tags": [
@@ -147,7 +147,7 @@
         "gallery"
       ],
       "complexity": "moderate",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -156,8 +156,8 @@
       "name": "albumFixture",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1686,
-        1686
+        1687,
+        1687
       ],
       "summary": "构造带语义容器、重复卡片和图片节点的图库夹具，用于测试分组、顺序与边界条件。",
       "tags": [
@@ -166,7 +166,7 @@
         "dom-simulation"
       ],
       "complexity": "simple",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -175,8 +175,8 @@
       "name": "background",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        2497,
-        2497
+        2498,
+        2498
       ],
       "summary": "模拟 Chrome storage、runtime、contextMenus、scripting 和 tabs API，以验证后台消息路由。",
       "tags": [
@@ -186,7 +186,7 @@
         "message-routing"
       ],
       "complexity": "moderate",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -259,7 +259,7 @@
       "type": "config",
       "name": "manifest.json",
       "filePath": "manifest.json",
-      "summary": "声明 MV3 扩展入口、权限和图标；源码候选为 2.0 b24。",
+      "summary": "声明 MV3 扩展入口、权限和图标；源码候选为 2.0 b25。",
       "tags": [
         "configuration",
         "manifest-v3",
@@ -268,7 +268,7 @@
         "extension"
       ],
       "complexity": "simple",
-      "sourceHash": "4572c1c54e0099a99ceb62f31f47f5be1a644fbf8f4f87e8cdb78fc07002e8e3",
+      "sourceHash": "778392984e7ccbcc1eaab24e2eeb91924b9c9f3707d88bc0f0c0579ab06046e8",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2280,7 +2280,7 @@
       "type": "file",
       "name": "viewer.js",
       "filePath": "viewer.js",
-      "summary": "管理图片查看与全览，包括双向懒扫描、图库刷新、带 dirty/关闭门控的缩略图补位调度、预缓存和回源。",
+      "summary": "管理图片查看与全览，包括双向懒扫描、图库刷新、缩略图调度、预缓存、扫描中止恢复和回源。",
       "tags": [
         "viewer-runtime",
         "image-navigation",
@@ -2288,7 +2288,7 @@
         "overview"
       ],
       "complexity": "complex",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2516,7 +2516,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2535,7 +2535,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2554,7 +2554,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2572,7 +2572,7 @@
         "nested-scroll"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2591,7 +2591,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2610,7 +2610,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2622,7 +2622,7 @@
         436,
         436
       ],
-      "summary": "关闭时清除待执行的缩略图 pump 定时器，再卸载查看器并恢复网页位置和来源提示。",
+      "summary": "关闭时中止活动扫描、清理临时状态并只恢复一次网页位置和来源提示。",
       "tags": [
         "viewer-runtime",
         "direct-exit",
@@ -2630,7 +2630,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2649,7 +2649,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2668,7 +2668,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2687,7 +2687,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2706,7 +2706,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2725,7 +2725,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2744,7 +2744,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2763,7 +2763,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2782,7 +2782,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2801,7 +2801,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2820,7 +2820,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2839,7 +2839,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2858,7 +2858,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2877,7 +2877,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2896,7 +2896,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2915,7 +2915,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2934,7 +2934,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2953,7 +2953,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2972,7 +2972,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -2991,7 +2991,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3010,7 +3010,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3029,7 +3029,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3048,7 +3048,7 @@
         "cache-invalidation"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3067,7 +3067,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3086,7 +3086,7 @@
         "bounded-queue"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3105,7 +3105,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3124,7 +3124,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3136,7 +3136,7 @@
         1611,
         1611
       ],
-      "summary": "分段触发同组图库懒加载；观察槽位与资源变化，按有界频率刷新快照并恢复源滚动位置。",
+      "summary": "分段触发同组图库懒加载；中止时回滚本段游标、清理加载态且不计未完成槽位尝试，保留已合并的网页发现。",
       "tags": [
         "lazy-loading",
         "nested-scroll",
@@ -3144,7 +3144,7 @@
         "refresh-throttle"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3153,10 +3153,10 @@
       "name": "scanMore",
       "filePath": "viewer.js",
       "lineRange": [
-        1732,
-        1732
+        1738,
+        1738
       ],
-      "summary": "按前后方向驱动限时分段扫描；根据图库条目、槽位、资源加载与当前全览需求决定继续或暂停。",
+      "summary": "按前后方向驱动限时分段扫描；完成或中止后按阅览状态决定是否安排缓存复查。",
       "tags": [
         "lazy-loading",
         "bidirectional",
@@ -3164,7 +3164,7 @@
         "viewer-runtime"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3173,8 +3173,8 @@
       "name": "enterOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1811,
-        1811
+        1817,
+        1817
       ],
       "summary": "打开全览并按当前图片定位；重新渲染缓存窗口以恢复当前队列优先级。",
       "tags": [
@@ -3185,7 +3185,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3194,10 +3194,10 @@
       "name": "exitOverview",
       "filePath": "viewer.js",
       "lineRange": [
-        1843,
-        1843
+        1849,
+        1849
       ],
-      "summary": "离开全览并关闭模式标记，使待执行 pump 回调跳过；恢复图片查看状态。",
+      "summary": "离开全览时中止活动扫描、恢复临时页面位置并切回图片查看状态。",
       "tags": [
         "overview",
         "mode-transition",
@@ -3206,7 +3206,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3215,8 +3215,8 @@
       "name": "resolveIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        1847,
-        1847
+        1853,
+        1853
       ],
       "summary": "resolveIndex 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3225,7 +3225,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3234,8 +3234,8 @@
       "name": "showSingle",
       "filePath": "viewer.js",
       "lineRange": [
-        1887,
-        1887
+        1893,
+        1893
       ],
       "summary": "加载并显示指定图片，更新尺寸、倍率状态和加载提示。",
       "tags": [
@@ -3244,7 +3244,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3253,8 +3253,8 @@
       "name": "showPair",
       "filePath": "viewer.js",
       "lineRange": [
-        2016,
-        2016
+        2022,
+        2022
       ],
       "summary": "加载并显示双图对照，更新两栏尺寸与导航状态。",
       "tags": [
@@ -3263,7 +3263,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3272,8 +3272,8 @@
       "name": "show",
       "filePath": "viewer.js",
       "lineRange": [
-        2067,
-        2067
+        2073,
+        2073
       ],
       "summary": "show 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3282,7 +3282,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3291,8 +3291,8 @@
       "name": "navigate",
       "filePath": "viewer.js",
       "lineRange": [
-        2068,
-        2068
+        2074,
+        2074
       ],
       "summary": "navigate 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3301,7 +3301,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3310,8 +3310,8 @@
       "name": "setCompare",
       "filePath": "viewer.js",
       "lineRange": [
-        2102,
-        2102
+        2108,
+        2108
       ],
       "summary": "切换单图双图；从全览切换时按焦点或中央缩略图选择起点。",
       "tags": [
@@ -3320,7 +3320,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3329,8 +3329,8 @@
       "name": "refresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2122,
-        2122
+        2128,
+        2128
       ],
       "summary": "刷新图库与来源快照，向采集流程传递当前旧条目以验证来源身份，并合并保留导航位置。",
       "tags": [
@@ -3339,7 +3339,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3348,8 +3348,8 @@
       "name": "storageChanged",
       "filePath": "viewer.js",
       "lineRange": [
-        2206,
-        2206
+        2212,
+        2212
       ],
       "summary": "应用保存的偏好并更新工具栏、全览倍率和当前布局。",
       "tags": [
@@ -3358,7 +3358,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3367,8 +3367,8 @@
       "name": "fullscreen",
       "filePath": "viewer.js",
       "lineRange": [
-        2481,
-        2481
+        2487,
+        2487
       ],
       "summary": "fullscreen 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3377,7 +3377,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3386,8 +3386,8 @@
       "name": "startHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2521,
-        2521
+        2527,
+        2527
       ],
       "summary": "startHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3396,7 +3396,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3405,8 +3405,8 @@
       "name": "followHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2565,
-        2565
+        2571,
+        2571
       ],
       "summary": "followHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3415,7 +3415,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3424,8 +3424,8 @@
       "name": "endHold",
       "filePath": "viewer.js",
       "lineRange": [
-        2592,
-        2592
+        2598,
+        2598
       ],
       "summary": "endHold 在 viewer.js 模块中完成对应的内部处理。",
       "tags": [
@@ -3434,7 +3434,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3473,7 +3473,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3493,7 +3493,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3512,7 +3512,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3531,7 +3531,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3550,7 +3550,7 @@
         "anchor-restoration"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3559,8 +3559,8 @@
       "name": "pictureState",
       "filePath": "viewer.js",
       "lineRange": [
-        1804,
-        1804
+        1810,
+        1810
       ],
       "summary": "快照当前单图或双图、锁定、缩放、分隔线与来源状态。",
       "tags": [
@@ -3569,7 +3569,7 @@
         "state-management"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3644,7 +3644,7 @@
         "page-style"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3664,7 +3664,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3683,7 +3683,7 @@
         "automatic-cache"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3703,7 +3703,7 @@
         "lazy-scanning"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3722,7 +3722,7 @@
         "bounds"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3734,14 +3734,14 @@
         1561,
         1561
       ],
-      "summary": "延迟重试缓存缺口检查，避免连续触发扫描。",
+      "summary": "延迟复查缓存缺口，串联扫描完成后的有界重试。",
       "tags": [
         "viewer-runtime",
         "thumbnail-cache",
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3753,14 +3753,14 @@
         1565,
         1565
       ],
-      "summary": "根据可见图片和前后缓存余量提前触发对应方向的扫描。",
+      "summary": "根据可见图片和前后缓存余量提前触发对应方向扫描，并合并活动扫描期间的复查请求。",
       "tags": [
         "overview",
         "prefetch",
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3798,7 +3798,7 @@
         "layout"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3817,7 +3817,7 @@
         "cache"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3892,7 +3892,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3910,7 +3910,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3928,7 +3928,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3948,7 +3948,7 @@
         "overview-interaction"
       ],
       "complexity": "complex",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3967,7 +3967,7 @@
         "geometry"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -3986,7 +3986,7 @@
         "input"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4004,7 +4004,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4022,7 +4022,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4040,7 +4040,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4058,7 +4058,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4076,7 +4076,7 @@
         "交互"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4085,8 +4085,8 @@
       "name": "releaseOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2281,
-        2281
+        2287,
+        2287
       ],
       "summary": "结束指针按压并在布局 dirty 时排队提交；拖拽释放后复查当前缓存需求。",
       "tags": [
@@ -4097,7 +4097,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4106,8 +4106,8 @@
       "name": "applyRuler",
       "filePath": "viewer.js",
       "lineRange": [
-        2447,
-        2447
+        2453,
+        2453
       ],
       "summary": "把标尺位置应用为独立全览缩略图尺寸或单／双图缩放。",
       "tags": [
@@ -4116,7 +4116,7 @@
         "controls"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4188,7 +4188,7 @@
         "placeholder"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4226,7 +4226,7 @@
         "retry"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4261,7 +4261,7 @@
         "source-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4280,7 +4280,7 @@
         "lazy-scanning"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4299,7 +4299,7 @@
         "slot-attempts"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4318,7 +4318,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4337,7 +4337,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4356,7 +4356,7 @@
         "scoped-image"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4375,7 +4375,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4394,7 +4394,7 @@
         "identity"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4413,7 +4413,7 @@
         "aria"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4432,7 +4432,7 @@
         "gallery-scope"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4441,8 +4441,8 @@
       "name": "queueGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2242,
-        2242
+        2248,
+        2248
       ],
       "summary": "以尾随延迟和最大等待合并 DOM 与图片事件；扫描期间将图库刷新延后至扫描结束。",
       "tags": [
@@ -4451,7 +4451,7 @@
         "scan-scheduling"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4505,7 +4505,7 @@
         "pending-slots"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4524,7 +4524,7 @@
         "preload"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4542,7 +4542,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4560,7 +4560,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4569,8 +4569,8 @@
       "name": "clearOverviewPress",
       "filePath": "viewer.js",
       "lineRange": [
-        2269,
-        2269
+        2275,
+        2275
       ],
       "summary": "立即结束全览按压状态，释放可信指针捕获并恢复仍在查看器中的动画。",
       "tags": [
@@ -4578,7 +4578,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4596,7 +4596,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4605,8 +4605,8 @@
       "name": "moveHeldImage",
       "filePath": "viewer.js",
       "lineRange": [
-        2570,
-        2570
+        2576,
+        2576
       ],
       "summary": "按指针位移更新普通图或双图查看器的拖拽位置，不依赖系统滚动平滑样式。",
       "tags": [
@@ -4614,7 +4614,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4632,7 +4632,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4650,7 +4650,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4668,7 +4668,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4686,7 +4686,7 @@
         "overview-interaction"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4878,7 +4878,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4896,7 +4896,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4914,7 +4914,7 @@
         "scan-state"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4923,8 +4923,8 @@
       "name": "cancelGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2225,
-        2225
+        2231,
+        2231
       ],
       "summary": "关闭查看器时取消延迟图库刷新并清空排队状态。",
       "tags": [
@@ -4932,7 +4932,7 @@
         "cleanup"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -4941,8 +4941,8 @@
       "name": "flushGalleryRefresh",
       "filePath": "viewer.js",
       "lineRange": [
-        2228,
-        2228
+        2234,
+        2234
       ],
       "summary": "合并刷新当前图库，比较来源签名并在内容确有变化时恢复扫描状态。",
       "tags": [
@@ -4950,7 +4950,7 @@
         "scan-resume"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5007,7 +5007,7 @@
         "performance"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5026,7 +5026,7 @@
         "lazy-loading"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5045,7 +5045,7 @@
         "bounded-concurrency"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5064,7 +5064,7 @@
         "decode"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5083,7 +5083,7 @@
         "decode"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5102,7 +5102,7 @@
         "retry"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5121,7 +5121,7 @@
         "cancellation"
       ],
       "complexity": "simple",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5517,7 +5517,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5526,8 +5526,8 @@
       "name": "entryIdentity",
       "filePath": "viewer.js",
       "lineRange": [
-        1919,
-        1919
+        1925,
+        1925
       ],
       "summary": "处理 entryIdentity 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5535,7 +5535,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5544,8 +5544,8 @@
       "name": "entrySourceRevision",
       "filePath": "viewer.js",
       "lineRange": [
-        1928,
-        1928
+        1934,
+        1934
       ],
       "summary": "处理 entrySourceRevision 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5553,7 +5553,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5562,8 +5562,8 @@
       "name": "findEntryIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        1931,
-        1931
+        1937,
+        1937
       ],
       "summary": "处理 findEntryIndex 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5571,7 +5571,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5580,8 +5580,8 @@
       "name": "createPreviousEntrySnapshotIndex",
       "filePath": "viewer.js",
       "lineRange": [
-        1941,
-        1941
+        1947,
+        1947
       ],
       "summary": "处理 createPreviousEntrySnapshotIndex 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5589,7 +5589,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5598,8 +5598,8 @@
       "name": "previousEntrySnapshot",
       "filePath": "viewer.js",
       "lineRange": [
-        1958,
-        1958
+        1964,
+        1964
       ],
       "summary": "处理 previousEntrySnapshot 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5607,7 +5607,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5616,8 +5616,8 @@
       "name": "refreshSingleSource",
       "filePath": "viewer.js",
       "lineRange": [
-        1972,
-        1972
+        1978,
+        1978
       ],
       "summary": "处理 refreshSingleSource 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5625,7 +5625,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5634,8 +5634,8 @@
       "name": "refreshCompareSource",
       "filePath": "viewer.js",
       "lineRange": [
-        1996,
-        1996
+        2002,
+        2002
       ],
       "summary": "处理 refreshCompareSource 相关的来源身份、缓存或扫描刷新。",
       "tags": [
@@ -5643,7 +5643,7 @@
         "source-refresh"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5728,8 +5728,8 @@
       "name": "mixedGalleryInsertionRegression",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1072,
-        1127
+        1073,
+        1128
       ],
       "summary": "对照旧有序插入参考，覆盖前插、后插、交错锚点及 2000 个确定种子的随机更新。",
       "tags": [
@@ -5738,7 +5738,7 @@
         "gallery-order"
       ],
       "complexity": "moderate",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5747,8 +5747,8 @@
       "name": "allHitMergeFastPathRegression",
       "filePath": "tests/unit.cjs",
       "lineRange": [
-        1128,
-        1152
+        1129,
+        1153
       ],
       "summary": "确认全命中快速路径仍合并资源别名并保留同一资源的已确认几何尺寸。",
       "tags": [
@@ -5757,7 +5757,7 @@
         "all-hit-fast-path"
       ],
       "complexity": "simple",
-      "sourceHash": "328526e2ac4f31cbdef3ae85aa2b28ba4b6bd26da114c47e48e144fdd00eb887",
+      "sourceHash": "cc83439a6f15cfd798c26134c8be51a244f598efbb62760fa19c8592ef72e1f0",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     },
     {
@@ -5816,7 +5816,24 @@
         "dirty-layout-gate"
       ],
       "complexity": "moderate",
-      "sourceHash": "914535cd5b2dd52a5692b3db4f50785ca6749fee120c0a7d9a0f97ffe4daa538",
+      "sourceHash": "e14eef34d541c239ff20b48174d4967bc3448c24ab12410bfe04245c8c7c3147",
+      "sourceHashAlgorithm": "sha256-utf8-lf"
+    },
+    {
+      "id": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "file",
+      "name": "scan-abort-recovery.test.cjs",
+      "filePath": "tests/scan-abort-recovery.test.cjs",
+      "summary": "抽取生产扫描、缓存检查和退出函数，回归扫描中止游标/重试恢复、定时重扫与虚拟滚动容器替换；使用隔离 VM DOM。",
+      "tags": [
+        "test",
+        "unit",
+        "scan-abort",
+        "cursor-recovery",
+        "virtual-scroller"
+      ],
+      "complexity": "moderate",
+      "sourceHash": "1d6f8146e36e8e6b76c9df1c43724205f48be916df7ba0720572c35cb91f0f31",
       "sourceHashAlgorithm": "sha256-utf8-lf"
     }
   ],
@@ -12189,6 +12206,126 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "关闭时清除调度定时器并将 timer id 归零；单测 harness 模拟该清理状态，不直接调用 DOM close。"
+    },
+    {
+      "source": "function:viewer.js:scanMore",
+      "target": "function:viewer.js:scheduleOverviewCacheCheck",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "扫描完成后，阅览缓存仍不足时安排有界复查。"
+    },
+    {
+      "source": "function:viewer.js:exitOverview",
+      "target": "function:viewer.js:scanMore",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "离开阅览会中止活动扫描；扫描段恢复临时滚动位置后退出路径继续切换图片。"
+    },
+    {
+      "source": "function:viewer.js:close",
+      "target": "function:viewer.js:scanMore",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "关闭查看器会中止活动扫描，并由关闭路径负责唯一一次网页位置恢复。"
+    },
+    {
+      "source": "file:tests/unit.cjs",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "description": "单元入口引入扫描中止恢复回归。"
+    },
+    {
+      "source": "file:tests/scan-abort-recovery.test.cjs",
+      "target": "file:viewer.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "测试从生产查看器源码提取扫描、缓存与退出函数。"
+    },
+    {
+      "source": "file:tests/scan-abort-recovery.test.cjs",
+      "target": "file:gallery.js",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "测试使用生产图库合并逻辑检查扫描期间已发现条目的保留。"
+    },
+    {
+      "source": "function:viewer.js:scanDelay",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "用真实扫描等待函数验证 abort 唤醒路径。"
+    },
+    {
+      "source": "function:viewer.js:scanSegment",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "覆盖中止回滚扫描游标、清除加载态、保留来源发现且不消耗未完成槽位重试。"
+    },
+    {
+      "source": "function:viewer.js:scanMore",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "覆盖扫描中止后的重入、延迟重扫及关闭后不再扫描。"
+    },
+    {
+      "source": "function:viewer.js:checkOverviewCache",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "用真实缓存检查触发中止后的自动重扫。"
+    },
+    {
+      "source": "function:viewer.js:scheduleOverviewCacheCheck",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "执行真实延迟复查回调。"
+    },
+    {
+      "source": "function:viewer.js:refreshScanScroller",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "覆盖虚拟滚动容器替换后的扫描目标重绑定和游标基准重设。"
+    },
+    {
+      "source": "function:viewer.js:exitOverview",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查退出阅览时中止扫描且避免重复恢复页面位置。"
+    },
+    {
+      "source": "function:viewer.js:close",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查关闭时中止扫描、恢复页面一次并阻止重扫。"
+    },
+    {
+      "source": "function:gallery.js:mergeEntries",
+      "target": "file:tests/scan-abort-recovery.test.cjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "检查生产合并逻辑在扫描中止前后保留既有及新增条目。"
     }
   ],
   "layers": [
@@ -12265,7 +12402,8 @@
         "file:tests/quick-open-runtime.test.cjs",
         "file:tests/viewer-source-update.test.cjs",
         "file:tests/picture-selection.test.cjs",
-        "file:tests/scan-picture-progress.test.cjs"
+        "file:tests/scan-picture-progress.test.cjs",
+        "file:tests/scan-abort-recovery.test.cjs"
       ]
     },
     {

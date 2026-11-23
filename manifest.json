@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "2.0.0.24",
-  "version_name": "2.0 b24",
+  "version": "2.0.0.25",
+  "version_name": "2.0 b25",
   "description": "__MSG_extDescription__",
   "minimum_chrome_version": "120",
   "permissions": [
